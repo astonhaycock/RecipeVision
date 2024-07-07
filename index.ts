@@ -6,7 +6,7 @@ import express from "express";
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
-app.use(express.static("public/recipe-vision-client"))
+app.use(express.static("public/recipe-vision-client/dist"))
 
 
 

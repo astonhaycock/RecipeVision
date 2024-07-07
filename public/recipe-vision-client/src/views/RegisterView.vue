@@ -26,7 +26,6 @@
   height: 400px;
   gap: 1em;
   font-size: 20px;
-  color: ;
 }
 .login-page div {
   /* display: flex;

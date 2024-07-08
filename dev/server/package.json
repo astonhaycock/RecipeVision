@@ -11,6 +11,7 @@
   "dependencies": {
     "@elysiajs/static": "^1.0.3",
     "elysia": "^1.0.27",
-    "mongoose": "^8.4.5"
+    "mongoose": "^8.4.5",
+    "openai": "^4.52.3"
   }
 }

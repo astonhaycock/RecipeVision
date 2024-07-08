@@ -12,6 +12,12 @@ import { Elysia, error, t } from "elysia";
 import { staticPlugin } from "@elysiajs/static"
 // Node.js fs module for creating directories
 import { mkdir } from "node:fs/promises";
+// Obvious
+import OpenAI from "openai";
+const openai = new OpenAI({apiKey: process.env.AIPASSWORD});
+
+// Schemas and MongoDB models
+import { User, Recipe } from "./model";
 
 // Since the images folder is temporary and Git won't store empty folders,
 // we need to create the folder if it doesn't exist
@@ -29,6 +35,8 @@ const app = new Elysia()
 
       app
         .post("/image", async ({body:{image}}) => {
+            console.log(image[0]);
+            console.log("Image received");
             // Ensure exactly one image is uploaded
             if (image.length !== 1) {
                 return error(400, "exactly one image is required");
@@ -45,10 +53,26 @@ const app = new Elysia()
             const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
             // Save the file
             Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
-            return image[0]
+            const url = "http://144.38.193.103:8080/images/"+filename;
+            console.log(url);
+            const response = await openai.chat.completions.create({
+                model: "gpt-4-turbo",
+                messages: [
+                    {
+                        role: "user",
+                        content: [
+                            {type: "text", text: "What cooking ingredients are in this image?"},
+                            {type: "image_url", image_url: {url: url, detail: "low"}}
+                        ]
+                    }
+                ]
+            });
+            console.log(response);
+            return response;
         }, {body: t.Object({image: t.Files()})})
 
         .post("/users", async ({body:{name, email, password}}) => {
+            User.create({name, email, password});
         }, {body: t.Object({name: t.String(), email: t.String(), password: t.String()})})
         .get("/users", async ({body:{email, password}}) => {
         }, {body: t.Object({email: t.String(), password: t.String()})})

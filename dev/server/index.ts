@@ -7,7 +7,7 @@ const PORT = 8080;
 
 // Import the necessary modules
 // Elysia for HTTP routing
-import { Elysia, t } from "elysia";
+import { Elysia, error, t } from "elysia";
 // The Elysia static plugin for serving static files and folders
 import { staticPlugin } from "@elysiajs/static"
 // Node.js fs module for creating directories
@@ -28,11 +28,18 @@ const app = new Elysia()
     // but with `/api` removed.
 
       app
-        .post("/image", ({body:{image}}) => {
-            //TODO: Max Length
+        .post("/image", async ({body:{image}}) => {
+            if (image.length !== 1) {
+                return error(400, "Only one image is allowed");
+            }
+            if (image[0].type.substring(0, 6) !== "image/") {
+                return error(400, "Only images are allowed");
+            }
             console.log("AAAA");
-            // generate uuid
-            Bun.write(`${IMAGES_PATH}/temp.jpg`, image[0]);
+            const hash = Bun.hash(await image[0].arrayBuffer())
+            const ext = image[0].type.substring(6);
+            const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
+            Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
             return image[0]
         }, {body: t.Object({image: t.Files()})})
   )

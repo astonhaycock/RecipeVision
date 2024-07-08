@@ -53,6 +53,7 @@ const app = new Elysia()
             const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
             // Save the file
             Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
+            //TODO: Pull public URL from env var
             const url = "http://144.38.193.103:8080/images/"+filename;
             console.log(url);
             const response = await openai.chat.completions.create({
@@ -77,6 +78,11 @@ const app = new Elysia()
         .get("/users", async ({body:{email, password}}) => {
         }, {body: t.Object({email: t.String(), password: t.String()})})
   )
+
+  //TODO
+//   .get("/images/:filename", async ({params:{filename}}) => {
+//     return Bun.read(`${IMAGES_PATH}/${filename}`);
+//   })
 
   .use(staticPlugin({assets: IMAGES_PATH, prefix: '/images'}))
   .use(staticPlugin({assets: WEBSITE_PATH, prefix: '/'}))

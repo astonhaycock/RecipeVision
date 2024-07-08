@@ -2,10 +2,16 @@
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
 
-import { defineComponent } from "vue";
+// `inject` is used for importing the global session data
+import { defineComponent, inject } from "vue";
 
 export default defineComponent({
   name: "App",
+  setup() {
+    // Import the global-level 'current-user' to track session info
+    const current_user = inject("current_user");
+    return { current_user };
+  },
   data() {
     return {
       login: true,
@@ -26,17 +32,19 @@ export default defineComponent({
 <template>
   <nav>
     <img id="big-logo" src="@/assets/logo.png" />
-    <div id="links" v-if="login">
+    <div id="links">
       <img id="small-logo" src="@/assets/logo.png" />
       <div>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/ingredients">Ingredients</RouterLink>
       </div>
-      <RouterLink to="/logout">Logout</RouterLink>
+      <!-- Check login with current_user, imported in the setup() block above -->
+      <RouterLink v-if="current_user.username !== ''" to="/logout"
+        >Logout</RouterLink
+      >
+      <RouterLink v-else to="/login">Login</RouterLink>
     </div>
-
-    <!-- <RouterLink to="/login" v-if="login">Login/Register</RouterLink> -->
   </nav>
   <RouterView />
 </template>

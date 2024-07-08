@@ -29,19 +29,29 @@ const app = new Elysia()
 
       app
         .post("/image", async ({body:{image}}) => {
+            // Ensure exactly one image is uploaded
             if (image.length !== 1) {
-                return error(400, "Only one image is allowed");
+                return error(400, "exactly one image is required");
             }
+            // Check if the file is an image
             if (image[0].type.substring(0, 6) !== "image/") {
-                return error(400, "Only images are allowed");
+                return error(400, `expected image, got ${image[0].type}`);
             }
-            console.log("AAAA");
+
+            // Hash the image and get the extension
             const hash = Bun.hash(await image[0].arrayBuffer())
             const ext = image[0].type.substring(6);
+            // Combine them into a filename
             const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
+            // Save the file
             Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
             return image[0]
         }, {body: t.Object({image: t.Files()})})
+
+        .post("/users", async ({body:{name, email, password}}) => {
+        }, {body: t.Object({name: t.String(), email: t.String(), password: t.String()})})
+        .get("/users", async ({body:{email, password}}) => {
+        }, {body: t.Object({email: t.String(), password: t.String()})})
   )
 
   .use(staticPlugin({assets: IMAGES_PATH, prefix: '/images'}))

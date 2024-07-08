@@ -8,7 +8,7 @@ interface IUser {
   password: string;
   ingredients: Array<string>;
 }
-interface IRescipe {
+interface IRecipe {
   name: string;
   description: string;
   time: string;
@@ -23,7 +23,8 @@ const UserSchema = new Schema<IUser>({
   password: { type: String, required: true },
   ingredients: { type: [String], required: true },
 });
-const RecipeSchema = new Schema<IRescipe>({
+
+const RecipeSchema = new Schema<IRecipe>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   time: { type: String, required: true },
@@ -33,16 +34,17 @@ const RecipeSchema = new Schema<IRescipe>({
 
 // 3. Create a Model.
 const User = model<IUser>("User", UserSchema);
-const Recipe = model<IRescipe>("User", RecipeSchema);
+const Recipe = model<IRecipe>("User", RecipeSchema);
 
 run().catch((err) => console.log(err));
 
 async function run() {
   // 4. Connect to MongoDB
   let dbpass = process.env.DATABASE;
-  assert.ok(dbpass);
+  assert.ok(dbpass, "DATABASE environment variable not found");
   await connect(dbpass);
 }
+
 UserSchema.methods.setPassword = async function (plainPassword: string) {
   try {
     let encryptedPassword = await Bun.password.hash(plainPassword);

@@ -1,4 +1,5 @@
 import { Schema, model, connect } from "mongoose";
+import assert from "node:assert";
 
 // 1. Create an interface representing a document in MongoDB.
 interface IUser {
@@ -34,24 +35,17 @@ const RecipeSchema = new Schema<IRescipe>({
 const User = model<IUser>("User", UserSchema);
 const Recipe = model<IRescipe>("User", RecipeSchema);
 
-// run().catch((err) => console.log(err));
+run().catch((err) => console.log(err));
 
-// async function run() {
-//   // 4. Connect to MongoDB
-//   await connect("mongodb://127.0.0.1:27017/test");
-
-//   const user = new User({
-//     name: "Bill",
-//     email: "bill@initech.com",
-//     avatar: "https://i.imgur.com/dM7Thhn.png",
-//   });
-//   await user.save();
-
-//   console.log(user.email); // 'bill@initech.com'
-// }
+async function run() {
+  // 4. Connect to MongoDB
+  let dbpass = process.env.DATABASE;
+  assert.ok(dbpass);
+  await connect(dbpass);
+}
 UserSchema.methods.setPassword = async function (plainPassword: string) {
   try {
-    let encryptedPassword = await Bun.password.hash(plainPassword, 12);
+    let encryptedPassword = await Bun.password.hash(plainPassword);
     this.password = encryptedPassword;
   } catch (error) {
     console.log("Invalid password, can't set password");

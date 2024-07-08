@@ -23,7 +23,6 @@ const UserSchema = new Schema<IUser>({
   password: { type: String, required: true },
   ingredients: { type: [String], required: true },
 });
-
 const RecipeSchema = new Schema<IRecipe>({
   name: { type: String, required: true },
   description: { type: String, required: true },
@@ -34,7 +33,7 @@ const RecipeSchema = new Schema<IRecipe>({
 
 // 3. Create a Model.
 const User = model<IUser>("User", UserSchema);
-const Recipe = model<IRecipe>("User", RecipeSchema);
+const Recipe = model<IRecipe>("Recipe", RecipeSchema);
 
 run().catch((err) => console.log(err));
 
@@ -43,6 +42,13 @@ async function run() {
   let dbpass = process.env.DATABASE;
   assert.ok(dbpass, "DATABASE environment variable not found");
   await connect(dbpass);
+  const user = new User({
+    name: "Bill",
+    email: "bill@initech.com",
+    password: "123",
+    ingredients: ["rice", "salt"],
+  });
+  await user.save();
 }
 
 UserSchema.methods.setPassword = async function (plainPassword: string) {
@@ -58,8 +64,4 @@ UserSchema.methods.verifyPassword = async function (plainPassword: string) {
   let isOkay = await Bun.password.verify(plainPassword, this.password);
   return isOkay;
 };
-
-module.exports = {
-  User: User,
-  Recipe: Recipe,
-};
+export { User, Recipe };

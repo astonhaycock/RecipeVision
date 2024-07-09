@@ -38,7 +38,7 @@ export default defineComponent({
     <h2>Upload Photo of Ingredients</h2>
     <div id="img-box">
       <icon />
-      <form @submit.pervent="uploadImage()">
+      <form @submit.prevent>
         <input type="file" id="actual-btn" @change="handleFileUpload" hidden />
         <label for="actual-btn">Choose File</label>
         <button type="submit" @click="uploadImage()">Upload Ingredients</button>

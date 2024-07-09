@@ -11,24 +11,23 @@ export default defineComponent({
       count: 1,
     };
   },
-  methods() {
-    handleFileUpload: function (event){
+  methods: {
+    handleFileUpload: function (event) {
       console.log(event.target.files);
       this.image = event.target.files[0];
     },
-    uploadImage: async function (){
-    const formData = new FormData();
-    formData.append("image", this.image);
+    uploadImage: async function () {
+      const formData = new FormData();
+      formData.append("image", this.image);
 
-    let requestOptions = {
-      method: "POST",
-      body: formData,
-    };
+      let requestOptions = {
+        method: "POST",
+        body: formData,
+      };
 
-    let response = await fetch(URL,requestOptions);
-    const data = await response.json();
-    console.log(data);
-
+      let response = await fetch(URL, requestOptions);
+      const data = await response.json();
+      console.log(data);
     },
   },
 });

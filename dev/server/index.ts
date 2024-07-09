@@ -2,8 +2,32 @@
 const WEBSITE_PATH = "../client";
 /// The directory path of the images temp folder
 const IMAGES_PATH = "../images";
-/// The port to run the server on
-const PORT = 8080;
+
+// Interface merging to enforce environment variables
+declare module "bun" {
+  interface Env {
+    /// The OpenAI authentication key
+    AIPASSWORD: string;
+    /// The public URL of the server
+    PUBLIC_URL: string;
+  }
+}
+
+// Validate the environment variables
+try {
+  if (Bun.env.PUBLIC_URL.length === 0) {
+    throw new Error();
+  }
+} catch (_) {
+  console.error("PUBLIC_URL is required in the .env file");
+}
+try {
+  if (Bun.env.AIPASSWORD.length === 0) {
+    throw new Error();
+  }
+} catch (_) {
+console.error("AIPASSWORD is required in the .env file");
+}
 
 // Import the necessary modules
 // Elysia for HTTP routing
@@ -53,8 +77,7 @@ const app = new Elysia()
             const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
             // Save the file
             Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
-            //TODO: Pull public URL from env var
-            const url = "http://144.38.193.103:8080/images/"+filename;
+            const url = `${Bun.env.PUBLIC_URL}/images/${filename}`;
             console.log(url);
             const response = await openai.chat.completions.create({
                 model: "gpt-4-turbo",
@@ -62,7 +85,7 @@ const app = new Elysia()
                     {
                         role: "user",
                         content: [
-                            {type: "text", text: "What cooking ingredients are in this image?"},
+                            {type: "text", text: "Give me a list of cooking ingredients in this image, if any, as a JSON array of strings. If no ingredients are present, return an empty JSON array. Return only the JSON array, with no description, context, or formatting."},
                             {type: "image_url", image_url: {url: url, detail: "low"}}
                         ]
                     }
@@ -87,7 +110,7 @@ const app = new Elysia()
   .use(staticPlugin({assets: IMAGES_PATH, prefix: '/images'}))
   .use(staticPlugin({assets: WEBSITE_PATH, prefix: '/'}))
 
-  .listen(PORT);
+  .listen(8080);
 
 console.log(
   `Server running on http://${app.server?.hostname}:${app.server?.port}`

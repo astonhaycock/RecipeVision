@@ -1,15 +1,14 @@
 <script setup lang="ts">
-//! We need a comment right here because otherwise stuff breaks.
-// Idk I'm not a frontend genius.
+let URL = "http://dogsmeow.asuscomm.com:8080/api/image";
 </script>
 <script lang="ts">
-import icon from "./icons/IconUpload.vue";
 import { defineComponent } from "vue";
+import icon from "./icons/IconUpload.vue";
 
 export default defineComponent({
   data() {
     return {
-      image: null,
+      count: 1,
     };
   },
   methods: {
@@ -26,10 +25,7 @@ export default defineComponent({
         body: formData,
       };
 
-      let response = await fetch(
-        "http://dogsmeow.asuscomm.com:8080/api/image",
-        requestOptions
-      );
+      let response = await fetch(URL, requestOptions);
       const data = await response.json();
       console.log(data);
     },
@@ -42,7 +38,7 @@ export default defineComponent({
     <h2>Upload Photo of Ingredients</h2>
     <div id="img-box">
       <icon />
-      <form @submit.prevent="uploadImage()">
+      <form @submit.pervent="uploadImage()">
         <input type="file" id="actual-btn" @change="handleFileUpload" hidden />
         <label for="actual-btn">Choose File</label>
         <button type="submit" @click="uploadImage()">Upload Ingredients</button>

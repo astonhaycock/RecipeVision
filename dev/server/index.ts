@@ -36,8 +36,8 @@ import { Elysia, error, t } from "elysia";
 import { staticPlugin } from "@elysiajs/static";
 // The Elysia CORS plugin
 import { cors } from '@elysiajs/cors';
-// Node.js fs module for creating directories
-import { mkdir } from "node:fs/promises";
+// Node.js fs module for creating directories and deleting files
+import { mkdir, unlink } from "node:fs/promises";
 // Obvious
 import OpenAI from "openai";
 const openai = new OpenAI({apiKey: process.env.AIPASSWORD});
@@ -78,28 +78,45 @@ const app = new Elysia()
             const ext = image[0].type.substring(6);
             // Combine them into a filename
             const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
-            // Check if the file already exists
-            if (await Bun.file(`${IMAGES_PATH}/${filename}`).exists()) {
-              return error(400, "image already exists");
+            // Check if the file already exists, delete it if it's too old
+            let file = Bun.file(`${IMAGES_PATH}/${filename}`);
+            if (await file.exists()) {
+              console.log(Date.now());
+              console.log(file.lastModified);
+              if (Date.now() - (file.lastModified) > 60_000) {
+                unlink(`${IMAGES_PATH}/${filename}`)
+              }
+              return error(400, "file already processing - be patient");
             }
             // Save the file
             Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
             const url = `${Bun.env.PUBLIC_URL}/images/${filename}`;
             console.log(url);
             const response = await openai.chat.completions.create({
-                model: "gpt-4-turbo",
+                model: "gpt-4o",
                 messages: [
                     {
                         role: "user",
                         content: [
-                            {type: "text", text: "Give me a list of cooking ingredients in this image, if any, as a JSON array of strings. If no ingredients are present, return an empty JSON array. Return only the JSON array, with no description, context, or formatting."},
-                            {type: "image_url", image_url: {url: url, detail: "low"}}
+                            {type: "text", text: "Give me a list of cooking ingredients in this image, if any, as a JSON array of strings. If no ingredients are present, return an empty JSON array. Keep each ingredient generic and do not include brand information. Return only the JSON array, with no description, context, or formatting."},
+                            {type: "image_url", image_url: {url: url, detail: "high"}}
                         ]
                     }
                 ]
             });
-            console.log(response);
-            return response;
+            console.log(response.choices[0].message.content);
+            unlink(`${IMAGES_PATH}/${filename}`);
+            try {
+              const list = await JSON.parse(typeof response.choices[0].message.content === "string" ? response.choices[0].message.content.toLowerCase() : "[]");
+              // ensure list is an array of strings
+              if (!Array.isArray(list) || list.some(i => typeof i !== "string")) {
+                throw new Error();
+              }
+              return list;
+            } catch {
+              return error(500, "failed to parse AI response");
+            }
+
         }, {body: t.Object({image: t.Files()})})
 
         .post("/users", async ({body:{name, email, password}}) => {
@@ -107,6 +124,8 @@ const app = new Elysia()
         }, {body: t.Object({name: t.String(), email: t.String(), password: t.String()})})
         .get("/users", async ({body:{email, password}}) => {
         }, {body: t.Object({email: t.String(), password: t.String()})})
+
+        .use(staticPlugin({assets: IMAGES_PATH, prefix: '/images'}))
   )
 
   //TODO
@@ -114,7 +133,6 @@ const app = new Elysia()
 //     return Bun.read(`${IMAGES_PATH}/${filename}`);
 //   })
 
-  .use(staticPlugin({assets: IMAGES_PATH, prefix: '/images'}))
   .use(staticPlugin({assets: WEBSITE_PATH, prefix: '/'}))
 
   .listen(8080);

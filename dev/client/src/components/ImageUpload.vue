@@ -1,5 +1,37 @@
 <script setup lang="ts">
+let URL = "http://dogsmeow.asuscomm.com:8080/api/image";
+</script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import icon from "./icons/IconUpload.vue";
+
+export default defineComponent({
+  data() {
+    return {
+      count: 1,
+    };
+  },
+  methods() {
+    handleFileUpload: function (event){
+      console.log(event.target.files);
+      this.image = event.target.files[0];
+    },
+    uploadImage: async function (){
+    const formData = new FormData();
+    formData.append("image", this.image);
+
+    let requestOptions = {
+      method: "POST",
+      body: formData,
+    };
+
+    let response = await fetch(URL,requestOptions);
+    const data = await response.json();
+    console.log(data);
+
+    },
+  },
+});
 </script>
 
 <template>
@@ -7,11 +39,11 @@ import icon from "./icons/IconUpload.vue";
     <h2>Upload Photo of Ingredients</h2>
     <div id="img-box">
       <icon />
-      <div>
-        <input type="file" id="actual-btn" hidden />
+      <form @submit.pervent="uploadImage()">
+        <input type="file" id="actual-btn" @change="handleFileUpload" hidden />
         <label for="actual-btn">Choose File</label>
-        <button type="submit">Upload Ingredients</button>
-      </div>
+        <button type="submit" @click="uploadImage()">Upload Ingredients</button>
+      </form>
     </div>
   </div>
 </template>

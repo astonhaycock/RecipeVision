@@ -19,8 +19,66 @@ export default defineComponent({
     };
   },
   methods: {
-    updateMessage(): void {
-      this.message = "You clicked the button!";
+    async loginUser() {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(this.user),
+      };
+
+      const response = await fetch(`${URL}/session`, requestOptions);
+      const data = await response.json();
+
+      if (response.status === 201) {
+        console.log("Successfully logged in");
+        this.currentUser = data; // Assign fetched user data
+        this.user = { name: "", email: "", password: "" }; // Clear user form data
+        this.currentPage = "quizzes";
+      } else {
+        console.log("Failed to login");
+      }
+    },
+    async registerUser() {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(this.user),
+      };
+
+      const response = await fetch(`${URL}/users`, requestOptions);
+
+      if (response.status === 201) {
+        console.log("Successfully registered");
+        await this.loginUser();
+      } else {
+        console.log("Failed to register");
+      }
+    },
+    async getSession() {
+      const response = await fetch(`${URL}/session`);
+      if (response.status === 200) {
+        const data = await response.json();
+        this.currentUser = data;
+        this.currentPage = "quizzes";
+      } else {
+        this.currentPage = "login";
+      }
+    },
+    async deleteSessions() {
+      const requestOptions = {
+        method: "DELETE",
+      };
+      const response = await fetch(`${URL}/session`, requestOptions);
+      if (response.status === 204) {
+        this.currentUser = null;
+        this.currentPage = "login";
+      }
     },
   },
   created() {

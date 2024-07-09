@@ -33,7 +33,9 @@ console.error("AIPASSWORD is required in the .env file");
 // Elysia for HTTP routing
 import { Elysia, error, t } from "elysia";
 // The Elysia static plugin for serving static files and folders
-import { staticPlugin } from "@elysiajs/static"
+import { staticPlugin } from "@elysiajs/static";
+// The Elysia CORS plugin
+import { cors } from '@elysiajs/cors';
 // Node.js fs module for creating directories
 import { mkdir } from "node:fs/promises";
 // Obvious
@@ -50,6 +52,7 @@ await mkdir(IMAGES_PATH, { recursive: true });
 // Create the Elysia app instance.
 // Uses method chaining to add routes, settings, and plugins
 const app = new Elysia()
+  .use(cors())
   // The `group` method allows for grouping routes under a common prefix
   // In this case, all routes under `/api` will be grouped together.
   // Inside the callback, we use the same method chaining format to add routes.
@@ -75,6 +78,10 @@ const app = new Elysia()
             const ext = image[0].type.substring(6);
             // Combine them into a filename
             const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
+            // Check if the file already exists
+            if (await Bun.file(`${IMAGES_PATH}/${filename}`).exists()) {
+              return error(400, "image already exists");
+            }
             // Save the file
             Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
             const url = `${Bun.env.PUBLIC_URL}/images/${filename}`;

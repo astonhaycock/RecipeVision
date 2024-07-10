@@ -5,7 +5,7 @@ const IMAGES_PATH = "../images";
 
 // Import the necessary modules
 // Elysia for HTTP routing
-import { Elysia, error, t } from "elysia";
+import { Cookie, Elysia, error, t } from "elysia";
 // The Elysia static plugin for serving static files and folders
 import { staticPlugin } from "@elysiajs/static";
 // The Elysia CORS plugin
@@ -17,7 +17,11 @@ import OpenAI from "openai";
 const openai = new OpenAI({apiKey: process.env.AIPASSWORD});
 
 // Schemas and MongoDB models
-import { User, Recipe } from "./model";
+import { User, Recipe, DB } from "./model";
+// Session handling community code
+import { MongooseStore } from "./session";
+import { sessionPlugin } from "elysia-session";
+import { CookieStore } from "elysia-session/stores/cookie";
 
 // Interface merging to enforce environment variables
 declare module "bun" {
@@ -60,10 +64,16 @@ function dedup<T>(list: Array<T>, fn?: (a: T, b: T)=>number) {
 // we need to create the folder if it doesn't exist
 await mkdir(IMAGES_PATH, { recursive: true });
 
+type SessionCookie = {user_id?: string, user_email?: string};
+
 // Create the Elysia app instance.
 // Uses method chaining to add routes, settings, and plugins
 const app = new Elysia()
   .use(cors())
+  .use(sessionPlugin({
+    store: new CookieStore({cookieOptions: {}}), //new MongooseStore(DB, "session"),
+    expireAfter: 60*60*24*7
+  }))
   // The `group` method allows for grouping routes under a common prefix
   // In this case, all routes under `/api` will be grouped together.
   // Inside the callback, we use the same method chaining format to add routes.
@@ -72,37 +82,80 @@ const app = new Elysia()
     // but with `/api` removed.
 
       app
-        .post("/image", async ({body:{image}}) => {
-            console.log(image[0]);
-            console.log("Image received");
-            // Ensure exactly one image is uploaded
-            if (image.length !== 1) {
-                return error(400, "exactly one image is required");
-            }
-            // Check if the file is an image
-            if (image[0].type.substring(0, 6) !== "image/") {
-                return error(400, `expected image, got ${image[0].type}`);
-            }
+        .post("/session", async({body:{email, password}, cookie:{session}, set}) => {
+          const user = await User.findOne({email: email});
+          if (!user) {
+            return error(401, "unauthorized");
+          }
+          if (!user.verifyPassword(password)) {
+            return error(401, "unauthorized");
+          }
+          session.value = {user_id: user._id, user_email: email};
+          // return the session cookie and 201 status
+          set.status = 201;
+          return session.value;
+        }, {body: t.Object({email: t.String(), password: t.String()})})
+
+        .post("/user", async({body:{email, password}, set}) => {
+          const user = await User.findOne({email: email});
+          if (user) {
+            return error(409, "email in use");
+          }
+          const newUser = new User({email: email});
+          await newUser.setPassword(password);
+          const e = await newUser.validateSync();
+          if (e) {
+            console.error(e);
+            return error(500, "failed to create user");
+          }
+          await newUser.save();
+
+          set.status = 201;
+          return "success";
+        }, {body: t.Object({email: t.String(), password: t.String()})})
+
+        .onBeforeHandle(async ({cookie: {session}}) => {
+          if (!session) {
+            console.log("no session");
+            return error(401, "unauthorized");
+          }
+          console.log(session);
+          const sess = session.value as SessionCookie;
+          if (!sess.user_id || !sess.user_email) {
+            console.log("no user_id or session_id");
+            return error(401, "unauthorized");
+          }
+          const user = await User.findOne({_id: sess.user_id})
+          if (!user) {
+            console.log("no user");
+            return error(401, "unauthorized");
+          }
+        })
+
+        .post("/image", async ({body:{image}, cookie:{session}}) => {
+            console.log(`Connection from ${session.value.user_email.toString()}`);
 
             // Hash the image and get the extension
-            const hash = Bun.hash(await image[0].arrayBuffer())
-            const ext = image[0].type.substring(6);
+            const hash = Bun.hash(await image.arrayBuffer())
+            const ext = image.type.substring(6);
             // Combine them into a filename
             const filename = `${hash.toString(16).padStart(16, "0")}.${ext}`;
             // Check if the file already exists, delete it if it's too old
             let file = Bun.file(`${IMAGES_PATH}/${filename}`);
             if (await file.exists()) {
-              console.log(Date.now());
-              console.log(file.lastModified);
               if (Date.now() - (file.lastModified) > 60_000) {
                 unlink(`${IMAGES_PATH}/${filename}`)
               }
               return error(400, "file already processing - be patient");
             }
             // Save the file
-            Bun.write(`${IMAGES_PATH}/${filename}`, image[0]);
+            Bun.write(`${IMAGES_PATH}/${filename}`, image);
             const url = `${Bun.env.PUBLIC_URL}/images/${filename}`;
             console.log(url);
+
+            //TODO BUT IN ORANGE YAYA
+            return "function stopped before using OpenAI call";
+
             const response = await openai.chat.completions.create({
                 model: "gpt-4o",
                 messages: [
@@ -123,18 +176,13 @@ const app = new Elysia()
               if (!Array.isArray(list) || list.some(i => typeof i !== "string")) {
                 throw new Error();
               }
+              dedup(list);
               return list;
             } catch {
               return error(500, "failed to parse AI response");
             }
 
-        }, {body: t.Object({image: t.Files()})})
-
-        .post("/users", async ({body:{name, email, password}}) => {
-            User.create({name, email, password});
-        }, {body: t.Object({name: t.String(), email: t.String(), password: t.String()})})
-        .get("/users", async ({body:{email, password}}) => {
-        }, {body: t.Object({email: t.String(), password: t.String()})})
+        }, {body: t.Object({image: t.File({type: "image"})}), cookie: t.Cookie({session: t.Object({user_email: t.String(), user_id: t.String()})})})
 
         .use(staticPlugin({assets: IMAGES_PATH, prefix: '/images'}))
   )

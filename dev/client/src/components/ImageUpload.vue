@@ -1,5 +1,6 @@
 <script setup lang="ts">
 let URL = "http://dogsmeow.asuscomm.com:8080/api/image";
+const modal = defineModel({ default: false });
 </script>
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -9,6 +10,7 @@ export default defineComponent({
   data() {
     return {
       count: 1,
+      image: null,
     };
   },
   methods: {
@@ -26,7 +28,9 @@ export default defineComponent({
       };
 
       let response = await fetch(URL, requestOptions);
-      const data = await response.json();
+      const data = await response.json().then(function () {
+        $emit(data);
+      });
       console.log(data);
     },
   },
@@ -41,7 +45,9 @@ export default defineComponent({
       <form @submit.prevent>
         <input type="file" id="actual-btn" @change="handleFileUpload" hidden />
         <label for="actual-btn">Choose File</label>
-        <button type="submit" @click="uploadImage()">Upload Ingredients</button>
+        <button type="submit" @click="uploadImage() && $emit('modal')">
+          Upload Ingredients
+        </button>
       </form>
     </div>
   </div>
@@ -72,6 +78,12 @@ export default defineComponent({
   text-align: center;
   gap: 1rem;
 }
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
 button,
 label {
   border-radius: 15px 15px 15px 15px;
@@ -82,6 +94,9 @@ label {
   /* color: var(--vt-c-text-dark-2); */
   color: var(--vt-c-white-mute);
   transition: 400ms;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 button:hover,
 label:hover {

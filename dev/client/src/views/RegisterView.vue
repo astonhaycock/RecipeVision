@@ -1,14 +1,16 @@
+<script setup lang="ts"></script>
+
 <template>
   <div class="login-page">
     <h1>Create Account</h1>
     <div>
-      <input placeholder="Name"/>
+      <input placeholder="Name" />
     </div>
     <div>
-      <input placeholder="Email"/>
+      <input placeholder="Email" />
     </div>
     <div>
-      <input placeholder="Password"/>
+      <input placeholder="Password" />
     </div>
     <button>Create New Account</button>
     <p>or</p>
@@ -38,9 +40,9 @@
   border-radius: 5px 5px 5px 5px;
   background-color: var(--vt-c-white-mute);
 }
-button{
+button {
   width: 200px;
-  padding: .4rem;
+  padding: 0.4rem;
 }
 /* #newBtn{
   width: 200px;

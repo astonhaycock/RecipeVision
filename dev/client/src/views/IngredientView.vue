@@ -1,14 +1,20 @@
 <script setup lang="ts">
+import loading from "../assets/loading.gif";
 import IngredientList from "../components/IngredientList.vue";
 import ImageUpload from "../components/ImageUpload.vue";
 import ReviewList from "../components/ReviewList.vue";
 import { defineComponent } from "vue";
+import { ref, type Ref } from "vue";
+
+const ingredients: Ref<string[]> = ref([]);
+const ingredient = ref("#4400ff");
 </script>
 <script lang="ts">
 export default defineComponent({
   data() {
     return {
       modal: false,
+      loading: true,
     };
   },
   methods: {},
@@ -18,19 +24,24 @@ export default defineComponent({
 
 <template>
   <div class="UploadImage"></div>
-  <div>
-    <div id="page" v-bind:class="[modal ? 'open' : 'close']">
-      <ImageUpload /> <IngredientList />
-    </div>
-    <div v-if="modal" class="modal">
-      <div class="modal-content">
+  <div id="page" v-bind:class="[modal ? 'open' : 'close']">
+    <ImageUpload v-on:modal="this.modal = true" />
+    <IngredientList />
+  </div>
+  <div v-if="modal" class="modal">
+    <div class="modal-content">
+      <div v-if="!loading">
         <ReviewList />
-        <button class="updateBtn" v-on:click="addExpense">
+        <button class="updateBtn" @click="this.modal = false">
           Save ingredients
         </button>
-        <button class="updateBtn" v-on:click="toggleAddModal()">
-          Discard ingredients
+        <button class="updateBtn" @click="this.modal = false">
+          Save ingredients
         </button>
+      </div>
+      <div id="loading-screen" v-else>
+        <h3>Loading Ingredients</h3>
+        <img src="@/assets/loading.gif" />
       </div>
     </div>
   </div>
@@ -38,14 +49,23 @@ export default defineComponent({
 
 <style scoped>
 #page {
-  padding-top: 2rem;
+  padding-top: 1rem;
   display: flex;
   width: 80%;
   justify-content: space-around;
 }
+#loading-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+#loading-screen img {
+  width: 250px;
+  height: 250px;
+}
 .modal {
   height: 100vh;
-  background-color: rgba(104, 103, 103, 0.586);
+  background-color: rgba(24, 21, 21, 0.88);
   width: 100%;
   position: fixed;
   top: 0;
@@ -56,7 +76,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding-top: 10rem;
   gap: 1rem;
   height: 100vh;
   color: white;
@@ -67,15 +87,9 @@ export default defineComponent({
   text-align: center;
 }
 .open {
-  filter: blur(8px);
+  filter: blur(18px);
+  overflow: hidden;
 }
-
-/* .modal-open {
-  display: block;
-}
-.modal-close {
-  display: none;
-} */
 
 @media (max-width: 1200px) {
   #page {

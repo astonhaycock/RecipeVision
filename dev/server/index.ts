@@ -3,6 +3,22 @@ const WEBSITE_PATH = "../client";
 /// The directory path of the images temp folder
 const IMAGES_PATH = "../images";
 
+// Import the necessary modules
+// Elysia for HTTP routing
+import { Elysia, error, t } from "elysia";
+// The Elysia static plugin for serving static files and folders
+import { staticPlugin } from "@elysiajs/static";
+// The Elysia CORS plugin
+import { cors } from '@elysiajs/cors';
+// Node.js fs module for creating directories and deleting files
+import { mkdir, unlink } from "node:fs/promises";
+// Obvious
+import OpenAI from "openai";
+const openai = new OpenAI({apiKey: process.env.AIPASSWORD});
+
+// Schemas and MongoDB models
+import { User, Recipe } from "./model";
+
 // Interface merging to enforce environment variables
 declare module "bun" {
   interface Env {
@@ -29,21 +45,16 @@ try {
 console.error("AIPASSWORD is required in the .env file");
 }
 
-// Import the necessary modules
-// Elysia for HTTP routing
-import { Elysia, error, t } from "elysia";
-// The Elysia static plugin for serving static files and folders
-import { staticPlugin } from "@elysiajs/static";
-// The Elysia CORS plugin
-import { cors } from '@elysiajs/cors';
-// Node.js fs module for creating directories and deleting files
-import { mkdir, unlink } from "node:fs/promises";
-// Obvious
-import OpenAI from "openai";
-const openai = new OpenAI({apiKey: process.env.AIPASSWORD});
-
-// Schemas and MongoDB models
-import { User, Recipe } from "./model";
+/// Sort a list and deduplicate items
+function dedup<T>(list: Array<T>, fn?: (a: T, b: T)=>number) {
+  list.sort(fn);
+  for (let i = list.length - 1; i > 0; i--) {
+    if (list[i] === list[i - 1]) {
+      list[i] = list[list.length - 1];
+      list.pop();
+    }
+  }
+}
 
 // Since the images folder is temporary and Git won't store empty folders,
 // we need to create the folder if it doesn't exist

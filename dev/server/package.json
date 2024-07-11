@@ -11,9 +11,14 @@
   "dependencies": {
     "@elysiajs/cors": "^1.0.4",
     "@elysiajs/static": "^1.0.3",
+    "body-parser": "^1.20.2",
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
     "elysia": "^1.0.27",
     "elysia-session": "^0.0.5",
+    "express-session": "^1.18.0",
     "mongoose": "^8.4.5",
+    "multer": "^1.4.5-lts.1",
     "openai": "^4.52.3"
   }
 }

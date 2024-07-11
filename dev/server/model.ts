@@ -34,7 +34,7 @@ const RecipeSchema = new Schema<IRecipe>({
   url: { type: String, required: true },
 });
 
-UserSchema.method('setPassword', async function (plainPassword: string) {
+UserSchema.method("setPassword", async function (plainPassword: string) {
   try {
     let encryptedPassword = await Bun.password.hash(plainPassword);
     console.log(this);
@@ -45,11 +45,10 @@ UserSchema.method('setPassword', async function (plainPassword: string) {
   }
 });
 
-UserSchema.method('verifyPassword', async function (plainPassword: string) {
+UserSchema.method("verifyPassword", async function (plainPassword: string) {
   let isOkay = await Bun.password.verify(plainPassword, this.password);
   return isOkay;
 });
-
 
 // 3. Create a Model.
 const User = model<IUser, UserModel>("User", UserSchema);

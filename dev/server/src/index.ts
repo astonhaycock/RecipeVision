@@ -9,11 +9,14 @@ const RATE_LIMIT = 15_000;
 
 // Import the necessary modules
 // Express for HTTP routing
-import express, { Express, Request, Response, Application } from "express";
-// The Express static plugin for serving static files and folders
-import { staticPlugin } from "@express/static";
+import express from "express";
+import type { Request, Response, NextFunction } from "express";
+// The Express session plugin
+import session from "express-session";
+// The MongoDB session store for the Express session plugin
+import MongoStore from "connect-mongo";
 // The Express CORS plugin
-import { cors } from "@express/cors";
+import cors from "cors";
 // Node.js fs module for creating directories and deleting files
 import { mkdir, unlink } from "node:fs/promises";
 // Obvious
@@ -21,32 +24,25 @@ import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.AIPASSWORD });
 
 // Schemas and MongoDB models
-import { User, Recipe, DB } from "../model";
+import { User, Recipe, DB, type IUser } from "./model";
+import type { ObjectId, Types } from "mongoose";
 
-// Interface merging to enforce environment variables
-declare module "bun" {
-  interface Env {
-    /// The OpenAI authentication key
-    AIPASSWORD: string;
-    /// The public URL of the server
-    PUBLIC_URL: string;
+function env<T>(name: string, or?: T): T {
+  const value = Bun.env[name];
+  if (value === undefined) {
+    if (or === undefined) {
+      throw new Error(`Environment variable ${name} is required`);
+    }
+    return or;
   }
-}
-
-// Validate the environment variables
-try {
-  if (Bun.env.PUBLIC_URL.length === 0) {
-    throw new Error();
+  let parsed: T = JSON.parse(value);
+  if (parsed === undefined) {
+    if (or === undefined) {
+      throw new Error(`Environment variable ${name} is invalid`);
+    }
+    return or;
   }
-} catch (_) {
-  console.error("PUBLIC_URL is required in the .env file");
-}
-try {
-  if (Bun.env.AIPASSWORD.length === 0) {
-    throw new Error();
-  }
-} catch (_) {
-  console.error("AIPASSWORD is required in the .env file");
+  return parsed;
 }
 
 /// Sort a list and deduplicate items
@@ -62,8 +58,76 @@ function dedup<T>(list: Array<T>, fn?: (a: T, b: T) => number) {
 
 // Since the images folder is temporary and Git won't store empty folders,
 // we need to create the folder if it doesn't exist
-await mkdir(IMAGES_PATH, { recursive: true });
+await mkdir(IMAGES_PATH, { recursive: true }).catch(console.error);
 
 // Create the Express app
 const app = express();
-const port =
+app.use(cors());
+app.use(express.static(WEBSITE_PATH));
+app.use("/images", express.static(IMAGES_PATH));
+app.use(
+  session({
+    secret: env<string>("SESSION_SECRET", "your-secret-key"),
+    store: MongoStore.create({ mongoUrl: env<string>("MONGO_URL") }),
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }, // 1 week
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+declare module "express-session" {
+  interface SessionData {
+    user_id: Types.ObjectId;
+    user: IUser;
+  }
+}
+
+interface AuthCredentials {
+  email: string;
+  password: string;
+}
+
+async function autenthicate(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  if (!req.session || !req.session.user_id) {
+    res.status(401).send("unauthorized");
+    return;
+  }
+  const user = await User.findById(req.session.user_id);
+  if (!user) {
+    res.status(401).send("unauthorized");
+    return;
+  }
+  req.session.user = user;
+}
+
+if (!env<boolean>("SESSIONLESS")) {
+  app.use(autenthicate);
+}
+
+app.post("/api/session", async (req: Request, res: Response) => {
+  if (!req.session) {
+    res.status(500).send();
+    return;
+  }
+  let creds = req.body as AuthCredentials;
+  if (creds === undefined) {
+    res.status(400).send("log in with email and password as a json object");
+    return;
+  }
+  let user = await User.findOne({ email: creds.email });
+  if (!user) {
+    res.status(401).send("incorrect email or password");
+    return;
+  }
+  if (!user.verifyPassword(creds.password)) {
+    res.status(401).send("incorrect email or password");
+    return;
+  }
+  req.session.user_id = user._id;
+  //TODO: return user info
+  res.status(201).send("logged in");
+});

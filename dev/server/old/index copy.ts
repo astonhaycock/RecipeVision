@@ -21,7 +21,7 @@ import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.AIPASSWORD });
 
 // Schemas and MongoDB models
-import { User, Recipe, DB } from "../model";
+import { User, Recipe, DB } from "../src/model";
 // Session handling community code
 import { MongooseStore } from "./session";
 import { sessionPlugin } from "elysia-session";

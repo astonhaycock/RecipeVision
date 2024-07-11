@@ -9,15 +9,24 @@ import { ref, type Ref } from "vue";
 const ingredients: Ref<string[]> = ref([]);
 const ingredient = ref("#4400ff");
 </script>
+
 <script lang="ts">
 export default defineComponent({
+  components: {
+    ImageUpload,
+  },
   data() {
     return {
       modal: false,
       loading: true,
+      reviewList: "test",
     };
   },
-  methods: {},
+  methods: {
+    handleReviewIngredients(data: string) {
+      this.reviewList = data;
+    },
+  },
   computed: {},
 });
 </script>
@@ -25,17 +34,20 @@ export default defineComponent({
 <template>
   <div class="UploadImage"></div>
   <div id="page" v-bind:class="[modal ? 'open' : 'close']">
-    <ImageUpload v-on:modal="this.modal = true" />
+    <ImageUpload
+      v-on:modal="modal = true"
+      @reviewIngredients="handleReviewIngredients"
+    />
     <IngredientList />
   </div>
   <div v-if="modal" class="modal">
     <div class="modal-content">
-      <div v-if="!loading">
-        <ReviewList />
-        <button class="updateBtn" @click="this.modal = false">
+      <div v-if="loading">
+        <ReviewList v-bind:reviewList="reviewList" />
+        <button class="updateBtn" @click="modal = false">
           Save ingredients
         </button>
-        <button class="updateBtn" @click="this.modal = false">
+        <button class="updateBtn" @click="modal = false">
           Save ingredients
         </button>
       </div>

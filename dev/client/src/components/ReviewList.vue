@@ -1,8 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps<{
+  reviewList: string;
+}>();
+</script>
 <script lang="ts">
 import icon from "./icons/IconUpload.vue";
 import { defineComponent } from "vue";
-
 export default defineComponent({
   data() {
     return {
@@ -18,8 +21,8 @@ export default defineComponent({
   <div id="list-container">
     <h2>List of Ingredients</h2>
     <ul>
-      <li>
-        <p id="ingredient">salt</p>
+      <li v-for="ingredient in reviewList">
+        <p id="ingredient">{{ ingredient }}</p>
         <button id="editBtn">Edit</button>
         <button id="deleteBtn">Delete</button>
       </li>

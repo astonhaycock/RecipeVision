@@ -13,6 +13,10 @@ const upload = multer({ dest: "images/" });
 // Configuration for paths
 const WEBSITE_PATH = "../client";
 const IMAGES_PATH = "../images";
+/// The rate limit on image uploads for registered users
+/// in milliseconds between uploads
+// 15_000 is 15 seconds
+const RATE_LIMIT = 15_000;
 
 // Create and configure the Express app
 const app = express();

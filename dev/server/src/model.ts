@@ -1,4 +1,4 @@
-import { Schema, model, connect, Model } from "mongoose";
+import { Schema, model, connect, Model, type ObjectId } from "mongoose";
 import assert from "node:assert";
 
 // 1. Create an interface representing a document in MongoDB.
@@ -8,6 +8,7 @@ interface IUser {
   ingredients: Array<string>;
 }
 interface IRecipe {
+  _id: ObjectId;
   description: string;
   time: string;
   ingredients: Array<string>;
@@ -59,4 +60,5 @@ let dbpass = process.env.DBPASSWORD;
 assert.ok(dbpass, "DATABASE environment variable not found");
 const DB = await connect(dbpass);
 
+export type { IUser, IRecipe };
 export { User, Recipe, DB };

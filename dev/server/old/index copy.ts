@@ -2,6 +2,10 @@
 const WEBSITE_PATH = "../client";
 /// The directory path of the images temp folder
 const IMAGES_PATH = "../images";
+/// The rate limit on image uploads for registered users
+/// in milliseconds between uploads
+// 15_000 is 15 seconds
+const RATE_LIMIT = 15_000;
 
 // Import the necessary modules
 // Elysia for HTTP routing
@@ -17,11 +21,11 @@ import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.AIPASSWORD });
 
 // Schemas and MongoDB models
-import { User, Recipe, DB } from "./model";
+import { User, Recipe, DB } from "../model";
 // Session handling community code
 import { MongooseStore } from "./session";
 import { sessionPlugin } from "elysia-session";
-import { CookieStore } from "elysia-session/stores/cookie";
+import type { SessionData } from "elysia-session/session";
 
 // Interface merging to enforce environment variables
 declare module "bun" {
@@ -76,6 +80,7 @@ const app = new Elysia()
       expireAfter: 60 * 60 * 24 * 7,
     })
   )
+
   // The `group` method allows for grouping routes under a common prefix
   // In this case, all routes under `/api` will be grouped together.
   // Inside the callback, we use the same method chaining format to add routes.
@@ -86,7 +91,7 @@ const app = new Elysia()
     app
       .post(
         "/session",
-        async ({ body: { email, password }, cookie: { session }, set }) => {
+        async ({ body: { email, password }, set, session }) => {
           const user = await User.findOne({ email: email });
           if (!user) {
             return error(401, "unauthorized");
@@ -94,13 +99,28 @@ const app = new Elysia()
           if (!user.verifyPassword(password)) {
             return error(401, "unauthorized");
           }
-          session.value = { user_id: user._id, user_email: email };
+          // session.value = { user_id: user._id, user_email: email };
+          session.set("user_email", email);
+          session.set("user_id", user._id);
+          let last_req = session.get("last_req");
+          if (!last_req) {
+            session.set("last_req", Date.now() - RATE_LIMIT);
+          }
           // return the session cookie and 201 status
           set.status = 201;
           return session.value;
         },
         { body: t.Object({ email: t.String(), password: t.String() }) }
       )
+
+      .get("/session", async ({ session }) => {
+        if (!session) {
+          return error(401, "unauthorized");
+        }
+        let email = (session.get("user_email") as string) || "";
+        // Always return 200, but with the email if the user is logged in.
+        return email;
+      })
 
       .post(
         "/user",
@@ -125,7 +145,7 @@ const app = new Elysia()
       )
 
       // This is the middleware for checking if the user is logged in
-      .onBeforeHandle(async ({ cookie: { session } }) => {
+      .onBeforeHandle(async ({ session }) => {
         //TODO: possibly inform the client of the specific reason,
         //TODO: i.e. not logged in
         // Make sure the session cookie exists at all
@@ -133,16 +153,22 @@ const app = new Elysia()
           console.log("no session");
           return error(401, "unauthorized");
         }
-        // Make sure the session cookie has the necessary fields
-        // Thanks, TypeScript
-        const sess = session.value as SessionCookie;
-        if (!sess.user_id || !sess.user_email) {
+        console.log(session);
+        console.log(session.get("user_email"));
+        let email = (session.get("user_email") as string) || "";
+        if (email.length === 0) {
+          console.log("no email");
+          return error(401, "unauthorized");
+        }
+        let user_id = (session.get("user_id") as string) || "";
+        if (user_id.length === 0) {
+          console.log("no user_id");
           return error(401, "unauthorized");
         }
         // Make sure the user exists in the database. Why? Idk.
         // TODO: delete this bit later. The session should be enough.
         // TODO: no need to store the user's email in the session cookie.
-        const user = await User.findOne({ _id: sess.user_id });
+        const user = await User.findOne({ _id: user_id });
         if (!user) {
           return error(401, "unauthorized");
         }
@@ -152,8 +178,19 @@ const app = new Elysia()
 
       .post(
         "/image",
-        async ({ body: { image }, cookie: { session } }) => {
-          console.log(`Connection from ${session.value.user_email.toString()}`);
+        async ({ body: { image }, session }) => {
+          if (!session) {
+            return error(401, "unauthorized");
+          }
+          let last_req = session.get("last_req") as number;
+          if (!last_req) {
+            session.set("last_req", Date.now());
+            return error(500, "unexpected error, try again later");
+          }
+          if (Date.now() - last_req < RATE_LIMIT) {
+            return error(429, "rate limit exceeded, try again later");
+          }
+          session.set("last_req", Date.now());
 
           // Hash the image and get the extension
           const hash = Bun.hash(await image.arrayBuffer());
@@ -218,15 +255,11 @@ const app = new Elysia()
         },
         {
           body: t.Object({ image: t.File({ type: "image" }) }),
-          cookie: t.Cookie({
-            session: t.Object({ user_email: t.String(), user_id: t.String() }),
-          }),
         }
       )
-
-      .use(staticPlugin({ assets: IMAGES_PATH, prefix: "/images" }))
   )
 
+  .use(staticPlugin({ assets: IMAGES_PATH, prefix: "/images" }))
   //TODO
   //   .get("/images/:filename", async ({params:{filename}}) => {
   //     return Bun.read(`${IMAGES_PATH}/${filename}`);

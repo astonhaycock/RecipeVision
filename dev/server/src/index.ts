@@ -132,6 +132,20 @@ app.post("/api/session", async (req: Request, res: Response) => {
   res.status(201).send("logged in");
 });
 
+app.get("/api/session", async (req: Request, res: Response) => {
+  if (!req.session || !req.session.user_id) {
+    res.status(401).send("unauthorized");
+    return;
+  }
+  const user = await User.findById(req.session);
+  if (!user) {
+    res.status(401).send("unauthorized");
+    return;
+  }
+  //TODO: return user info
+  res.status(200).send("logged in");
+});
+
 app.post("/api/user", async (req: Request, res: Response) => {
   let creds = req.body as AuthCredentials;
   if (creds === undefined) {

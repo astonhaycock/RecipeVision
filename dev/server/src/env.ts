@@ -1,11 +1,3 @@
-class ParseError<T> extends Error {
-  type_name: string;
-  constructor(type: { new (): T }) {
-    super(`Unable to parse environment variable as ${type.name}`);
-    this.type_name = type.name;
-  }
-}
-
 function env(name: string, or?: string): string {
   const value = Bun.env[name];
   if (value === undefined) {
@@ -31,9 +23,6 @@ function envp<T>(name: string, or?: T): T {
   try {
     parsed = JSON.parse(value);
   } catch (error) {
-    if (error instanceof ParseError) {
-      throw error;
-    }
     throw new Error(`error occurred while parsing env var ${name}`);
   }
   if (parsed === undefined) {
@@ -48,6 +37,8 @@ function envp<T>(name: string, or?: T): T {
   return parsed;
 }
 
+/// The maximum upload size in bytes
+const FILE_LIMIT = envp<number>("FILE_LIMIT", 100 * 1024 * 1024);
 /// The port to listen on
 const PORT = envp<number>("PORT", 8080);
 /// The rate limit for requests in milliseconds
@@ -66,6 +57,7 @@ const MONGODB_URL = env("MONGODB_URL");
 const SESSION_SECRET = env("SESSION_SECRET", "your-secret-key");
 
 export {
+  FILE_LIMIT,
   PORT,
   RATE_LIMIT,
   WEBSITE_PATH,

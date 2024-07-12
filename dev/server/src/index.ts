@@ -51,10 +51,15 @@ const storage = multer.diskStorage({
     cb(null, IMAGES_PATH);
   },
   filename: (req, file, cb) => {
-    let hash = Bun.hash(file.buffer);
-    let ext = file.mimetype.split("/")[1];
-    let filename = hash.toString(16).padStart(16, "0").toUpperCase();
-    cb(null, `${filename}.${ext}`);
+    // Generate a hash from the current date and time, plus the file name.
+    // It's not perfect, but it's good enough for now.
+    // Proper hashing is a pain with Multer. It was much easier with Elysia.
+    let hasher = new Bun.CryptoHasher("md5");
+    hasher.update(Date.now().toString());
+    hasher.update(file.originalname);
+    let hash = hasher.digest("hex");
+    let file_ext = file.mimetype.split("/")[1];
+    cb(null, `${hash}.${file_ext}`);
   },
 });
 const upload = multer({
@@ -188,9 +193,44 @@ app.post(
       res.status(400).send("no image provided");
       return;
     }
+    let file = req.file as Express.Multer.File;
+    setInterval(() => {
+      unlink(file.path).catch(console.error);
+    }, 15_000);
     let url = `${PUBLIC_URL}/images/${req.file.filename}`;
     console.log(`uploaded image: ${url}`);
-    res.status(201).send(url);
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Give me a list of cooking ingredients in this image, if any, as a JSON array of strings. If no ingredients are present, return an empty JSON array. Keep each ingredient generic and do not include brand information. Return only the JSON array, with no description, context, or formatting.",
+            },
+            {
+              type: "image_url",
+              image_url: { url: url, detail: "high" },
+            },
+          ],
+        },
+      ],
+    });
+    console.log(response.choices[0].message.content);
+    try {
+      const list = await JSON.parse(
+        // we're in a try/catch block, and we want to fail loudly if it's not a string.
+        response.choices[0].message.content as string
+      );
+      if (!Array.isArray(list) || list.some((i) => typeof i !== "string")) {
+        throw new Error();
+      }
+      dedup(list);
+      res.status(201).send(list);
+    } catch {
+      res.status(500).send("failed to parse AI response");
+    }
   }
 );
 

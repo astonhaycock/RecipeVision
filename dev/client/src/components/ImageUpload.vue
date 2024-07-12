@@ -1,53 +1,47 @@
 <script setup lang="ts">
-  import { defineComponent, inject } from "vue";
+  import { ref } from "vue";
   import icon from "./icons/IconUpload.vue";
   import cameraIcon from "./icons/cameraIcon.vue";
   import ReviewList from "./ReviewList.vue";
-  let URL = "http://dogsmeow.asuscomm.com:8080/api/image";
-  const modal = defineModel({ default: false });
-</script>
-<script lang="ts">
-  export default defineComponent({
-    data() {
-      return {
-        modal: false,
-        ReviewListIngredients: "",
-        image: null,
-        imageUrl: null,
-      };
-    },
-    methods: {
-      handleFileUpload: function (event) {
-        console.log(event.target.files);
-        let file = event.target.files[0];
-        this.image = file;
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            this.imageUrl = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-      },
-      uploadImage: async function () {
-        const formData = new FormData();
-        formData.append("image", this.image);
 
-        let requestOptions = {
-          method: "POST",
-          body: formData,
-        };
-        console.log("before fetch");
-        let response = await fetch(
-          "http://dogsmeow.asuscomm.com:8080/api/image",
-          requestOptions
-        );
-        const data = await response.json();
-        console.log(data);
-        this.$emit("reviewIngredients", data);
-      },
-    },
-  });
+  const URL = "http://dogsmeow.asuscomm.com:8080/api/image";
+  const modal = ref(false);
+  const ReviewListIngredients = ref<string>("");
+  const image = ref<File | null>(null);
+  const imageUrl = ref<string | null>(null);
+
+  const handleFileUpload = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] || null;
+    if (file) {
+      image.value = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target) {
+          imageUrl.value = e.target.result as string;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadImage = async () => {
+    if (image.value) {
+      const formData = new FormData();
+      formData.append("image", image.value);
+
+      const requestOptions = {
+        method: "POST",
+        body: formData,
+      };
+      const response = await fetch(URL, requestOptions);
+      const data = await response.json();
+      // Emitting event to parent component with the uploaded image data
+      // Assumes you are listening to this event in the parent component
+      modal.value = false;
+      imageUrl.value = null;
+    }
+  };
 </script>
 
 <template>
@@ -55,7 +49,7 @@
     <h2>Upload Photo of Ingredients</h2>
     <div id="img-box">
       <div id="img">
-        <img v-if="image" id="userImage" :src="imageUrl" />
+        <img v-if="image" id="userImage" :src="imageUrl || undefined" />
         <icon v-if="!image" />
       </div>
 
@@ -63,11 +57,11 @@
         <input type="file" id="actual-btn" @change="handleFileUpload" hidden />
         <label for="actual-btn">Choose File</label>
         <button
-          v-if="image != null"
+          v-if="image !== null"
           type="submit"
           @click="
             uploadImage();
-            $emit('modal');
+            modal = true;
           "
         >
           Upload Ingredients
@@ -91,14 +85,13 @@
     </div>
     <div v-if="modal" class="modal">
       <div class="modal-content">
-        <img v-if="image" id="userImage" :src="imageUrl" />
+        <img v-if="image" id="userImage" :src="imageUrl || undefined" />
         <div id="mobile-btn">
           <button
             @click="
               uploadImage();
-              $emit('modal');
               modal = false;
-              imageURl = null;
+              imageUrl = null;
             "
           >
             Upload
@@ -106,7 +99,7 @@
           <button
             @click="
               modal = false;
-              imageURl = null;
+              imageUrl = null;
             "
           >
             Discard
@@ -153,7 +146,6 @@
     display: none;
   }
   #mobile-label {
-    display: none;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -172,7 +164,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* border: white solid; */
     background-color: var(--vt-c-divider-dark-2);
     color: var(--vt-c-white-mute);
     padding: 3rem;
@@ -187,7 +178,6 @@
     width: 400px;
     height: 400px;
   }
-
   #userImage {
     width: 80%;
     height: auto;
@@ -216,9 +206,6 @@
     width: 150px;
     height: 60px;
     border: none;
-    /* background-color: var(--vt-c-divider-dark-2); */
-    /* color: var(--vt-c-text-dark-2); */
-    /* color: var(--vt-c-white-mute); */
     transition: 400ms;
     display: flex;
     justify-content: center;
@@ -238,11 +225,6 @@
       gap: 1rem;
       align-items: center;
     }
-    /* #mobile input {
-      width: 10rem;
-      height: 3rem;
-    } */
-
     form {
       align-items: center;
       justify-content: center;
@@ -250,10 +232,7 @@
       width: 100%;
     }
     #img-container {
-      /* border: white solid; */
       display: none;
-      /* background-color: var(--vt-c-divider-dark-2);
-      color: var(--vt-c-white-mute); */
       padding: 1rem;
       padding-left: 1rem;
       padding-right: 1rem;
@@ -263,7 +242,6 @@
     #img-box svg {
       width: 400px;
       height: auto;
-      /* color: var(--vt-c-white-mute); */
     }
     #img-box div {
       gap: 1rem;
@@ -274,15 +252,7 @@
       width: 75px;
       height: 50px;
       border: none;
-      background-color: none;
-      /* color: var(--vt-c-text-dark-2); */
-      color: none;
       transition: 400ms;
-    }
-    label {
-      /* padding: 2rem; */
-    }
-    #movbile-label {
     }
   }
 </style>

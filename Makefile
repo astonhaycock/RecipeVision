@@ -1,14 +1,15 @@
 
-deploy-server: dev/server/node_modules/**/* dev/server/src/*
+deploy-server:
 	cd dev/server && bun install
 	mkdir -p deploy/server
-	cp -r dev/server/.* deploy/server
-	cp -r dev/server/* deploy/server
+	cp -r dev/server/* deploy/server/
+	cp -r dev/server/.env deploy/server/
+	cp -r dev/server/.env.local deploy/server/
 
-deploy-client: dev/client/node_modules/**/* dev/client/src/**/*
+deploy-client:
 	cd dev/client && bun install && bun run build
 	mkdir -p deploy/client
-	cp -r dev/client/dist/* deploy/client
+	cp -r dev/client/dist/* deploy/client/
 
 deploy: deploy-server deploy-client
 

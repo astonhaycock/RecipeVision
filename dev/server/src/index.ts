@@ -131,3 +131,20 @@ app.post("/api/session", async (req: Request, res: Response) => {
   //TODO: return user info
   res.status(201).send("logged in");
 });
+
+app.post("/api/user", async (req: Request, res: Response) => {
+  let creds = req.body as AuthCredentials;
+  if (creds === undefined) {
+    res.status(400).send("register with email and password as a json object");
+    return;
+  }
+  let existing = await User.findOne({ email: creds.email });
+  if (existing) {
+    res.status(409).send("user already exists");
+    return;
+  }
+  let user = new User({ email: creds.email });
+  user.setPassword(creds.password);
+  await user.save();
+  res.status(201).send("user created");
+});

@@ -18,6 +18,7 @@
       return {
         login: true,
         message: "Hello, World!",
+        nav_open: false,
       };
     },
     methods: {
@@ -47,8 +48,32 @@
 
 <template>
   <nav>
-    <img id="big-logo" src="@/assets/logo.png" />
-    <div id="links">
+    <div id="nav-small">
+      <div>
+        <img id="big-logo" src="@/assets/logo.png" />
+        <button @click="nav_open = !nav_open">&#9776;</button>
+      </div>
+      <div class="links" v-if="nav_open === true">
+        <div class="links" @click="nav_open = false">
+          <RouterLink class="link" to="/">Home</RouterLink>
+          <RouterLink class="link" to="/about">About</RouterLink>
+          <RouterLink class="link" to="/ingredients">Ingredients</RouterLink>
+        </div>
+        <!-- Check login with current_user, imported in the setup() block above -->
+        <RouterLink
+          class="link"
+          @click="nav_open = false"
+          v-if="current_user"
+          to="/logout"
+          >Logout</RouterLink
+        >
+        <RouterLink class="link" @click="nav_open = false" v-else to="/login"
+          >Login</RouterLink
+        >
+      </div>
+    </div>
+
+    <div id="nav-big">
       <img id="small-logo" src="@/assets/logo.png" />
       <div>
         <RouterLink to="/">Home</RouterLink>
@@ -60,18 +85,32 @@
       <RouterLink v-else to="/login">Login</RouterLink>
     </div>
   </nav>
-  <RouterView />
+
+  <RouterView v-if="nav_open === false" />
 </template>
 
 <style scoped>
   v-app {
     width: 100%;
   }
-  #links {
+  #nav-big {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20rem;
+  }
+  .links {
+    display: flex;
+    /* background-color: aliceblue; */
+    flex-direction: column;
+  }
+  #nav-small {
+    display: none;
+  }
+  #links-small {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   #small-logo {
     display: block;
@@ -81,8 +120,28 @@
   }
 
   @media (max-width: 1200px) {
-    #links {
+    #nav-small {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #nav-small .links {
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+    }
+    #nav-small .links .link {
+      border: solid 1px white;
+      text-align: center;
+      width: 200px;
+    }
+    nav button {
+      font-size: xx-large;
+    }
+    #nav-big {
       gap: 0;
+      display: none;
     }
     #small-logo {
       display: none;

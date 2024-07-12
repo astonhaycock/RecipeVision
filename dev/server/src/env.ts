@@ -1,3 +1,5 @@
+/// This function will read an environment variable, check if it's null, and
+/// optionally substitute a default value if it is.
 function env(name: string, or?: string): string {
   const value = Bun.env[name];
   if (value === undefined) {
@@ -10,6 +12,9 @@ function env(name: string, or?: string): string {
   return value;
 }
 
+/// This function will read an environment variable, check if it's null, parse
+/// it with JSON.parse, and optionally substitute a default value if it is.
+/// Not suitable for parsing strings, as JSON can be a little picky.
 function envp<T>(name: string, or?: T): T {
   const value = Bun.env[name];
   if (value === undefined) {
@@ -47,14 +52,28 @@ const RATE_LIMIT = envp<number>("RATE_LIMIT", 15_000);
 const WEBSITE_PATH = env("WEBSITE_PATH", "../client");
 /// The path to serve the images to OpenAI
 const IMAGES_PATH = env("IMAGES_PATH", "../images");
-/// The public URL of the website, primarily for OpenAI
-const PUBLIC_URL = env("PUBLIC_URL");
 /// The OpenAI API key
 const OPENAI_KEY = env("OPENAI_KEY");
 /// The MongoDB connection string
 const MONGODB_URL = env("MONGODB_URL");
 /// The session secret
 const SESSION_SECRET = env("SESSION_SECRET", "your-secret-key");
+/// The cookie expiration time in milliseconds
+const COOKIE_EXPIRATION = envp<number>(
+  "COOKIE_EXPIRATION",
+  1000 * 60 * 60 * 24 * 7
+);
+
+let url = env("PUBLIC_URL");
+// sanitize the URL so it plays nicely with the rest of the code
+if (!url.startsWith("http")) {
+  url = `http://${url}`;
+}
+if (url.endsWith("/")) {
+  url = url.slice(0, -1);
+}
+/// The public URL of the website, primarily for OpenAI to pull pictures from
+const PUBLIC_URL = url;
 
 export {
   FILE_LIMIT,
@@ -66,4 +85,5 @@ export {
   OPENAI_KEY,
   MONGODB_URL,
   SESSION_SECRET,
+  COOKIE_EXPIRATION,
 };

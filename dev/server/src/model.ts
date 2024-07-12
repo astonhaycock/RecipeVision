@@ -1,4 +1,12 @@
-import { Schema, model, connect, Model, type ObjectId } from "mongoose";
+import {
+  Schema,
+  model,
+  connect,
+  Model,
+  type ObjectId,
+  Document,
+  Types,
+} from "mongoose";
 import assert from "node:assert";
 import { MONGODB_URL as MONGODB_URL } from "./env";
 
@@ -60,5 +68,19 @@ const Recipe = model<IRecipe>("Recipe", RecipeSchema);
 // 4. Connect to MongoDB
 const DB = await connect(MONGODB_URL);
 
-export type { IUser, IRecipe };
+/// The UserEntry type is the type returned by database lookups, but non-nullable.
+/// This is why Rust is better than TypeScript.
+/// Actually, it's a low bar. Pascal is better than TypeScript.
+/// And yes, I'm writing this in a docstring.
+type UserEntry =
+  | Document<unknown, {}, IUser> &
+      Omit<
+        IUser & {
+          _id: Types.ObjectId;
+        },
+        keyof IUserMethods
+      > &
+      IUserMethods;
+
+export type { UserEntry };
 export { User, Recipe, DB };

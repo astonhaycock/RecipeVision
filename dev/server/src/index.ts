@@ -146,3 +146,7 @@ app.post("/api/image", autenthicate, async (req: Request, res: Response) => {
     return;
   }
 });
+
+app.listen(PORT, () => {
+  console.log(`Server started: http://localhost:${PORT}/`);
+});

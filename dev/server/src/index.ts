@@ -132,16 +132,7 @@ app.post("/api/session", async (req: Request, res: Response) => {
   res.status(201).send("logged in");
 });
 
-app.get("/api/session", async (req: Request, res: Response) => {
-  if (!req.session || !req.session.user_id) {
-    res.status(401).send("unauthorized");
-    return;
-  }
-  const user = await User.findById(req.session);
-  if (!user) {
-    res.status(401).send("unauthorized");
-    return;
-  }
+app.get("/api/session", autenthicate, async (req: Request, res: Response) => {
   //TODO: return user info
   res.status(200).send("logged in");
 });
@@ -161,4 +152,8 @@ app.post("/api/user", async (req: Request, res: Response) => {
   user.setPassword(creds.password);
   await user.save();
   res.status(201).send("user created");
+});
+
+app.post("/api/image", autenthicate, async (req: Request, res: Response) => {
+  console.error("unimplemented");
 });

@@ -1,12 +1,3 @@
-/// The directory path of the compiled website
-const WEBSITE_PATH = "../client";
-/// The directory path of the images temp folder
-const IMAGES_PATH = "../images";
-/// The rate limit on image uploads for registered users
-/// in milliseconds between uploads
-// 15_000 is 15 seconds
-const RATE_LIMIT = 15_000;
-
 // Import the necessary modules
 // Express for HTTP routing
 import express from "express";
@@ -21,29 +12,24 @@ import cors from "cors";
 import { mkdir, unlink } from "node:fs/promises";
 // Obvious
 import OpenAI from "openai";
-const openai = new OpenAI({ apiKey: process.env.AIPASSWORD });
 
 // Schemas and MongoDB models
 import { User, Recipe, DB, type IUser } from "./model";
 import type { ObjectId, Types } from "mongoose";
 
-function env<T>(name: string, or?: T): T {
-  const value = Bun.env[name];
-  if (value === undefined) {
-    if (or === undefined) {
-      throw new Error(`Environment variable ${name} is required`);
-    }
-    return or;
-  }
-  let parsed: T = JSON.parse(value);
-  if (parsed === undefined) {
-    if (or === undefined) {
-      throw new Error(`Environment variable ${name} is invalid`);
-    }
-    return or;
-  }
-  return parsed;
-}
+// Environment variables
+import {
+  PORT,
+  RATE_LIMIT,
+  WEBSITE_PATH,
+  IMAGES_PATH,
+  PUBLIC_URL,
+  OPENAI_KEY,
+  MONGODB_URL,
+  SESSION_SECRET,
+} from "./env";
+
+const openai = new OpenAI({ apiKey: OPENAI_KEY });
 
 /// Sort a list and deduplicate items
 function dedup<T>(list: Array<T>, fn?: (a: T, b: T) => number) {
@@ -67,8 +53,8 @@ app.use(express.static(WEBSITE_PATH));
 app.use("/images", express.static(IMAGES_PATH));
 app.use(
   session({
-    secret: env<string>("SESSION_SECRET", "your-secret-key"),
-    store: MongoStore.create({ mongoUrl: env<string>("MONGO_URL") }),
+    secret: SESSION_SECRET,
+    store: MongoStore.create({ mongoUrl: MONGODB_URL }),
     cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }, // 1 week
     resave: false,
     saveUninitialized: false,
@@ -104,9 +90,7 @@ async function autenthicate(
   req.session.user = user;
 }
 
-if (!env<boolean>("SESSIONLESS")) {
-  app.use(autenthicate);
-}
+app.use(autenthicate);
 
 app.post("/api/session", async (req: Request, res: Response) => {
   if (!req.session) {
@@ -155,5 +139,10 @@ app.post("/api/user", async (req: Request, res: Response) => {
 });
 
 app.post("/api/image", autenthicate, async (req: Request, res: Response) => {
-  console.error("unimplemented");
+  if (
+    (req.session.user as IUser).last_request > new Date(Date.now() - RATE_LIMIT)
+  ) {
+    res.status(429).send("rate limited");
+    return;
+  }
 });

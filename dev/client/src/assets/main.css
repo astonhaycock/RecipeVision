@@ -29,10 +29,10 @@ nav {
 }
 nav div {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
 }
 nav a {
-  padding: 3rem;
+  padding: 2rem;
   border-radius: 10px 10px 10px 10px;
   transition: 400ms;
 }

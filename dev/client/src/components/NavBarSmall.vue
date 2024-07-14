@@ -18,11 +18,11 @@
 <template>
   <nav>
     <div class="nav-small">
-      <div id="icon">
+      <div id="icon" v-if="!nav_open">
         <button id="nav_button" @click="nav_open = !nav_open">&#9776;</button>
-        <h1>Recipe Vision</h1>
         <img id="big-logo" src="@/assets/logo.png" />
       </div>
+      <div v-if="nav_open" id="spacer"></div>
 
       <div
         class="links-container"
@@ -34,7 +34,6 @@
             <button id="nav_button" @click="nav_open = !nav_open">
               &#9776;
             </button>
-            <h1>Recipe Vision</h1>
             <img id="big-logo" src="@/assets/logo.png" />
           </div>
           <RouterLink class="link" to="/">Home</RouterLink>
@@ -58,17 +57,22 @@
 </template>
 
 <style scoped>
+  #spacer {
+    padding-top: 9.4rem;
+  }
   #nav_button {
-    padding-left: 4rem;
+    padding-left: 2rem;
     font-size: 3rem;
+    justify-content: space-around;
   }
   #icon {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-left: 2rem;
   }
   #icon h1 {
-    padding-left: 2rem;
+    width: 350px;
   }
   .links {
     display: flex;
@@ -77,6 +81,7 @@
   }
   .link {
     width: 50%;
+    margin-left: 2rem;
   }
   #links-small {
     display: flex;
@@ -109,14 +114,12 @@
     /* top: 0;
     left: 0; */
   }
-  nav button {
-    font-size: xx-large;
-  }
+
   #big-logo {
     display: block;
   }
 
   .link:hover {
-    background-color: rgba(200, 200, 200, 0.219);
+    background-color: rgba(146, 145, 145, 0.602);
   }
 </style>

@@ -19,8 +19,8 @@
   <nav>
     <div class="nav-small">
       <div id="icon" v-if="!nav_open">
-        <button id="nav_button" @click="nav_open = !nav_open">&#9776;</button>
         <img id="big-logo" src="@/assets/logo.png" />
+        <button id="nav_button" @click="nav_open = !nav_open">&#9776;</button>
       </div>
       <div v-if="nav_open" id="spacer"></div>
 
@@ -31,13 +31,13 @@
       >
         <div class="links" @click="nav_open = false">
           <div id="icon">
+            <img id="big-logo" src="@/assets/logo.png" />
             <button id="nav_button" @click="nav_open = !nav_open">
               &#9776;
             </button>
-            <img id="big-logo" src="@/assets/logo.png" />
           </div>
           <RouterLink class="link" to="/">Home</RouterLink>
-          <RouterLink class="link" to="/about">About</RouterLink>
+          <RouterLink class="link" to="/recipe">Recipes</RouterLink>
           <RouterLink class="link" to="/ingredients">Ingredients</RouterLink>
           <RouterLink
             class="link"
@@ -69,10 +69,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 2rem;
-  }
-  #icon h1 {
-    width: 350px;
+    padding-right: 3rem;
+    padding-left: 3rem;
   }
   .links {
     display: flex;
@@ -80,8 +78,9 @@
     width: 100%;
   }
   .link {
-    width: 50%;
-    margin-left: 2rem;
+    width: 100%;
+    /* float: right; */
+    padding-left: 45%;
   }
   #links-small {
     display: flex;

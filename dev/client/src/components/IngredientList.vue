@@ -1,9 +1,13 @@
 <script setup lang="ts"></script>
 <script lang="ts">
   import icon from "./icons/IconUpload.vue";
+  import DefaultButton from "./DefaultButton.vue";
   import { defineComponent } from "vue";
 
   export default defineComponent({
+    components: {
+      DefaultButton,
+    },
     data() {
       return {
         ingredients: [],
@@ -21,8 +25,8 @@
     <div id="list">
       <div id="ingredient">
         <p>salt</p>
-        <button id="editBtn">Edit</button>
-        <button id="deleteBtn">Delete</button>
+        <DefaultButton msg="Edit" />
+        <DefaultButton msg="Delete" />
       </div>
     </div>
   </div>
@@ -70,23 +74,7 @@
     width: 12rem;
     overflow-wrap: break-word;
   }
-  li button {
-    border-radius: 15px 15px 15px 15px;
-    width: 50px;
-    border: none;
-    background-color: var(--vt-c-divider-dark-2);
-    color: var(--vt-c-text-dark-2);
-    transition: 400ms;
-  }
-  #editBtn:hover {
-    background-color: var(--vt-c-text-dark-2);
-  }
-  #deleteBtn {
-    background-color: var(--vt-c-delete-red);
-  }
-  #deleteBtn:hover {
-    background-color: var(--vt-c-delete-hover);
-  }
+
   @media (max-width: 1200px) {
     input {
       background-color: white;

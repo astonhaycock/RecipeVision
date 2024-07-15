@@ -54,9 +54,9 @@
       <input placeholder="Email" v-model="user.email" />
     </div>
     <div>
-      <input placeholder="Password" />
+      <input placeholder="Password" v-model="user.password" />
     </div>
-    <DefaultButton msg="Login" @click="loginUser" v-model="user.password" />
+    <DefaultButton msg="Login" @click="loginUser" />
     <!-- <button>Log In</button> -->
     <p>or</p>
     <RouterLink to="/Register"><DefaultButton msg="Register" /></RouterLink>

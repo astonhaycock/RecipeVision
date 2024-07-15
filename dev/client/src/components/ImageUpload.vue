@@ -62,6 +62,7 @@
           @click="
             uploadImage();
             modal = true;
+            $emit('modal');
           "
         >
           Upload Ingredients
@@ -92,6 +93,7 @@
               uploadImage();
               modal = false;
               imageUrl = null;
+              $emit('modal');
             "
           >
             Upload

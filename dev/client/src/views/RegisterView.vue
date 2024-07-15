@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { defineComponent } from "vue";
+  import { defineComponent } from "vue";
+  import DefaultButton from "../components/DefaultButton.vue";
 </script>
 <script lang="ts">
 export default defineComponent({
@@ -62,19 +63,17 @@ export default defineComponent({
 </script>
 <template>
   <div class="login-page">
-    <h1>Create Account</h1>
-    <div>
-      <input placeholder="Name" />
-    </div>
+    <h1>Register</h1>
     <div>
       <input placeholder="Email" />
     </div>
     <div>
       <input placeholder="Password" />
     </div>
-    <button @click="registerUser">Create New Account</button>
+    <DefaultButton msg="Register" />
+    <!-- <button>Log In</button> -->
     <p>or</p>
-    <RouterLink to="/login">Log In</RouterLink>
+    <RouterLink to="/Login"><DefaultButton msg="Login" /></RouterLink>
   </div>
 </template>
 

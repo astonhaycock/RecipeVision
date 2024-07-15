@@ -1,12 +1,29 @@
 <script setup lang="ts"></script>
 <script lang="ts">
   import icon from "./icons/IconUpload.vue";
+  import DefaultButton from "./DefaultButton.vue";
   import { defineComponent } from "vue";
 
   export default defineComponent({
+    components: {
+      DefaultButton,
+    },
     data() {
       return {
-        ingredients: [],
+        ingredients: [
+          "salt",
+          "pepper",
+          "garlic powder",
+          "salt",
+          "pepper",
+          "garlic powder",
+          "salt",
+          "pepper",
+          "garlic powder ",
+          "salt",
+          "pepper",
+          "garlic powder",
+        ],
       };
     },
     methods: {},
@@ -16,13 +33,12 @@
 
 <template>
   <div id="list-container">
-    <h2>List of Ingredients</h2>
-    <input type="text" placeholder="search IngredientList" />
+    <input type="text" placeholder="search Ingredients" />
     <div id="list">
-      <div id="ingredient">
-        <p>salt</p>
-        <button id="editBtn">Edit</button>
-        <button id="deleteBtn">Delete</button>
+      <div id="ingredient" v-for="ingredient in ingredients">
+        <p>{{ ingredient }}</p>
+        <DefaultButton msg="Edit" />
+        <DefaultButton msg="Delete" />
       </div>
     </div>
   </div>
@@ -39,8 +55,6 @@
     /* color: var(--vt-c-white-mute); */
     height: 100%;
     width: 100%;
-    /* overflow: hidden; */
-    overflow-y: scroll;
     font-size: larger;
     text-align: center;
     display: flex;
@@ -51,13 +65,17 @@
   }
   #list {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 0.5rem;
     list-style-type: none;
     padding: 0;
     margin: 0;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    height: 550px;
+    overflow: hidden;
+    overflow-y: scroll;
   }
   #ingredient {
     display: flex;
@@ -65,28 +83,17 @@
     gap: 1rem;
     align-items: center;
     flex-direction: row;
+    padding: 1rem;
+  }
+  #ingredient:nth-child(odd) {
+    background-color: rgba(175, 175, 175, 0.225);
   }
   #ingredient p {
     width: 12rem;
     overflow-wrap: break-word;
+    text-align: left;
   }
-  li button {
-    border-radius: 15px 15px 15px 15px;
-    width: 50px;
-    border: none;
-    background-color: var(--vt-c-divider-dark-2);
-    color: var(--vt-c-text-dark-2);
-    transition: 400ms;
-  }
-  #editBtn:hover {
-    background-color: var(--vt-c-text-dark-2);
-  }
-  #deleteBtn {
-    background-color: var(--vt-c-delete-red);
-  }
-  #deleteBtn:hover {
-    background-color: var(--vt-c-delete-hover);
-  }
+
   @media (max-width: 1200px) {
     input {
       background-color: white;

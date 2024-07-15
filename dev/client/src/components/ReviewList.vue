@@ -14,6 +14,9 @@
       };
     },
     methods: {
+      getList() {
+        this.ingredients = this.reviewList;
+      },
       deleteIngredient(index: number) {
         this.ingredients.splice(index, 1);
       },

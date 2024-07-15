@@ -18,8 +18,8 @@
     },
     data() {
       return {
-        modal: true,
-        loadingscreen: false,
+        modal: false,
+        loadingscreen: true,
         reviewList: "",
       };
     },

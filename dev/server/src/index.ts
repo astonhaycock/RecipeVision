@@ -398,7 +398,7 @@ app.post(
 );
 
 // The route for receiving a list of new ingredients
-app.get(
+app.post(
   "/api/ingredients",
   authenticate,
   async (req: Request, res: Response) => {
@@ -414,6 +414,42 @@ app.get(
     let user = req.user as UserEntry;
     user.ingredients = user.ingredients.concat(ingredients);
     dedup(user.ingredients);
+    user.save();
+  }
+);
+
+// The route for updating the user's ingredients
+app.post(
+  "/api/ingredients",
+  authenticate,
+  async (req: Request, res: Response) => {
+    if (
+      req.body.ingredients === undefined ||
+      !Array.isArray(req.body.ingredients)
+    ) {
+      res.status(400).send("ingredients must be an array of strings");
+      return;
+    }
+    let ingredients = req.body.ingredients as Array<string>;
+    let user = req.user as UserEntry;
+    user.ingredients = ingredients;
+    user.save();
+  }
+);
+
+app.put(
+  "/api/ingredients",
+  authenticate,
+  async (req: Request, res: Response) => {
+    if (
+      req.body.ingredients === undefined ||
+      !Array.isArray(req.body.ingredients)
+    ) {
+      res.status(400).send("ingredients must be an array of strings");
+      return;
+    }
+    const user = req.user as UserEntry;
+    user.ingredients = ["apples", "bananans"];
     user.save();
   }
 );

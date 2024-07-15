@@ -37,7 +37,7 @@
       const response = await fetch(URL, requestOptions);
       const data = await response.json();
       // Emitting event to parent component with the uploaded image data
-      this.$emit("reviewIngredients", data);
+      (this as any).$emit("reviewIngredients", data);
       // Assumes you are listening to this event in the parent component
       modal.value = false;
       imageUrl.value = null;
@@ -63,7 +63,7 @@
           @click="
             uploadImage();
             modal = true;
-            this.$emit('modal');
+            $emit('modal');
           "
         >
           Upload Ingredients

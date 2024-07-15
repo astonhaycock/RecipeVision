@@ -177,7 +177,7 @@ app.use(
 async function authenticate(
   req: Request,
   res: Response,
-  _: NextFunction
+  next: NextFunction
 ): Promise<void> {
   if (!req.session || !req.session.user_id) {
     res.status(401).send("unauthorized");
@@ -191,6 +191,7 @@ async function authenticate(
   }
   // Add the user object to the session so other functions can access it later
   req.session.user = user as UserEntry;
+  next();
 }
 
 //================================================================================================//
@@ -254,6 +255,7 @@ app.get("/api/session", authenticate, async (req: Request, res: Response) => {
 // changes cookie info to null when logout
 app.post("/api/logout", async (req: Request, res: Response) => {
   req.session.user_id = undefined;
+  res.status(200).send("logged out");
 });
 
 // The route to register a new user

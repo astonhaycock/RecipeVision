@@ -24,7 +24,7 @@ export default defineComponent({
       };
 
       const response = await fetch(
-        "http://dont-pani.cc/api/session",
+        "http://dogsmeow.asuscomm.com:8080/api/session",
         requestOptions
       );
 
@@ -36,6 +36,7 @@ export default defineComponent({
       }
     },
     async registerUser() {
+      console.log(this.user);
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
@@ -46,7 +47,7 @@ export default defineComponent({
       };
 
       const response = await fetch(
-        "http://dont-pani.cc/api/users",
+        "http://dogsmeow.asuscomm.com:8080/api/user",
         requestOptions
       );
 
@@ -65,12 +66,12 @@ export default defineComponent({
   <div class="login-page">
     <h1>Register</h1>
     <div>
-      <input placeholder="Email" />
+      <input placeholder="Email" v-model="user.email" />
     </div>
     <div>
-      <input placeholder="Password" />
+      <input placeholder="Password" v-model="user.password" />
     </div>
-    <DefaultButton msg="Register" />
+    <DefaultButton msg="Register" @click="registerUser()" />
     <!-- <button>Log In</button> -->
     <p>or</p>
     <RouterLink to="/Login"><DefaultButton msg="Login" /></RouterLink>

@@ -47,11 +47,10 @@ export default defineComponent({
       }
       console.log(this.current_user);
     },
-  },
-  created() {
-    // this.getSession();
-  },
-});
+    created() {
+      this.getSession();
+    },
+  });
 </script>
 
 <template>

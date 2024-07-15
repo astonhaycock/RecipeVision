@@ -3,13 +3,43 @@ import { defineComponent, inject } from "vue";
 import DefaultButton from "../components/DefaultButton.vue";
 </script>
 <script lang="ts">
-export default defineComponent({
-  data() {
-    return {
-      user: {
-        name: "",
-        email: "",
-        password: "",
+  export default defineComponent({
+    data() {
+      return {
+        user: {
+          email: "",
+          password: "",
+        },
+        currentUser: null,
+        incorrectPassword: false,
+      };
+    },
+    methods: {
+      async loginUser() {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify(this.user),
+        };
+
+        const response = await fetch(
+          "http://dogsmeow.asuscomm.com:8080/api/session",
+          requestOptions
+        );
+        const data = await response.json();
+
+        if (response.status === 201) {
+          console.log("Successfully logged in");
+          this.incorrectPassword = false;
+          this.currentUser = data; // Assign fetched user data
+          this.user = { email: "", password: "" }; // Clear user form data
+        } else {
+          console.log("Failed to login");
+          this.incorrectPassword = true;
+        }
       },
       currentUser: null,
       incorrectPassword: false,
@@ -57,7 +87,7 @@ export default defineComponent({
     <div>
       <input placeholder="Password" />
     </div>
-    <DefaultButton msg="Login" />
+    <DefaultButton msg="Login" @click="loginUser" />
     <!-- <button>Log In</button> -->
     <p>or</p>
     <RouterLink to="/Register"><DefaultButton msg="Register" /></RouterLink>
@@ -65,6 +95,11 @@ export default defineComponent({
 </template>
 
 <style scoped>
+h6 {
+  background-color: rgb(0, 0, 0);
+  color: red;
+  padding: 1rem;
+}
 .login-page {
   display: flex;
   flex-direction: column;

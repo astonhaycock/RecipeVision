@@ -251,6 +251,10 @@ app.get("/api/session", authenticate, async (req: Request, res: Response) => {
   //TODO: return user info
   res.status(200).send("logged in");
 });
+// changes cookie info to null when logout
+app.post("/api/logout", async (req: Request, res: Response) => {
+  req.session.user_id = undefined;
+});
 
 // The route to register a new user
 app.post("/api/user", async (req: Request, res: Response) => {

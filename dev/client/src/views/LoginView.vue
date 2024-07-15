@@ -57,7 +57,7 @@ import DefaultButton from "../components/DefaultButton.vue";
       };
 
       const response = await fetch(
-        "https://dont-pani.ccani.cc/api/session",
+        "https://dont-pani.cc/api/session",
         requestOptions
       );
       const data = await response.json();

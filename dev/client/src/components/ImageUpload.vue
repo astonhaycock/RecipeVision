@@ -4,7 +4,7 @@ import icon from "./icons/IconUpload.vue";
 import cameraIcon from "./icons/cameraIcon.vue";
 import ReviewList from "./ReviewList.vue";
 
-const URL = "https://dont-pani.ccani.cc/api/image";
+const URL = "https://dont-pani.cc/api/image";
 const modal = ref(false);
 const ReviewListIngredients = ref<string>("");
 const image = ref<File | null>(null);

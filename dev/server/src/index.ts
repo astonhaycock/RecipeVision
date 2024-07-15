@@ -462,11 +462,12 @@ app.delete(
       if (user.ingredients[i] === ingredient) {
         user.ingredients[i] = user.ingredients[user.ingredients.length - 1];
         user.ingredients.pop();
+        user.save();
+        res.status(204).send();
+        break;
       }
-      break;
     }
-    user.save();
-    res.status(204).send();
+    res.status(404).send("ingredient not found");
   }
 );
 
@@ -481,12 +482,13 @@ app.put(
     for (let i = 0; i < user.ingredients.length; i++) {
       if (user.ingredients[i] === ingredient) {
         user.ingredients[i] = new_ingredient;
+        dedup(user.ingredients);
+        user.save();
+        res.status(204).send();
+        break;
       }
-      break;
     }
-    dedup(user.ingredients);
-    user.save();
-    res.status(204).send();
+    res.status(404).send("ingredient not found");
   }
 );
 

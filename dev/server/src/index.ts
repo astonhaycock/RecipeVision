@@ -464,7 +464,7 @@ app.delete(
         user.ingredients.pop();
         user.save();
         res.status(204).send();
-        break;
+        return;
       }
     }
     res.status(404).send("ingredient not found");
@@ -485,7 +485,7 @@ app.put(
         dedup(user.ingredients);
         user.save();
         res.status(204).send();
-        break;
+        return;
       }
     }
     res.status(404).send("ingredient not found");

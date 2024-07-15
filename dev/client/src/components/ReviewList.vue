@@ -10,7 +10,7 @@
   export default defineComponent({
     data() {
       return {
-        // ingredients: [],
+        ingredients: [],
         editing: false,
       };
     },

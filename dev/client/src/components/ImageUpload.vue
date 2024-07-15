@@ -63,7 +63,7 @@
           @click="
             uploadImage();
             modal = true;
-            $emit('modal');
+            this.$emit('modal');
           "
         >
           Upload Ingredients

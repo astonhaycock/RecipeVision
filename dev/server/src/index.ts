@@ -399,7 +399,7 @@ app.post(
 );
 
 // The route for receiving a list of new ingredients
-app.post(
+app.put(
   "/api/ingredients",
   authenticate,
   async (req: Request, res: Response) => {
@@ -416,6 +416,7 @@ app.post(
     user.ingredients = user.ingredients.concat(ingredients);
     dedup(user.ingredients);
     user.save();
+    res.status(204).send(user.ingredients);
   }
 );
 
@@ -435,6 +436,7 @@ app.put(
     let user = req.user as UserEntry;
     user.ingredients = ingredients;
     user.save();
+    res.status(204).send();
   }
 );
 
@@ -464,6 +466,7 @@ app.delete(
       break;
     }
     user.save();
+    res.status(204).send();
   }
 );
 
@@ -483,6 +486,7 @@ app.put(
     }
     dedup(user.ingredients);
     user.save();
+    res.status(204).send();
   }
 );
 
@@ -493,9 +497,14 @@ app.post(
   async (req: Request, res: Response) => {
     let user = req.user as UserEntry;
     let ingredient = req.params.ingredient;
+    if (ingredient.length === 0) {
+      res.status(400).send("ingredient must be a non-empty string");
+      return;
+    }
     user.ingredients.push(ingredient);
     dedup(user.ingredients);
     user.save();
+    res.status(201).send(ingredient);
   }
 );
 

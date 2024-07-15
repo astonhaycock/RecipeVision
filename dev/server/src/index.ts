@@ -190,7 +190,7 @@ async function authenticate(
     res.status(401).send("unauthorized");
     return;
   }
-  if (!req.user) {
+  if (req.user === null) {
     console.log("user not found in session");
     res.status(500).send("internal server error");
     return;
@@ -254,6 +254,7 @@ app.post("/api/session", async (req: Request, res: Response) => {
   // Set the user ID in the session
   // Do we even really need a user id? probably not, since emails are guaranteed to be unique
   req.session.user_id = user._id;
+  req.user = user;
   //TODO: return user info
   res.status(201).send("logged in");
 });

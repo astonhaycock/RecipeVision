@@ -250,7 +250,7 @@ app.post("/api/session", async (req: Request, res: Response) => {
 app.get("/api/session", authenticate, async (req: Request, res: Response) => {
   // By this point, we're already authenticated. All we need to do is return data.
   //TODO: return user info
-  res.status(200).send("logged in");
+  res.status(201).send("logged in");
 });
 // changes cookie info to null when logout
 app.post("/api/logout", async (req: Request, res: Response) => {

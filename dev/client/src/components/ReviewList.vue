@@ -2,6 +2,7 @@
   defineProps<{
     reviewList: string;
   }>();
+  const ingredients: string[] = [];
 </script>
 <script lang="ts">
   import icon from "./icons/IconUpload.vue";
@@ -9,7 +10,7 @@
   export default defineComponent({
     data() {
       return {
-        ingredients: [],
+        // ingredients: [],
         editing: false,
       };
     },

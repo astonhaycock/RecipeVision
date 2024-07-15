@@ -397,6 +397,27 @@ app.post(
   }
 );
 
+// The route for receiving a list of new ingredients
+app.get(
+  "/api/ingredients",
+  authenticate,
+  async (req: Request, res: Response) => {
+    if (
+      req.body.ingredients === undefined ||
+      !Array.isArray(req.body.ingredients)
+    ) {
+      res.status(400).send("ingredients must be an array of strings");
+      return;
+    }
+    let ingredients = req.body.ingredients as Array<string>;
+    // Merge ingredients with req.user.ingredients
+    let user = req.user as UserEntry;
+    user.ingredients = user.ingredients.concat(ingredients);
+    dedup(user.ingredients);
+    user.save();
+  }
+);
+
 //================================================================================================//
 //==| SERVER & POST-SETUP |=======================================================================//
 //================================================================================================//

@@ -38,6 +38,17 @@ import {
   COOKIE_EXPIRATION,
 } from "./env";
 
+//TODO: automate this.
+/// Which paths need to be routed to the Vue website.
+const SITE_ROUTES = [
+  "/",
+  "/login",
+  "/logout",
+  "/register",
+  "/recipe",
+  "/ingredients",
+];
+
 //================================================================================================//
 //==| NAMESPACE MERGING |=========================================================================//
 //================================================================================================//
@@ -187,7 +198,7 @@ async function authenticate(
 //================================================================================================//
 
 // Serve the website files to the client
-app.use(express.static(WEBSITE_PATH));
+SITE_ROUTES.map((route) => app.use(route, express.static(WEBSITE_PATH)));
 // Serve the images to OpenAI
 app.use("/images", express.static(IMAGES_PATH));
 

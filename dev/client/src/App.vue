@@ -51,7 +51,7 @@
       },
     },
     created() {
-      // this.getSession();
+      this.getSession();
     },
   });
 </script>

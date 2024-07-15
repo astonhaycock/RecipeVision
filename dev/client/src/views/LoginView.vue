@@ -7,7 +7,6 @@
     data() {
       return {
         user: {
-          name: "",
           email: "",
           password: "",
         },
@@ -36,7 +35,7 @@
           console.log("Successfully logged in");
           this.incorrectPassword = false;
           this.currentUser = data; // Assign fetched user data
-          this.user = { name: "", email: "", password: "" }; // Clear user form data
+          this.user = { email: "", password: "" }; // Clear user form data
         } else {
           console.log("Failed to login");
           this.incorrectPassword = true;
@@ -57,7 +56,7 @@
     <div>
       <input placeholder="Password" />
     </div>
-    <DefaultButton msg="Login" />
+    <DefaultButton msg="Login" @click="loginUser" />
     <!-- <button>Log In</button> -->
     <p>or</p>
     <RouterLink to="/Register"><DefaultButton msg="Register" /></RouterLink>
@@ -65,6 +64,11 @@
 </template>
 
 <style scoped>
+  h6 {
+    background-color: rgb(0, 0, 0);
+    color: red;
+    padding: 1rem;
+  }
   .login-page {
     display: flex;
     flex-direction: column;

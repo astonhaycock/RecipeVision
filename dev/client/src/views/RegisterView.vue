@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { defineComponent } from "vue";
-  import DefaultButton from "../components/DefaultButton.vue";
+import { defineComponent } from "vue";
+import DefaultButton from "../components/DefaultButton.vue";
 </script>
 <script lang="ts">
 export default defineComponent({
@@ -24,7 +24,7 @@ export default defineComponent({
       };
 
       const response = await fetch(
-        "http://dogsmeow.asuscomm.com:8080/api/session",
+        "http://dont-pani.cc/api/session",
         requestOptions
       );
 
@@ -46,7 +46,7 @@ export default defineComponent({
       };
 
       const response = await fetch(
-        "http://dogsmeow.asuscomm.com:8080/api/users",
+        "http://dont-pani.cc/api/users",
         requestOptions
       );
 

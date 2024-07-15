@@ -48,9 +48,7 @@ const RecipeSchema = new Schema<IRecipe>({
 UserSchema.method("setPassword", async function (plainPassword: string) {
   try {
     let encryptedPassword = await Bun.password.hash(plainPassword);
-    console.log(this);
     this.password = encryptedPassword;
-    console.log(this);
   } catch (error) {
     console.log("Invalid password, can't set password");
   }

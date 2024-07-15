@@ -287,7 +287,7 @@ app.post("/api/user", async (req: Request, res: Response) => {
     email: req.body.email,
     last_request: Date.now() - RATE_LIMIT,
   });
-  user.setPassword(req.body.password);
+  await user.setPassword(req.body.password);
   //TODO: user.validateSync? I don't think we need it but it's good practice.
   await user.save();
   res.status(201).send("user created");

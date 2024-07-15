@@ -24,7 +24,7 @@ export default defineComponent({
       };
 
       const response = await fetch(
-        "http://dogsmeow.asuscomm.com:8080/api/session",
+        "https://dont-pani.cc/api/session",
         requestOptions
       );
 
@@ -47,7 +47,7 @@ export default defineComponent({
       };
 
       const response = await fetch(
-        "http://dogsmeow.asuscomm.com:8080/api/user",
+        "https://dont-pani.cc/api/user",
         requestOptions
       );
 

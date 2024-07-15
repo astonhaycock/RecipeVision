@@ -36,7 +36,7 @@ export default defineComponent({
     },
 
     async getSession() {
-      const response = await fetch("http://dont-pani.cc/api/session");
+      const response = await fetch("https://dont-pani.ccani.cc/api/session");
       if (response.status === 200 && (await response.json()) !== "") {
         const data = await response.json();
         this.current_user.email = data.email;

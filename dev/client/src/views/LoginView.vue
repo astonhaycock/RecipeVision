@@ -26,7 +26,7 @@ import DefaultButton from "../components/DefaultButton.vue";
         };
 
         const response = await fetch(
-          "http://dogsmeow.asuscomm.com:8080/api/session",
+          "https://dont-pani.cc/api/session",
           requestOptions
         );
         const data = await response.json();
@@ -57,7 +57,7 @@ import DefaultButton from "../components/DefaultButton.vue";
       };
 
       const response = await fetch(
-        "http://dont-pani.cc/api/session",
+        "https://dont-pani.ccani.cc/api/session",
         requestOptions
       );
       const data = await response.json();

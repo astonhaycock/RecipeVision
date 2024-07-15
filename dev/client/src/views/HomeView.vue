@@ -3,7 +3,5 @@
 </script>
 
 <template>
-  <main>
-    Home page
-  </main>
+  <main>Home page</main>
 </template>

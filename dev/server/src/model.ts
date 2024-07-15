@@ -1,10 +1,20 @@
-import { Schema, model, connect, Model, type ObjectId } from "mongoose";
+import {
+  Schema,
+  model,
+  connect,
+  Model,
+  type ObjectId,
+  Document,
+  Types,
+} from "mongoose";
 import assert from "node:assert";
+import { MONGODB_URL as MONGODB_URL } from "./env";
 
 // 1. Create an interface representing a document in MongoDB.
 interface IUser {
   email: string;
   password: string;
+  last_request: Date;
   ingredients: Array<string>;
 }
 interface IRecipe {
@@ -56,9 +66,21 @@ const User = model<IUser, UserModel>("User", UserSchema);
 const Recipe = model<IRecipe>("Recipe", RecipeSchema);
 
 // 4. Connect to MongoDB
-let dbpass = process.env.DBPASSWORD;
-assert.ok(dbpass, "DATABASE environment variable not found");
-const DB = await connect(dbpass);
+const DB = await connect(MONGODB_URL);
 
-export type { IUser, IRecipe };
+/// The UserEntry type is the type returned by database lookups, but non-nullable.
+/// This is why Rust is better than TypeScript.
+/// Actually, it's a low bar. Pascal is better than TypeScript.
+/// And yes, I'm writing this in a docstring.
+type UserEntry =
+  | Document<unknown, {}, IUser> &
+      Omit<
+        IUser & {
+          _id: Types.ObjectId;
+        },
+        keyof IUserMethods
+      > &
+      IUserMethods;
+
+export type { UserEntry };
 export { User, Recipe, DB };

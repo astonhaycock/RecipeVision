@@ -9,13 +9,13 @@
   export default defineComponent({
     data() {
       return {
-        ingredients: string[],
+        ingredients: [],
         editing: false,
       };
     },
     methods: {
       getList() {
-        this.ingredients.concat(this.reviewList);
+        this.ingredients.push(this.reviewList);
       },
       deleteIngredient(index: number) {
         this.ingredients.splice(index, 1);

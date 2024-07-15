@@ -37,7 +37,7 @@
       const response = await fetch(URL, requestOptions);
       const data = await response.json();
       // Emitting event to parent component with the uploaded image data
-      $emit("reviewIngredients", data);
+      this.$emit("reviewIngredients", data);
       // Assumes you are listening to this event in the parent component
       modal.value = false;
       imageUrl.value = null;

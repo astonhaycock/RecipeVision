@@ -420,7 +420,7 @@ app.post(
 );
 
 // The route for updating the user's ingredients
-app.post(
+app.put(
   "/api/ingredients",
   authenticate,
   async (req: Request, res: Response) => {
@@ -438,19 +438,63 @@ app.post(
   }
 );
 
-app.put(
+// The route for getting the user's ingredients
+app.get(
   "/api/ingredients",
   authenticate,
   async (req: Request, res: Response) => {
-    if (
-      req.body.ingredients === undefined ||
-      !Array.isArray(req.body.ingredients)
-    ) {
-      res.status(400).send("ingredients must be an array of strings");
-      return;
+    let user = req.user as UserEntry;
+    res.status(200).send(user.ingredients);
+  }
+);
+
+// The route for deleting a single ingredient
+app.delete(
+  "/api/ingredient/:ingredient",
+  authenticate,
+  async (req: Request, res: Response) => {
+    let user = req.user as UserEntry;
+    let ingredient = req.params.ingredient;
+    // iterate backwards and swap-remove
+    for (let i = user.ingredients.length - 1; i >= 0; i--) {
+      if (user.ingredients[i] === ingredient) {
+        user.ingredients[i] = user.ingredients[user.ingredients.length - 1];
+        user.ingredients.pop();
+      }
+      break;
     }
-    const user = req.user as UserEntry;
-    user.ingredients = ["apples", "bananans"];
+    user.save();
+  }
+);
+
+// The route for renaming a single ingredient
+app.put(
+  "/api/ingredient/:ingredient/:new_ingredient",
+  authenticate,
+  async (req: Request, res: Response) => {
+    let user = req.user as UserEntry;
+    let ingredient = req.params.ingredient;
+    let new_ingredient = req.params.new_ingredient;
+    for (let i = 0; i < user.ingredients.length; i++) {
+      if (user.ingredients[i] === ingredient) {
+        user.ingredients[i] = new_ingredient;
+      }
+      break;
+    }
+    dedup(user.ingredients);
+    user.save();
+  }
+);
+
+// The route for creating a single ingredient
+app.post(
+  "/api/ingredient/:ingredient",
+  authenticate,
+  async (req: Request, res: Response) => {
+    let user = req.user as UserEntry;
+    let ingredient = req.params.ingredient;
+    user.ingredients.push(ingredient);
+    dedup(user.ingredients);
     user.save();
   }
 );

@@ -29,7 +29,6 @@
           "https://dont-pani.cc/api/session",
           requestOptions
         );
-        const data = await response.json();
 
         if (response.status === 201) {
           console.log("Successfully logged in");

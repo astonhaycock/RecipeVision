@@ -20,7 +20,7 @@
       <img id="small-logo" src="@/assets/logo.png" />
       <div>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">Recipes</RouterLink>
+        <RouterLink to="/recipe">Recipes</RouterLink>
         <RouterLink to="/ingredients">Ingredients</RouterLink>
       </div>
       <!-- Check login with current_user, imported in the setup() block above -->

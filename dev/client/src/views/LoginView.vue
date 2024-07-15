@@ -12,6 +12,7 @@
           password: "",
         },
         currentUser: null,
+        incorrectPassword: false,
       };
     },
     methods: {
@@ -33,10 +34,12 @@
 
         if (response.status === 201) {
           console.log("Successfully logged in");
+          this.incorrectPassword = false;
           this.currentUser = data; // Assign fetched user data
           this.user = { name: "", email: "", password: "" }; // Clear user form data
         } else {
           console.log("Failed to login");
+          this.incorrectPassword = true;
         }
       },
     },
@@ -47,6 +50,7 @@
 <template>
   <div class="login-page">
     <h1>Login</h1>
+    <h6 v-if="incorrectPassword">account Email/Password is incorrect</h6>
     <div>
       <input placeholder="Email" />
     </div>

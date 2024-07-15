@@ -3,43 +3,12 @@ import { defineComponent, inject } from "vue";
 import DefaultButton from "../components/DefaultButton.vue";
 </script>
 <script lang="ts">
-  export default defineComponent({
-    data() {
-      return {
-        user: {
-          email: "",
-          password: "",
-        },
-        currentUser: null,
-        incorrectPassword: false,
-      };
-    },
-    methods: {
-      async loginUser() {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        const requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify(this.user),
-        };
-
-        const response = await fetch(
-          "https://dont-pani.cc/api/session",
-          requestOptions
-        );
-        const data = await response.json();
-
-        if (response.status === 201) {
-          console.log("Successfully logged in");
-          this.incorrectPassword = false;
-          this.currentUser = data; // Assign fetched user data
-          this.user = { email: "", password: "" }; // Clear user form data
-        } else {
-          console.log("Failed to login");
-          this.incorrectPassword = true;
-        }
+export default defineComponent({
+  data() {
+    return {
+      user: {
+        email: "",
+        password: "",
       },
       currentUser: null,
       incorrectPassword: false,
@@ -66,7 +35,7 @@ import DefaultButton from "../components/DefaultButton.vue";
         console.log("Successfully logged in");
         this.incorrectPassword = false;
         this.currentUser = data; // Assign fetched user data
-        this.user = { name: "", email: "", password: "" }; // Clear user form data
+        this.user = { email: "", password: "" }; // Clear user form data
       } else {
         console.log("Failed to login");
         this.incorrectPassword = true;

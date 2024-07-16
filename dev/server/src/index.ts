@@ -36,6 +36,8 @@ import {
   SESSION_SECRET,
   FILE_LIMIT,
   COOKIE_EXPIRATION,
+  IMAGE_PROMPT,
+  RECIPE_PROMPT,
 } from "./env";
 
 //TODO: automate this.
@@ -309,6 +311,10 @@ app.post("/api/user", async (req: Request, res: Response) => {
   res.status(201).send("user created");
 });
 
+//================================================================================================//
+//==| IMAGE PROCESSING |==========================================================================//
+//================================================================================================//
+
 // The route to upload images and get a list of ingredients
 // Should this be a GET instead? It doesn't matter.
 app.post(
@@ -356,7 +362,7 @@ app.post(
           content: [
             {
               type: "text",
-              text: "Give me a list of cooking ingredients in this image, if any, as a JSON array of strings. If no ingredients are present, return an empty JSON array. Keep each ingredient generic and do not include brand information. Return only the JSON array, with no description, context, or formatting.",
+              text: IMAGE_PROMPT,
             },
             {
               type: "image_url",
@@ -398,6 +404,10 @@ app.post(
   }
 );
 
+//================================================================================================//
+//==| INGREDIENT LISTS |==========================================================================//
+//================================================================================================//
+
 // The route for receiving a list of new ingredients
 app.put(
   "/api/ingredients",
@@ -411,32 +421,21 @@ app.put(
       return;
     }
     let ingredients = req.body.ingredients as Array<string>;
+    for (let i = 0; i < ingredients.length; i++) {
+      if (typeof ingredients[i] !== "string" || ingredients[i].length === 0) {
+        res
+          .status(400)
+          .send("ingredients must be an array of non-empty strings");
+        return;
+      }
+      ingredients[i] = ingredients[i].toLowerCase();
+    }
     // Merge ingredients with req.user.ingredients
     let user = req.user as UserEntry;
     user.ingredients = user.ingredients.concat(ingredients);
     dedup(user.ingredients);
     user.save();
-    res.status(204).send(user.ingredients);
-  }
-);
-
-// The route for updating the user's ingredients
-app.put(
-  "/api/ingredients",
-  authenticate,
-  async (req: Request, res: Response) => {
-    if (
-      req.body.ingredients === undefined ||
-      !Array.isArray(req.body.ingredients)
-    ) {
-      res.status(400).send("ingredients must be an array of strings");
-      return;
-    }
-    let ingredients = req.body.ingredients as Array<string>;
-    let user = req.user as UserEntry;
-    user.ingredients = ingredients;
-    user.save();
-    res.status(204).send();
+    res.status(204).send("ingredients added");
   }
 );
 
@@ -456,7 +455,7 @@ app.delete(
   authenticate,
   async (req: Request, res: Response) => {
     let user = req.user as UserEntry;
-    let ingredient = req.params.ingredient;
+    let ingredient = req.params.ingredient.toLowerCase();
     // iterate backwards and swap-remove
     for (let i = user.ingredients.length - 1; i >= 0; i--) {
       if (user.ingredients[i] === ingredient) {
@@ -477,8 +476,8 @@ app.put(
   authenticate,
   async (req: Request, res: Response) => {
     let user = req.user as UserEntry;
-    let ingredient = req.params.ingredient;
-    let new_ingredient = req.params.new_ingredient;
+    let ingredient = req.params.ingredient.toLowerCase();
+    let new_ingredient = req.params.new_ingredient.toLowerCase();
     for (let i = 0; i < user.ingredients.length; i++) {
       if (user.ingredients[i] === ingredient) {
         user.ingredients[i] = new_ingredient;
@@ -498,7 +497,7 @@ app.post(
   authenticate,
   async (req: Request, res: Response) => {
     let user = req.user as UserEntry;
-    let ingredient = req.params.ingredient;
+    let ingredient = req.params.ingredient.toLowerCase();
     if (ingredient.length === 0) {
       res.status(400).send("ingredient must be a non-empty string");
       return;
@@ -509,6 +508,61 @@ app.post(
     res.status(201).send(ingredient);
   }
 );
+
+//================================================================================================//
+//==| RECIPE GENERATION |=========================================================================//
+//================================================================================================//
+
+// The route for generating a recipe for a user
+app.get("/api/recipe", authenticate, async (req: Request, res: Response) => {
+  let user = req.user as UserEntry;
+  let ingredients = user.ingredients;
+  if (ingredients.length === 0) {
+    res.status(400).send("no ingredients provided");
+    return;
+  }
+  for (let i = 0; i < ingredients.length; i++) {
+    if (typeof ingredients[i] !== "string" || ingredients[i].length === 0) {
+      res.status(400).send("ingredients must be an array of non-empty strings");
+      return;
+    }
+    ingredients[i] = ingredients[i].toLowerCase();
+  }
+  // Send the ingredients to OpenAI for processing.
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: RECIPE_PROMPT,
+          },
+          {
+            type: "text",
+            text: JSON.stringify(ingredients),
+          },
+        ],
+      },
+    ],
+  });
+  console.log(response.choices[0].message.content);
+  try {
+    // Try to parse the response as a json.
+    const list = await JSON.parse(
+      (response.choices[0].message.content as string).toLowerCase()
+    );
+    // Verify that the JSON parsed into what we expect.
+    if (!Array.isArray(list) || list.some((i) => typeof i !== "string")) {
+      throw new Error();
+    }
+    dedup(list);
+    res.status(200).send(list);
+  } catch {
+    res.status(500).send("failed to parse AI response");
+  }
+});
 
 //================================================================================================//
 //==| SERVER & POST-SETUP |=======================================================================//

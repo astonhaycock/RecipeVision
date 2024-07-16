@@ -19,6 +19,7 @@
     console.log(user);
   }
   async function getSession() {
+    console.log("test");
     const response = await fetch("https://dont-pani.cc/api/session");
     if (response.status === 200 && (await response.json()) !== "") {
       const data = await response.json();
@@ -59,7 +60,7 @@
     v-model:login="login"
     @logout="logout"
   />
-  <RouterView v-if="nav_open === false" />
+  <RouterView v-if="nav_open === false" @login="getSession()" />
 </template>
 
 <style scoped>

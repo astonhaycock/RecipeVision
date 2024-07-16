@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { ref, defineEmits } from "vue";
   import DefaultButton from "../components/DefaultButton.vue";
+  const emit = defineEmits(["login"]);
 
   const user = ref({
     email: "",
@@ -25,6 +26,7 @@
     if (response.status === 201) {
       console.log("Successfully logged in");
       user.value = { email: "", password: "" }; // Clear user form data
+      emit("login");
     } else {
       console.log("Failed to login");
     }

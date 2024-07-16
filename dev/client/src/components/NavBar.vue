@@ -1,6 +1,10 @@
 <script lang="ts">
   import { RouterLink, RouterView } from "vue-router";
-  import { defineComponent, inject } from "vue";
+  import { defineComponent, inject, ref } from "vue";
+  const login = ref(true);
+  const message = ref("Hello, World!");
+  const nav_open = ref(false);
+  const current_user = ref(false);
 
   export default defineComponent({
     data() {
@@ -25,7 +29,7 @@
       </div>
       <!-- Check login with current_user, imported in the setup() block above -->
       <RouterLink v-if="current_user" to="/logout">Logout</RouterLink>
-      <RouterLink v-else to="/login">Login</RouterLink>
+      <RouterLink v-else to="/Auth">Login</RouterLink>
     </div>
   </nav>
 </template>

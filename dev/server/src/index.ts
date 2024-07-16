@@ -421,12 +421,21 @@ app.put(
       return;
     }
     let ingredients = req.body.ingredients as Array<string>;
+    for (let i = 0; i < ingredients.length; i++) {
+      if (typeof ingredients[i] !== "string" || ingredients[i].length === 0) {
+        res
+          .status(400)
+          .send("ingredients must be an array of non-empty strings");
+        return;
+      }
+      ingredients[i] = ingredients[i].toLowerCase();
+    }
     // Merge ingredients with req.user.ingredients
     let user = req.user as UserEntry;
     user.ingredients = user.ingredients.concat(ingredients);
     dedup(user.ingredients);
     user.save();
-    res.status(204).send(user.ingredients);
+    res.status(204).send("ingredients added");
   }
 );
 
@@ -446,7 +455,7 @@ app.delete(
   authenticate,
   async (req: Request, res: Response) => {
     let user = req.user as UserEntry;
-    let ingredient = req.params.ingredient;
+    let ingredient = req.params.ingredient.toLowerCase();
     // iterate backwards and swap-remove
     for (let i = user.ingredients.length - 1; i >= 0; i--) {
       if (user.ingredients[i] === ingredient) {
@@ -467,8 +476,8 @@ app.put(
   authenticate,
   async (req: Request, res: Response) => {
     let user = req.user as UserEntry;
-    let ingredient = req.params.ingredient;
-    let new_ingredient = req.params.new_ingredient;
+    let ingredient = req.params.ingredient.toLowerCase();
+    let new_ingredient = req.params.new_ingredient.toLowerCase();
     for (let i = 0; i < user.ingredients.length; i++) {
       if (user.ingredients[i] === ingredient) {
         user.ingredients[i] = new_ingredient;
@@ -488,7 +497,7 @@ app.post(
   authenticate,
   async (req: Request, res: Response) => {
     let user = req.user as UserEntry;
-    let ingredient = req.params.ingredient;
+    let ingredient = req.params.ingredient.toLowerCase();
     if (ingredient.length === 0) {
       res.status(400).send("ingredient must be a non-empty string");
       return;
@@ -512,6 +521,13 @@ app.get("/api/recipe", authenticate, async (req: Request, res: Response) => {
     res.status(400).send("no ingredients provided");
     return;
   }
+  for (let i = 0; i < ingredients.length; i++) {
+    if (typeof ingredients[i] !== "string" || ingredients[i].length === 0) {
+      res.status(400).send("ingredients must be an array of non-empty strings");
+      return;
+    }
+    ingredients[i] = ingredients[i].toLowerCase();
+  }
   // Send the ingredients to OpenAI for processing.
   const response = await openai.chat.completions.create({
     model: "gpt-4o",
@@ -532,7 +548,20 @@ app.get("/api/recipe", authenticate, async (req: Request, res: Response) => {
     ],
   });
   console.log(response.choices[0].message.content);
-  res.status(500).send("not implemented");
+  try {
+    // Try to parse the response as a json.
+    const list = await JSON.parse(
+      (response.choices[0].message.content as string).toLowerCase()
+    );
+    // Verify that the JSON parsed into what we expect.
+    if (!Array.isArray(list) || list.some((i) => typeof i !== "string")) {
+      throw new Error();
+    }
+    dedup(list);
+    res.status(200).send(list);
+  } catch {
+    res.status(500).send("failed to parse AI response");
+  }
 });
 
 //================================================================================================//

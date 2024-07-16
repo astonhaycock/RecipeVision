@@ -17,6 +17,14 @@ interface IUser {
   last_request: Date;
   ingredients: Array<string>;
 }
+
+// interface IIngredients {
+//   ingredients: Array<string>;
+// }
+// interface IExclusions {
+//   exclusions: Array<string>;
+// }
+
 interface IRecipe {
   _id: ObjectId;
   description: string;

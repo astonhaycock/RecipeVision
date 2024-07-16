@@ -6,16 +6,34 @@
   import { defineComponent } from "vue";
   import { ref, type Ref } from "vue";
   import DefaultButton from "../components/DefaultButton.vue";
+  const URL = "https://dont-pani.cc";
 
   const ingredients: Ref<string[]> = ref([]);
   const ingredient = ref("#4400ff");
-  const modal = ref(true);
-  const loading_screen = ref(false);
-  const reviewList = ref(["test1", "test3"]);
+  const modal = ref(false);
+  const loading_screen = ref(true);
+  const reviewList = ref([]);
 
   function handleReviewIngredients(data: string) {
-    reviewList = data;
-    loading_screen = false;
+    reviewList.value = data;
+    loading_screen.value = false;
+  }
+  async function sendIngredients(reviewList: Array<string>) {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const data = { ingredients: reviewList };
+
+    const requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      body: JSON.stringify(data),
+    };
+    const response = await fetch(`${URL}/api/ingredients`, requestOptions);
+    if (response.status === 204) {
+      console.log("Successfully added ingredient");
+    } else {
+      console.log("Failed to add ingredient");
+    }
   }
 </script>
 
@@ -36,7 +54,11 @@
         <ReviewList v-model:reviewList="reviewList" />
         <div id="reviewBtn">
           <DefaultButton class="btn" @click="modal = false" msg="Discard" />
-          <DefaultButton class="btn" @click="modal = false" msg="Save List" />
+          <DefaultButton
+            class="btn"
+            @click="(modal = false), sendIngredients(reviewList)"
+            msg="Save List"
+          />
         </div>
       </div>
       <div id="loading-screen" v-else>

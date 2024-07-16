@@ -11,7 +11,8 @@
 
   const ingredients = defineModel("reviewList");
 
-  let editing = ref(false);
+  let editingItem = ref(-1);
+  let textInput = ref("");
 
   function handleReviewIngredients(data: string) {
     loading_screen = false;
@@ -20,21 +21,32 @@
     ingredients.value.splice(index, 1);
     console.log(ingredients);
   }
-  function edit() {
-    console.log(editing);
-    editing = !editing;
+  function edit(index) {
+    textInput.value = ingredients.value[index];
+    editingItem.value = index;
   }
-  onMounted(() => {});
+  function save(index) {
+    ingredients.value[index] = textInput.value;
+    editingItem.value = -1;
+  }
 </script>
 
 <template>
   <div id="list-container">
     <ul>
       <li id="ingredient" v-for="(ingredient, index) in ingredients">
-        <p v-if="!editing" id="ingredient">{{ ingredient }}</p>
-        <input v-if="editing" :placeholder="ingredient" />
-        <button v-if="!editing" id="editBtn" @click="edit()">Edit</button>
-        <button v-if="editing" id="editBtn" @click="edit()">Save</button>
+        <p v-if="editingItem !== index" id="ingredient">{{ ingredient }}</p>
+        <input
+          v-model="textInput"
+          v-if="editingItem === index"
+          :placeholder="ingredient"
+        />
+        <button v-if="editingItem !== index" id="editBtn" @click="edit(index)">
+          Edit
+        </button>
+        <button v-if="editingItem === index" id="editBtn" @click="save(index)">
+          Save
+        </button>
         <button id="deleteBtn" @click="deleteIngredient(index)">Delete</button>
       </li>
     </ul>
@@ -42,6 +54,9 @@
 </template>
 
 <style scoped>
+  input {
+    text-align: center;
+  }
   #list-container {
     /* color: var(--vt-c-white-mute); */
     height: 600px;

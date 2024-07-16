@@ -31,14 +31,33 @@
       login.value = false;
     }
   }
+  async function logout() {
+    const myHeaders = new Headers();
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+    };
+
+    const response = await fetch(
+      "https://dont-pani.cc/api/logout",
+      requestOptions
+    );
+    if (response.status === 200) {
+      console.log(response.status);
+      login.value = false;
+    } else {
+      login.value = true;
+    }
+  }
 </script>
 
 <template>
-  <NavBar id="bigNav" v-model:login="login" />
+  <NavBar id="bigNav" v-model:login="login" @logout="logout" />
   <NavBarMobile
     id="mobileNav"
     @nav_open="handleNavOpen()"
     v-model:login="login"
+    @logout="logout"
   />
   <RouterView v-if="nav_open === false" />
 </template>

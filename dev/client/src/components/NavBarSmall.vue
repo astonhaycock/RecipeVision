@@ -2,6 +2,7 @@
   import { RouterLink, RouterView } from "vue-router";
   import { defineComponent, inject, ref } from "vue";
   import type { ModelRef, PropType, Ref } from "vue";
+  import DefaultButton from "./DefaultButton.vue";
   const login = ref(true);
   const message = ref("Hello, World!");
   const nav_open = ref(false);

@@ -2,6 +2,8 @@
   import { RouterLink, RouterView } from "vue-router";
   import { defineComponent, inject, ref, defineModel } from "vue";
   import type { ModelRef, PropType, Ref } from "vue";
+  import DefaultButton from "./DefaultButton.vue";
+  const emit = defineEmits(["logout"]);
 
   // const current_user = defineModel<{
   //   login: boolean;
@@ -27,7 +29,7 @@
       </div>
       <!-- Check login with current_user, imported in the setup() block above -->
       <RouterLink v-if="!current_user" to="/Auth">Login</RouterLink>
-      <RouterLink v-else to="/logout">Logout</RouterLink>
+      <DefaultButton v-else msg="Logout" @click="$emit('logout')" />
     </div>
   </nav>
 </template>

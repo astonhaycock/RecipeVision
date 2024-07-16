@@ -6,7 +6,7 @@
 
   // `inject` is used for importing the global session data
   import { inject, ref } from "vue";
-  const login = ref(true);
+  const login = ref(false);
   const nav_open = ref(false);
   const current_user: { email: string; IngredientList: string } = inject(
     "current_user"

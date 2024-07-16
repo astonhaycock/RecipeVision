@@ -63,6 +63,24 @@ const COOKIE_EXPIRATION = envp<number>(
   "COOKIE_EXPIRATION",
   1000 * 60 * 60 * 24 * 7
 );
+/// The prompt to use for the OpenAI API when reading images
+const IMAGE_PROMPT = env(
+  "IMAGE_PROMPT",
+  "Give me a list of cooking ingredients in this image, if any, as a JSON array of strings. " +
+    "If no ingredients are present, return an empty JSON array. Keep each ingredient generic " +
+    "and do not include brand information. Return only the JSON array, with no description, " +
+    "context, or formatting."
+);
+/// The prompt to use for recipe generation
+const RECIPE_PROMPT = env(
+  "RECIPE_PROMPT",
+  "Give me a list of recipe ideas that can be made using a subset of the provided list " +
+    "of ingredients. " +
+    "Provide the name of the idea only, such that I can search for each idea on a recipe website. " +
+    "Return the list as a JSON array of strings. " +
+    "It is permissible to include a few recipes that use a couple additional ingredients. " +
+    "If no ideas can be generated using the provided ingredients, return an empty JSON array."
+);
 
 let url = env("PUBLIC_URL");
 // sanitize the URL so it plays nicely with the rest of the code
@@ -86,4 +104,6 @@ export {
   MONGODB_URL,
   SESSION_SECRET,
   COOKIE_EXPIRATION,
+  IMAGE_PROMPT,
+  RECIPE_PROMPT,
 };

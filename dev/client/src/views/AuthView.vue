@@ -6,7 +6,6 @@
   import DefaultButton from "../components/DefaultButton.vue";
   const page = ref("login");
   function pageChange(pageSelected: string) {
-    // console.log(pageSelected);
     page.value = pageSelected;
   }
 </script>

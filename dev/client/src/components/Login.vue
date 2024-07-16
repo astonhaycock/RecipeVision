@@ -40,7 +40,7 @@
     <div>
       <input placeholder="Password" v-model="user.password" />
     </div>
-    <DefaultButton msg="Login" @click="registerUser" />
+    <DefaultButton msg="Login" @click="loginUser" />
     <p>or</p>
   </div>
 </template>

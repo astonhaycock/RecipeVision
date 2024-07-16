@@ -1,18 +1,11 @@
-<script lang="ts">
+<script setup lang="ts">
   import { RouterLink, RouterView } from "vue-router";
-  import { defineComponent, inject } from "vue";
-
-  export default defineComponent({
-    data() {
-      return {
-        login: true,
-        message: "Hello, World!",
-        nav_open: false,
-        current_user: false,
-        nav: "nav_open",
-      };
-    },
-  });
+  import { defineComponent, inject, ref } from "vue";
+  const login = ref(true);
+  const message = ref("Hello, World!");
+  const nav_open = ref(false);
+  const current_user = ref(false);
+  const nav = ref("nav_open");
 </script>
 
 <template>
@@ -46,7 +39,7 @@
             to="/logout"
             >Logout</RouterLink
           >
-          <RouterLink class="link" @click="nav_open = false" v-else to="/login"
+          <RouterLink class="link" @click="nav_open = false" v-else to="/auth"
             >Login</RouterLink
           >
         </div>

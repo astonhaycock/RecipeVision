@@ -5,14 +5,26 @@
   import Recipe from "../components/Recipe.vue";
   import DefaultButton from "../components/DefaultButton.vue";
   const page = ref("login");
+  function pageChange(pageSelected: string) {
+    // console.log(pageSelected);
+    page.value = pageSelected;
+  }
 </script>
 
 <template>
   <div id="page">
     <login v-if="page === 'login'" />
     <register v-if="page === 'register'" />
-    <DefaultButton msg="Login" v-if="page === 'register'" />
-    <DefaultButton msg="Register" v-if="page === 'login'" />
+    <DefaultButton
+      @click="pageChange('login')"
+      msg="Login"
+      v-if="page === 'register'"
+    />
+    <DefaultButton
+      @click="pageChange('register')"
+      msg="Register"
+      v-if="page === 'login'"
+    />
   </div>
 </template>
 

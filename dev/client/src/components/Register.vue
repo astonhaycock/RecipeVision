@@ -66,9 +66,6 @@
     </div>
     <DefaultButton msg="Register" @click="registerUser" />
     <p>or</p>
-    <RouterLink to="/Login">
-      <DefaultButton msg="Login" />
-    </RouterLink>
   </div>
 </template>
 

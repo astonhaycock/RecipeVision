@@ -21,7 +21,7 @@ import OpenAI from "openai";
 import multer from "multer";
 
 // Schemas and MongoDB models
-import { User, type UserEntry } from "./model";
+import { Users, type User } from "./model";
 import type { Document, Types } from "mongoose";
 
 // Environment variables, specified and validated in env.ts
@@ -70,7 +70,7 @@ declare global {
   namespace Express {
     interface Request {
       /// The user object from the database
-      user: UserEntry | null;
+      user: User | null;
     }
   }
 }
@@ -198,24 +198,33 @@ async function authenticate(
     return;
   }
   // Get the user from the database
-  const user = await User.findById(req.session.user_id);
+  const result = Users.findByIdAndPopulate(req.session.user_id);
+  if (!result) {
+    res.status(500).send("internal server error");
+    return;
+  }
+  const user = await result;
   if (!user) {
     res.status(401).send("unauthorized");
     return;
   }
   // Add the user object to the session so other functions can access it later
-  req.user = user as UserEntry;
+  req.user = user as User;
   next();
 }
 
 //================================================================================================//
-//==| ROUTES |====================================================================================//
+//==| STATIC FILES |==============================================================================//
 //================================================================================================//
 
 // Serve the website files to the client
 SITE_ROUTES.map((route) => app.use(route, express.static(WEBSITE_PATH)));
 // Serve the images to OpenAI
 app.use("/images", express.static(IMAGES_PATH));
+
+//================================================================================================//
+//==| AUTHENTICATION & SESSION |==================================================================//
+//================================================================================================//
 
 // The login route
 app.post("/api/session", async (req: Request, res: Response) => {
@@ -243,7 +252,7 @@ app.post("/api/session", async (req: Request, res: Response) => {
     return;
   }
   // Get the user from the database to compare the password
-  let user = await User.findOne({ email: req.body.email });
+  let user = await Users.findOneAndPopulate({ email: req.body.email });
   if (!user) {
     res.status(401).send("incorrect email or password");
     return;
@@ -277,6 +286,9 @@ app.post("/api/logout", async (req: Request, res: Response) => {
 // The route to register a new user
 app.post("/api/user", async (req: Request, res: Response) => {
   if (
+    //TODO: I need to universalize the sanity checks.
+    //TODO: I bet Express has something for it.
+    // Addendum: Mongoose is now validating emails
     req.body === undefined ||
     // I
     req.body.email === undefined ||
@@ -294,20 +306,16 @@ app.post("/api/user", async (req: Request, res: Response) => {
     res.status(400).send("register with email and password as a json object");
     return;
   }
-  // Check if the user already exists in the database.
-  let existing = await User.findOne({ email: req.body.email });
-  if (existing) {
-    res.status(409).send("user already exists");
+  // Create the new user.
+  const result = await Users.newUser(req.body);
+  if (!result) {
+    res.status(500).send("internal server error");
     return;
   }
-  // Create the new user.
-  let user = new User({
-    email: req.body.email,
-    last_request: Date.now() - RATE_LIMIT,
-  });
-  await user.setPassword(req.body.password);
-  //TODO: user.validateSync? I don't think we need it but it's good practice.
-  await user.save();
+  if (typeof result === "string") {
+    res.status(400).send(result);
+    return;
+  }
   res.status(201).send("user created");
 });
 
@@ -323,7 +331,7 @@ app.post(
   upload.single("image"),
   async (req: Request, res: Response) => {
     // This should be safe, because the authenticate middleware should have already run.
-    const user = req.user as UserEntry;
+    const user = req.user as User;
     // Rate limit the requests using session data.
     if (
       // This is ugly as beans but it gets the job done for now.
@@ -431,10 +439,10 @@ app.put(
       ingredients[i] = ingredients[i].toLowerCase();
     }
     // Merge ingredients with req.user.ingredients
-    let user = req.user as UserEntry;
-    user.ingredients = user.ingredients.concat(ingredients);
-    dedup(user.ingredients);
-    user.save();
+    let user = req.user as User;
+    user.ingredients.list = user.ingredients.list.concat(ingredients);
+    dedup(user.ingredients.list);
+    user.ingredients.save();
     res.status(204).send("ingredients added");
   }
 );
@@ -444,8 +452,8 @@ app.get(
   "/api/ingredients",
   authenticate,
   async (req: Request, res: Response) => {
-    let user = req.user as UserEntry;
-    res.status(200).send(user.ingredients);
+    let user = req.user as User;
+    res.status(200).send(user.ingredients.list);
   }
 );
 
@@ -454,14 +462,15 @@ app.delete(
   "/api/ingredient/:ingredient",
   authenticate,
   async (req: Request, res: Response) => {
-    let user = req.user as UserEntry;
+    let user = req.user as User;
     let ingredient = req.params.ingredient.toLowerCase();
     // iterate backwards and swap-remove
-    for (let i = user.ingredients.length - 1; i >= 0; i--) {
-      if (user.ingredients[i] === ingredient) {
-        user.ingredients[i] = user.ingredients[user.ingredients.length - 1];
-        user.ingredients.pop();
-        user.save();
+    for (let i = user.ingredients.list.length - 1; i >= 0; i--) {
+      if (user.ingredients.list[i] === ingredient) {
+        user.ingredients.list[i] =
+          user.ingredients.list[user.ingredients.list.length - 1];
+        user.ingredients.list.pop();
+        user.ingredients.save();
         res.status(204).send();
         return;
       }
@@ -475,14 +484,14 @@ app.put(
   "/api/ingredient/:ingredient/:new_ingredient",
   authenticate,
   async (req: Request, res: Response) => {
-    let user = req.user as UserEntry;
+    let user = req.user as User;
     let ingredient = req.params.ingredient.toLowerCase();
     let new_ingredient = req.params.new_ingredient.toLowerCase();
-    for (let i = 0; i < user.ingredients.length; i++) {
-      if (user.ingredients[i] === ingredient) {
-        user.ingredients[i] = new_ingredient;
-        dedup(user.ingredients);
-        user.save();
+    for (let i = 0; i < user.ingredients.list.length; i++) {
+      if (user.ingredients.list[i] === ingredient) {
+        user.ingredients.list[i] = new_ingredient;
+        dedup(user.ingredients.list);
+        user.ingredients.save();
         res.status(204).send();
         return;
       }
@@ -496,15 +505,15 @@ app.post(
   "/api/ingredient/:ingredient",
   authenticate,
   async (req: Request, res: Response) => {
-    let user = req.user as UserEntry;
+    let user = req.user as User;
     let ingredient = req.params.ingredient.toLowerCase();
     if (ingredient.length === 0) {
       res.status(400).send("ingredient must be a non-empty string");
       return;
     }
-    user.ingredients.push(ingredient);
-    dedup(user.ingredients);
-    user.save();
+    user.ingredients.list.push(ingredient);
+    dedup(user.ingredients.list);
+    user.ingredients.save();
     res.status(201).send(ingredient);
   }
 );
@@ -515,8 +524,8 @@ app.post(
 
 // The route for generating a recipe for a user
 app.get("/api/recipe", authenticate, async (req: Request, res: Response) => {
-  let user = req.user as UserEntry;
-  let ingredients = user.ingredients;
+  let user = req.user as User;
+  let ingredients = user.ingredients.list;
   if (ingredients.length === 0) {
     res.status(400).send("no ingredients provided");
     return;

@@ -20,7 +20,7 @@
   }
   async function getSession() {
     const response = await fetch("https://dont-pani.cc/api/session");
-    if (response.status === 201 && (await response.json()) !== "") {
+    if (response.status === 201) {
       const data = await response.json();
       current_user.email = data.email;
       current_user.IngredientList = data.ingredient;

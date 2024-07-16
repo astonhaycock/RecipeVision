@@ -19,13 +19,13 @@
     console.log(user);
   }
   async function getSession() {
-    console.log("test");
     const response = await fetch("https://dont-pani.cc/api/session");
     if (response.status === 200 && (await response.json()) !== "") {
       const data = await response.json();
       current_user.email = data.email;
       current_user.IngredientList = data.ingredient;
       login.value = true;
+      console.log("login Successfully");
     } else {
       current_user.email = "error";
       current_user.IngredientList = "error";

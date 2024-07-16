@@ -61,7 +61,7 @@
   <div class="login-page">
     <h1>Register</h1>
     <div>
-      <input placeholder="Email" v-model="user.email" />
+      <input type="email" placeholder="Email" v-model="user.email" />
     </div>
     <div>
       <input placeholder="Password" v-model="user.password" />

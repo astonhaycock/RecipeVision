@@ -9,28 +9,14 @@
 
   const ingredients: Ref<string[]> = ref([]);
   const ingredient = ref("#4400ff");
-</script>
+  const modal = ref(true);
+  const loading_screen = ref(false);
+  const reviewList = ref(["test1", "test3"]);
 
-<script lang="ts">
-  export default defineComponent({
-    components: {
-      ImageUpload,
-    },
-    data() {
-      return {
-        modal: false,
-        loadingscreen: true,
-        reviewList: "",
-      };
-    },
-    methods: {
-      handleReviewIngredients: function (data: string) {
-        this.reviewList = data;
-        this.loadingscreen = false;
-      },
-    },
-    computed: {},
-  });
+  function handleReviewIngredients(data: string) {
+    reviewList = data;
+    loading_screen = false;
+  }
 </script>
 
 <template>
@@ -44,9 +30,10 @@
   </div>
   <div v-if="modal" class="modal">
     <div class="modal-content">
-      <div v-if="!loadingscreen">
+      <div v-if="!loading_screen">
         <h1>Review List</h1>
-        <ReviewList v-bind:reviewList="reviewList" />
+        <!-- <ReviewList v-bind:reviewListProp="['test1', 'test3']" /> -->
+        <ReviewList v-model:reviewList="reviewList" />
         <div id="reviewBtn">
           <DefaultButton class="btn" @click="modal = false" msg="Discard" />
           <DefaultButton class="btn" @click="modal = false" msg="Save List" />

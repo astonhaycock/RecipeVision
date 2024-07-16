@@ -1,30 +1,30 @@
 <script setup lang="ts">
-  defineProps<{
-    reviewList: string;
-  }>();
-  const ingredients: string[] = [];
-</script>
-<script lang="ts">
   import icon from "./icons/IconUpload.vue";
-  import { defineComponent } from "vue";
-  export default defineComponent({
-    data() {
-      return {
-        ingredients: [],
-        editing: false,
-      };
-    },
-    methods: {
-      getList() {
-        this.ingredients.push(reviewList);
-      },
-      deleteIngredient(index: number) {
-        this.ingredients.splice(index, 1);
-      },
-      edit(item: string, index: number) {},
-    },
-    computed: {},
-  });
+  import {
+    defineComponent,
+    defineModel,
+    onMounted,
+    defineProps,
+    ref,
+  } from "vue";
+  import type { PropType } from "vue";
+
+  const ingredients = defineModel("reviewList");
+
+  let editing = ref(false);
+
+  function handleReviewIngredients(data: string) {
+    loading_screen = false;
+  }
+  function deleteIngredient(index: number) {
+    ingredients.value.splice(index, 1);
+    console.log(ingredients);
+  }
+  function edit() {
+    console.log(editing);
+    editing = !editing;
+  }
+  onMounted(() => {});
 </script>
 
 <template>
@@ -32,13 +32,9 @@
     <ul>
       <li id="ingredient" v-for="(ingredient, index) in ingredients">
         <p v-if="!editing" id="ingredient">{{ ingredient }}</p>
-        <input v-if="!editing" :placeholder="ingredient" />
-        <button v-if="!editing" id="editBtn" @click="editing = !editing">
-          Edit
-        </button>
-        <button v-if="!editing" id="editBtn" @click="editing = !editing">
-          Save
-        </button>
+        <input v-if="editing" :placeholder="ingredient" />
+        <button v-if="!editing" id="editBtn" @click="edit()">Edit</button>
+        <button v-if="editing" id="editBtn" @click="edit()">Save</button>
         <button id="deleteBtn" @click="deleteIngredient(index)">Delete</button>
       </li>
     </ul>

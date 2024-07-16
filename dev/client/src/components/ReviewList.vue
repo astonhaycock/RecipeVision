@@ -1,42 +1,50 @@
 <script setup lang="ts">
-  defineProps<{
-    reviewList: string;
-  }>();
-  const ingredients: string[] = [];
-</script>
-<script lang="ts">
   import icon from "./icons/IconUpload.vue";
-  import { defineComponent } from "vue";
-  export default defineComponent({
-    data() {
-      return {
-        ingredients: [],
-        editing: false,
-      };
-    },
-    methods: {
-      getList() {
-        this.ingredients.push(reviewList);
-      },
-      deleteIngredient(index: number) {
-        this.ingredients.splice(index, 1);
-      },
-      edit(item: string, index: number) {},
-    },
-    computed: {},
-  });
+  import {
+    defineComponent,
+    defineModel,
+    onMounted,
+    defineProps,
+    ref,
+  } from "vue";
+  import type { PropType } from "vue";
+
+  const ingredients = defineModel("reviewList");
+
+  let editingItem = ref(-1);
+  let textInput = ref("");
+
+  function handleReviewIngredients(data: string) {
+    loading_screen = false;
+  }
+  function deleteIngredient(index: number) {
+    ingredients.value.splice(index, 1);
+    console.log(ingredients);
+  }
+  function edit(index) {
+    textInput.value = ingredients.value[index];
+    editingItem.value = index;
+  }
+  function save(index) {
+    ingredients.value[index] = textInput.value;
+    editingItem.value = -1;
+  }
 </script>
 
 <template>
   <div id="list-container">
     <ul>
       <li id="ingredient" v-for="(ingredient, index) in ingredients">
-        <p v-if="!editing" id="ingredient">{{ ingredient }}</p>
-        <input v-if="!editing" :placeholder="ingredient" />
-        <button v-if="!editing" id="editBtn" @click="editing = !editing">
+        <p v-if="editingItem !== index" id="ingredient">{{ ingredient }}</p>
+        <input
+          v-model="textInput"
+          v-if="editingItem === index"
+          :placeholder="ingredient"
+        />
+        <button v-if="editingItem !== index" id="editBtn" @click="edit(index)">
           Edit
         </button>
-        <button v-if="!editing" id="editBtn" @click="editing = !editing">
+        <button v-if="editingItem === index" id="editBtn" @click="save(index)">
           Save
         </button>
         <button id="deleteBtn" @click="deleteIngredient(index)">Delete</button>
@@ -46,6 +54,9 @@
 </template>
 
 <style scoped>
+  input {
+    text-align: center;
+  }
   #list-container {
     /* color: var(--vt-c-white-mute); */
     height: 600px;

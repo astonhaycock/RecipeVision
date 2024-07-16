@@ -420,26 +420,6 @@ app.put(
   }
 );
 
-// The route for updating the user's ingredients
-app.put(
-  "/api/ingredients",
-  authenticate,
-  async (req: Request, res: Response) => {
-    if (
-      req.body.ingredients === undefined ||
-      !Array.isArray(req.body.ingredients)
-    ) {
-      res.status(400).send("ingredients must be an array of strings");
-      return;
-    }
-    let ingredients = req.body.ingredients as Array<string>;
-    let user = req.user as UserEntry;
-    user.ingredients = ingredients;
-    user.save();
-    res.status(204).send();
-  }
-);
-
 // The route for getting the user's ingredients
 app.get(
   "/api/ingredients",

@@ -25,7 +25,7 @@
       </div>
       <!-- Check login with current_user, imported in the setup() block above -->
       <RouterLink v-if="current_user" to="/logout">Logout</RouterLink>
-      <RouterLink v-else to="/login">Login</RouterLink>
+      <RouterLink v-else to="/Auth">Login</RouterLink>
     </div>
   </nav>
 </template>

@@ -24,16 +24,22 @@
       const data = await response.json();
       current_user.email = data.email;
       current_user.IngredientList = data.ingredient;
+      login.value = true;
     } else {
       current_user.email = "error";
       current_user.IngredientList = "error";
+      login.value = false;
     }
   }
 </script>
 
 <template>
-  <NavBar id="bigNav" />
-  <NavBarMobile id="mobileNav" @nav_open="handleNavOpen()" />
+  <NavBar id="bigNav" v-model:login="login" />
+  <NavBarMobile
+    id="mobileNav"
+    @nav_open="handleNavOpen()"
+    v-model:login="login"
+  />
   <RouterView v-if="nav_open === false" />
 </template>
 

@@ -1,21 +1,17 @@
-<script lang="ts">
+<script setup lang="ts">
   import { RouterLink, RouterView } from "vue-router";
-  import { defineComponent, inject, ref } from "vue";
+  import { defineComponent, inject, ref, defineModel } from "vue";
+  import type { ModelRef, PropType, Ref } from "vue";
+
+  // const current_user = defineModel<{
+  //   login: boolean;
+  // }>();
+  const current_user = defineModel("login") as ModelRef<string>;
+
   const login = ref(true);
   const message = ref("Hello, World!");
   const nav_open = ref(false);
-  const current_user = ref(false);
-
-  export default defineComponent({
-    data() {
-      return {
-        login: true,
-        message: "Hello, World!",
-        nav_open: false,
-        current_user: false,
-      };
-    },
-  });
+  // const current_user = ref(false);
 </script>
 
 <template>
@@ -24,12 +20,14 @@
       <img id="small-logo" src="@/assets/logo.png" />
       <div>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/recipe">Recipes</RouterLink>
-        <RouterLink to="/ingredients">Ingredients</RouterLink>
+        <RouterLink v-if="current_user" to="/recipe">Recipes</RouterLink>
+        <RouterLink v-if="current_user" to="/ingredients"
+          >Ingredients</RouterLink
+        >
       </div>
       <!-- Check login with current_user, imported in the setup() block above -->
-      <RouterLink v-if="current_user" to="/logout">Logout</RouterLink>
-      <RouterLink v-else to="/Auth">Login</RouterLink>
+      <RouterLink v-if="!current_user" to="/Auth">Login</RouterLink>
+      <RouterLink v-else to="/logout">Logout</RouterLink>
     </div>
   </nav>
 </template>

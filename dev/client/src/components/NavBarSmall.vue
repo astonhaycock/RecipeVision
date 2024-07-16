@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { RouterLink, RouterView } from "vue-router";
   import { defineComponent, inject, ref } from "vue";
+  import type { ModelRef, PropType, Ref } from "vue";
   const login = ref(true);
   const message = ref("Hello, World!");
   const nav_open = ref(false);
-  const current_user = ref(false);
+  const current_user = defineModel("login") as ModelRef<string>;
   const nav = ref("nav_open");
 </script>
 
@@ -30,8 +31,12 @@
             </button>
           </div>
           <RouterLink class="link" to="/">Home</RouterLink>
-          <RouterLink class="link" to="/recipe">Recipes</RouterLink>
-          <RouterLink class="link" to="/ingredients">Ingredients</RouterLink>
+          <RouterLink class="link" v-if="current_user" to="/recipe"
+            >Recipes</RouterLink
+          >
+          <RouterLink class="link" v-if="current_user" to="/ingredients"
+            >Ingredients</RouterLink
+          >
           <RouterLink
             class="link"
             @click="nav_open = false"

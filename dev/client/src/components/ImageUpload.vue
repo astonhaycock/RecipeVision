@@ -3,7 +3,6 @@
   import icon from "./icons/IconUpload.vue";
   import cameraIcon from "./icons/cameraIcon.vue";
   import ReviewList from "./ReviewList.vue";
-  import IngredientView from ".view/IngredientView.vue";
 
   const emit = defineEmits(["reviewIngredients", "modal"]);
 

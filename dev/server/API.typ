@@ -16,7 +16,7 @@
 
 
 #let endpoint(verb, path, description, status:(), body:(), form:())={
-  box(fill:rgb(68, 71, 90), width: 100%, inset: 7pt, radius: 8pt, {
+  box(fill:rgb(68, 71, 90), width: 100%, inset: 7pt, outset:(x: 25pt), radius: 8pt, {
     text(weight:800, size: 12pt, verb, fill: rgb(255, 121, 198))
     h(10pt);
     text(weight:600, size: 12pt, path)
@@ -69,6 +69,14 @@
   v(30pt)
 }
 
+
+#let infobox(text) = align(center, box(fill: rgb(189, 148, 249, 63), inset: 15pt, radius: 15pt, align(left, text)));
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #category("Authentication");
 #endpoint(
   "POST",
@@ -77,10 +85,8 @@
   body:(
     "application/json",
     "
-    {
-      \"email\": \"string\",
-      \"password\": \"string\"
-    }
+    \"email\": \"string\",
+    \"password\": \"string\"
   "),
   status:(
     (201, "user created successfully"),
@@ -96,10 +102,8 @@
   body:(
     "application/json",
     "
-    {
-      \"email\": \"string\",
-      \"password\": \"string\"
-    }
+    \"email\": \"string\",
+    \"password\": \"string\"
   "),
   status:(
     (200, "login successful"),
@@ -130,87 +134,9 @@
   )
 )
 
-#category("Ingredients List");
-
-#endpoint(
-  "GET",
-  "/api/ingredients",
-  "Retrieve a list of all ingredients in the database. Returns a JSON array of strings.",
-  status:(
-    (200, "list of ingredients retrieved successfully"),
-    (401, "user is not logged in"),
-    (500, "internal server error"),
-  )
-)
-
-#endpoint(
-  "PUT",
-  "/api/ingredients",
-  "Add a list of new ingredients to the database. The request body should be a JSON array of strings.",
-  body:(
-    "application/json",
-    "
-    [
-      \"string\",
-      \"string\",
-      ...
-    ]
-  "),
-  status:(
-    (204, "ingredients added successfully"),
-    (400, "invalid request body"),
-    (401, "user is not logged in"),
-    (500, "internal server error"),
-  )
-)
-
-#endpoint(
-  "POST",
-  "/api/ingredient",
-  "Add a single ingredient to the database.",
-  form:(
-    ("ingredient", "the ingredient to add"),
-  ),
-  status:(
-    (204, "ingredient added successfully"),
-    (400, "invalid ingredient name"),
-    (401, "user is not logged in"),
-    (500, "internal server error"),
-  )
-)
-
-#endpoint(
-  "PUT",
-  "/api/ingredient",
-  "Update the name of an ingredient in the database.",
-  form:(
-    ("ingredient", "the ingredient to update"),
-    ("newName", "the new name of the ingredient"),
-  ),
-  status:(
-    (204, "ingredient updated successfully"),
-    (400, "invalid ingredient name or new name"),
-    (401, "user is not logged in"),
-    (404, "ingredient not found"),
-    (500, "internal server error"),
-  ),
-)
-
-#endpoint(
-  "DELETE",
-  "/api/ingredient",
-  "Delete an ingredient from the database.",
-  form:(
-    ("ingredient", "the ingredient to delete"),
-  ),
-  status:(
-    (204, "ingredient deleted successfully"),
-    (400, "invalid ingredient name"),
-    (401, "user is not logged in"),
-    (404, "ingredient not found"),
-    (500, "internal server error"),
-  ),
-)
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #category("OpenAI")
 
@@ -221,9 +147,7 @@
   body:(
     "application/multipart-form-data",
     "
-    {
-      \"image\": <image file>
-    }
+    \"image\": <image file>
     "
   ),
   status:(
@@ -246,4 +170,150 @@
     (429, "rate limit exceeded"),
     (500, "internal server error"),
   )
+)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#category("Lists");
+
+#infobox([The list endpoints allows a client to manage their ingredient and preference lists.
+
+The lists are named after the plural of the items they contain. For example, a list
+of ingredients is named "ingredients", while a single entry in the list is called an "ingredient".
+
+The endpoints that interact with a single item at a time are named using the singular of the list.
+For example, to add a single ingredient to the "ingredients" list, the endpoint is
+#v(0pt)
+#align(center, text(weight: 800, "POST /api/ingredient/{ingredient}"))
+#v(10pt)
+
+The server currently supports the following lists, presented here in plural.
+#align(center, box(align(left, [
+- ingredients
+- ingredient-exclusions
+- recipe-exclusions
+])))
+])
+
+#endpoint(
+  "GET",
+  "/api",
+  "Retrieve a list of all strings in the corresponding database list.
+
+  Example: GET /api/ingredients",
+  form:(
+    ("your-items", "the plural name of the list to retrieve"),
+  ),
+  status:(
+    (200, "list retrieved successfully"),
+    (401, "user is not logged in"),
+    (500, "internal server error"),
+  )
+)
+
+#endpoint(
+  "PUT",
+  "/api",
+  "Add an array of new items to the database. The request body should be a JSON array of strings.
+
+  Example: PUT /api/ingredients",
+  form:(
+    ("your-items", "the plural name of the list to add items to"),
+  ),
+  body:(
+    "application/json",
+    "
+\"items\": [
+    \"string\",
+    \"string\",
+    ...
+]
+  "),
+  status:(
+    (204, "items added successfully"),
+    (400, "invalid data in request body"),
+    (401, "user is not logged in"),
+    (500, "internal server error"),
+  )
+)
+
+#endpoint(
+  "DELETE",
+  "/api",
+  "Delete a list of items from the corresponding database list.
+
+  Example: DELETE /api/ingredients",
+  form:(
+    ("your-items", "the plural name of the list to delete items from"),
+  ),
+  body:(
+    "application/json",
+    "
+\"items\": [
+    \"string\",
+    \"string\",
+    ...
+]"
+  ),
+  status:(
+    (204, "items deleted successfully"),
+    (400, "invalid data in request body"),
+    (401, "user is not logged in"),
+    (500, "internal server error"),
+  )
+)
+
+#endpoint(
+  "POST",
+  "/api",
+  "Add a single item to the list.
+
+  Example: POST /api/ingredient/broccoli",
+  form:(
+    ("your-item", "the singular name of the list to add items to"),
+    ("item", "the item to add"),
+  ),
+  status:(
+    (204, "item added successfully"),
+    (400, "invalid item name"),
+    (401, "user is not logged in"),
+    (500, "internal server error"),
+  )
+)
+
+#endpoint(
+  "PUT",
+  "/api",
+  "Update the name of an item in the list.",
+  form:(
+    ("your-item", "the singular name of the list to update items in"),
+    ("item-name", "the item to update"),
+    ("new-name", "the new name of the ingredient"),
+  ),
+  status:(
+    (204, "item updated successfully"),
+    (400, "invalid item name or new name"),
+    (401, "user is not logged in"),
+    (404, "item not found"),
+    (500, "internal server error"),
+  ),
+)
+
+#endpoint(
+  "DELETE",
+  "/api",
+  "Delete an ingredient from the database.",
+  form:(
+    ("your-item", "the singular name of the list to delete items from"),
+    ("ingredient", "the item to delete"),
+  ),
+  status:(
+    (204, "ingredient deleted successfully"),
+    (400, "invalid ingredient name"),
+    (401, "user is not logged in"),
+    (404, "ingredient not found"),
+    (500, "internal server error"),
+  ),
 )

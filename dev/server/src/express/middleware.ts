@@ -17,6 +17,7 @@ import {
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import { Users, type User } from "../model";
+import { dedup, list_valid } from "../utils";
 
 // Enable CORS for all requests
 const cors_mw = cors();
@@ -85,6 +86,50 @@ const session_mw = session({
   saveUninitialized: false,
 });
 
+/**
+ * This middleware handles the sanitization of incoming lists.
+ * This makes the following guarantees:
+ * - The list is an array of non-empty strings.
+ * - The list has no duplicate entries.
+ * - Each string has no illegal symbols, capitals, or numbers.
+ * - Each string in the list is 50 characters or less.
+ * - Each string has no leading or trailing whitespace, and never more than one space in a row.
+ * @param list_name The name or names of the list(s) to sanitize.
+ * @returns The middleware to be passed to the Express app.
+ */
+function list_mw(list_name: string | string[]) {
+  if (typeof list_name === "string") {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      const result = list_valid(req.body[list_name]);
+      if (result) {
+        res.status(400).send(`invalid list: ${result}`);
+        return;
+      }
+      if (req.body[list_name].length === 0) {
+        res.status(400).send(`no useable data in list`);
+        return;
+      }
+      req.body[list_name] = dedup(req.body[list_name] as string[]);
+    };
+  } else {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      for (const name of list_name) {
+        const result = list_valid(req.body[name]);
+        if (result) {
+          res.status(400).send(`invalid ${name} list: ${result}`);
+          return;
+        }
+        const list = req.body[name] as string[];
+        if (list.length === 0) {
+          res.status(400).send(`no useable data in ${name} list`);
+          return;
+        }
+        req.body[name] = dedup(list);
+      }
+    };
+  }
+}
+
 // Create the authentication middleware
 /// Authenticate the user by checking the session, then checking the database to ensure the user
 /// exists. If the user is not found, or the session is invalid, return a 401 Unauthorized status.
@@ -124,4 +169,4 @@ function init(app: Express) {
   app.use(session_mw);
 }
 
-export { init, image_mw, authenticate_mw };
+export { init, image_mw, authenticate_mw, list_mw };

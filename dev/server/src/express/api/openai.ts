@@ -13,7 +13,7 @@ import {
 import type { Express, Request, Response } from "express";
 import type { User } from "../../model";
 import { unlink } from "fs-extra";
-import { sanitize_list } from "../../utils";
+import { parse_ai_response } from "../../utils";
 import { authenticate_mw, image_mw } from "../middleware";
 
 // Create the OpenAI client
@@ -60,39 +60,21 @@ async function get_api_image(req: Request, res: Response): Promise<void> {
     ],
   });
   console.log(response.choices[0].message.content);
-  try {
-    // Try to parse the response as a json.
-    // We're in a try/catch block, and we're okay (happy, actually) with getting a type error
-    // in this position.
-    // All errors in here are irrecoverable and necessetate a retry.
-    // We'll also convert the list to lowercase for consistency.
-    // On the frontend, we can handle capitalization with CSS.
-    const list = await JSON.parse(
-      response.choices[0].message.content as string
-    );
-    if (!Array.isArray(list) || list.some((i) => typeof i !== "string")) {
-      throw new Error();
-    }
-    // Success! Sanitize the list before sending it to the client.
-    const result = sanitize_list(list);
-    if (!result) {
-      throw new Error();
-    }
-    res.status(200).send(result as string[]);
-  } catch {
-    // All errors here are generic and irrecoverable. They all result from the AI response
-    // being malformed. There is no need to differentiate between them, because the client
-    // can't do anything about it anyways.
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
+  if (!result) {
     res.status(500).send("AI response failed to parse");
+    return;
   }
+  res.status(200).send(result);
 }
 
 //================================================================================================//
 
 async function get_api_recipes(req: Request, res: Response): Promise<void> {
   const user = req.user as User;
-  //TODO: We shouldn't need to sanitize in this position, since it comes from an internal database.
-  const ingredients = sanitize_list(user.ingredients.list) || [];
+  const ingredients = user.ingredients.list;
   if (ingredients.length === 0) {
     res.status(400).send("no ingredients provided");
     return;
@@ -118,22 +100,14 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
   });
 
   console.log(response.choices[0].message.content);
-
-  try {
-    const list = await JSON.parse(
-      response.choices[0].message.content as string
-    );
-    if (!Array.isArray(list) || list.some((i) => typeof i !== "string")) {
-      throw new Error();
-    }
-    const result = sanitize_list(list);
-    if (!result) {
-      throw new Error();
-    }
-    res.status(200).send(result as string[]);
-  } catch {
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
+  if (!result) {
     res.status(500).send("AI response failed to parse");
+    return;
   }
+  res.status(200).send(result);
 }
 
 //================================================================================================//

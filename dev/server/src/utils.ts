@@ -1,3 +1,5 @@
+// This file defines utilities to be used elsewhere. What else did you expect?
+
 /**
  *  Sort a list and deduplicate items
  *  Returns the list for convenience, but modifies the list in place

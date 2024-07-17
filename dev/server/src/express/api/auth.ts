@@ -1,3 +1,7 @@
+// This file is the implementation of the registration and login endpoints.
+// The endpoints are written as async functions. The routes and middleware are
+// specified in the `init` function at the bottom, which is called from `server.ts`
+
 import type { Express, Request, Response } from "express";
 import { Users } from "../../model";
 import { authenticate_mw } from "../middleware";
@@ -14,18 +18,8 @@ async function post_api_session(req: Request, res: Response): Promise<void> {
   }
   if (
     req.body === undefined ||
-    // I
     req.body.email === undefined ||
-    // really
-    req.body.password === undefined ||
-    // miss
-    typeof req.body.email !== "string" ||
-    // working
-    typeof req.body.password !== "string" ||
-    // in
-    req.body.email.length === 0 ||
-    // Rust.
-    req.body.password.length === 0
+    req.body.password === undefined
   ) {
     res.status(400).send("log in with email and password as a json object");
     return;
@@ -48,7 +42,7 @@ async function post_api_session(req: Request, res: Response): Promise<void> {
 }
 
 async function get_api_session(req: Request, res: Response): Promise<void> {
-  res.status(201).send("logged in");
+  res.status(200).send("logged in");
 }
 
 async function delete_api_session(req: Request, res: Response): Promise<void> {

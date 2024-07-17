@@ -1,3 +1,5 @@
+// This file sets up the file systems as needed for the website and images, and serves them.
+
 import express from "express";
 import type { Express } from "express";
 import { mkdir } from "fs/promises";

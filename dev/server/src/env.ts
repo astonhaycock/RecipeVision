@@ -1,5 +1,15 @@
-/// This function will read an environment variable, check if it's null, and
-/// optionally substitute a default value if it is.
+// This file reads environment variables and exports them for use in the rest of the codebase.
+// This file also specifies default values, if any.
+
+/**
+ * This function will read an environment variable, check if it's null, and
+ * optionally substitute a default value if it is.
+ * If the environment variable is not set and no default value is provided, an
+ * error will be thrown.
+ * @param name The name of the environment variable to read
+ * @param or The optional default value to use if the environment variable is not set
+ * @returns The value of the environment variable or default value
+ */
 function env(name: string, or?: string): string {
   const value = Bun.env[name];
   if (value === undefined) {
@@ -12,9 +22,17 @@ function env(name: string, or?: string): string {
   return value;
 }
 
-/// This function will read an environment variable, check if it's null, parse
-/// it with JSON.parse, and optionally substitute a default value if it is.
-/// Not suitable for parsing strings, as JSON can be a little picky.
+/**
+ * This function will read an environment variable, check if it's null, and
+ * optionally substitute a default value if it is.
+ * If the environment variable is not set and no default value is provided, an
+ * error will be thrown.
+ * This function will also attempt to parse the environment variable as the given type,
+ * using JSON.parse.
+ * @param name The name of the environment variable to parse
+ * @param or The optional default value to use if the environment variable is not set
+ * @returns The value of the environment variable or default value
+ */
 function envp<T>(name: string, or?: T): T {
   const value = Bun.env[name];
   if (value === undefined) {

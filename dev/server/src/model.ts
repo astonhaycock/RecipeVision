@@ -1,3 +1,8 @@
+// This file defines the types and interfaces for the Mongoose models and schemas.
+// Turn back if you value your sanity.
+// Mongoose and TypeScript were not meant to be together.
+// Oh, and this file also defines validation, hashing, and various convenience methods.
+
 import {
   Schema,
   model,

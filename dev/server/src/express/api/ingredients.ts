@@ -1,3 +1,7 @@
+// This file is the implementation of the ingredient list endpoints.
+// The endpoints are written as async functions. The routes and middleware are
+// specified in the `init` function at the bottom, which is called from `server.ts`
+
 import type { Express, Request, Response } from "express";
 import { authenticate_mw } from "../middleware";
 import type { User } from "../../model";

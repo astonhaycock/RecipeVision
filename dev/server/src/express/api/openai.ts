@@ -1,3 +1,7 @@
+// This file is the implementation of the OpenAI API calls, and the endpoints to trigger them.
+// The endpoints are written as async functions. The routes and middleware are
+// specified in the `init` function at the bottom, which is called from `server.ts`
+
 import { OpenAI } from "openai";
 import {
   IMAGE_PROMPT,
@@ -85,7 +89,7 @@ async function get_api_image(req: Request, res: Response): Promise<void> {
 
 //================================================================================================//
 
-async function get_api_recipe(req: Request, res: Response): Promise<void> {
+async function get_api_recipes(req: Request, res: Response): Promise<void> {
   const user = req.user as User;
   //TODO: We shouldn't need to sanitize in this position, since it comes from an internal database.
   const ingredients = sanitize_list(user.ingredients.list) || [];
@@ -143,7 +147,7 @@ function init(app: Express) {
     image_mw.single("image"),
     get_api_image
   );
-  app.get("/api/recipe", authenticate_mw, get_api_recipe);
+  app.get("/api/recipes", authenticate_mw, get_api_recipes);
 }
 
 export { init };

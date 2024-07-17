@@ -1,3 +1,6 @@
+// This file sets up the Express server and initializes the middleware and the endpoints.
+// The express server is not started here. It is exported to be started in `index.ts`.
+
 import express from "express";
 
 const app = express();

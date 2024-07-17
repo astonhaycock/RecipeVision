@@ -1,3 +1,8 @@
+// This file defines the middlewares and their settings. Several custom middlewares
+// are defined here, including the authentication middleware.
+// Global middlewares are added in the `init` function, which is called from `server.ts`.
+// Middlewares to be selectively applied are returned for use in other files.
+
 import cors from "cors";
 import express from "express";
 import type { Express, Request, Response, NextFunction } from "express";
@@ -114,7 +119,9 @@ async function authenticate_mw(
 }
 
 function init(app: Express) {
-  app.use(cors_mw).use(body_parser_mw).use(session_mw);
+  app.use(cors_mw);
+  app.use(body_parser_mw);
+  app.use(session_mw);
 }
 
 export { init, image_mw, authenticate_mw };

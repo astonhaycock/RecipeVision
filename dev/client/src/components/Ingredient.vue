@@ -1,16 +1,13 @@
-<script setup>
+<script setup lang="ts">
   import { ref, computed, watch } from "vue";
+  import type { Ref } from "vue";
   import ImageUpload from "./ImageUpload.vue";
 
-  const items = ref([
-    {
-      text: "GET /api/ingredient",
-    },
-  ]);
+  const items = ref(["GET /api/ingredient"]);
 
   const loading = ref(false);
   const search = ref("");
-  const selected = ref([]);
+  const selected: Ref<Array<string>> = ref([]);
 
   const allSelected = computed(() => selected.value.length === items.value.length);
 
@@ -18,10 +15,10 @@
     const searchText = search.value.toLowerCase();
     if (!searchText) return items.value;
 
-    return items.value.filter((item) => item.text.toLowerCase().includes(searchText));
+    return items.value.filter((item) => item.toLowerCase().includes(searchText));
   });
 
-  const selections = computed(() => selected.value);
+  const selections = selected.value;
 
   watch(selected, () => {
     search.value = "";
@@ -46,13 +43,13 @@
         <v-row align="center" justify="start">
           <v-col
             v-for="(selection, i) in selections"
-            :key="selection.text"
+            :key="selection"
             class="py-1 pe-0"
             cols="auto">
             <v-chip :disabled="loading" closable @click:close="selected.splice(i, 1)">
-              <v-icon :icon="selection.icon" start></v-icon>
+              <v-icon start></v-icon>
 
-              {{ selection.text }}
+              {{ selection }}
             </v-chip>
           </v-col>
           <v-card-actions>
@@ -85,14 +82,14 @@
           <v-list-item
             class="d-flex"
             v-if="!selected.includes(item)"
-            :key="item.text"
+            :key="item"
             :disabled="loading"
             @click="selected.push(item)">
             <template v-slot:prepend>
-              <v-icon :disabled="loading" :icon="item.icon"></v-icon>
+              <v-icon :disabled="loading"></v-icon>
             </template>
 
-            <v-list-item-title v-text="item.text"></v-list-item-title>
+            <v-list-item-title v-text="item"></v-list-item-title>
           </v-list-item>
         </template>
       </v-list>

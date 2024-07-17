@@ -1,12 +1,9 @@
 <script setup lang="ts">
   import loading from "../assets/loading.gif";
-  import IngredientList from "../components/IngredientList.vue";
-  import ImageUpload from "../components/ImageUpload.vue";
-  import ReviewList from "../components/ReviewList.vue";
+  import IngredientList from "../components/Ingredient.vue";
   import RecipeList from "../components/Recipe.vue";
   import { defineComponent } from "vue";
   import { ref, type Ref } from "vue";
-  import DefaultButton from "../components/DefaultButton.vue";
   const URL = "https://dont-pani.cc";
 
   const ingredients: Ref<string[]> = ref([]);

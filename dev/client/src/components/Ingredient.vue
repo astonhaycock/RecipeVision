@@ -3,7 +3,7 @@
   import type { Ref } from "vue";
   import ImageUpload from "./ImageUpload.vue";
 
-  const items = ref(["GET /api/ingredient"]);
+  const items: Ref<Array<string>> = ref([]);
 
   const loading = ref(false);
   const search = ref("");
@@ -33,6 +33,17 @@
       loading.value = false;
     }, 2000);
   };
+
+  async function getIngredients() {
+    const response = await fetch("https://dont-pani.cc/api/ingredients");
+    const data = await response.json();
+    if (response.status === 200) {
+      items.value = data.json();
+      console.log("Ingredient got Successfully");
+    } else {
+      console.log("Ingredient not received");
+    }
+  }
 </script>
 
 <template>

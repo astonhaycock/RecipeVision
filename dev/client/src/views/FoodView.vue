@@ -16,23 +16,6 @@
     reviewList.value = data;
     loading_screen.value = false;
   }
-  async function sendIngredients(reviewList: Array<string>) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    const data = { ingredients: reviewList };
-
-    const requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      body: JSON.stringify(data),
-    };
-    const response = await fetch(`${URL}/api/ingredients`, requestOptions);
-    if (response.status === 204) {
-      console.log("Successfully added ingredient");
-    } else {
-      console.log("Failed to add ingredient");
-    }
-  }
 </script>
 
 <template>

@@ -2,7 +2,7 @@
   import icon from "./icons/IconUpload.vue";
   import { defineComponent, defineModel, onMounted, defineProps, ref } from "vue";
   import type { ModelRef, PropType, Ref } from "vue";
-  const amenities: Ref<Array<Number>> = ref([1, 4]);
+  const amenities: Ref<Array<Number>> = ref([]);
 
   const ingredients: ModelRef<string[], string> = defineModel("reviewList") as ModelRef<
     string[],
@@ -27,6 +27,24 @@
   function save(index: number) {
     ingredients.value[index] = textInput.value;
     editingItem.value = -1;
+  }
+  async function sendIngredients(reviewList: Array<string>) {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const data = { ingredients: reviewList };
+
+    const requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      body: JSON.stringify(data),
+    };
+    const response = await fetch(`${URL}/api/ingredients`, requestOptions);
+    ingredients.value = [];
+    if (response.status === 204) {
+      console.log("Successfully added ingredient");
+    } else {
+      console.log("Failed to add ingredient");
+    }
   }
 </script>
 
@@ -60,6 +78,7 @@
         filter-icon="mdi-plus"></v-chip>
     </v-chip-group>
   </v-card-text>
+  <v-btn v-if="ingredients" @click="sendIngredients(ingredients)">Add Ingredients</v-btn>
 </template>
 
 <style scoped></style>

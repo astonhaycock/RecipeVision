@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, watch } from "vue";
+  import { ref, computed, watch, onMounted } from "vue";
   import type { Ref } from "vue";
   import ImageUpload from "./ImageUpload.vue";
 
@@ -44,6 +44,9 @@
       console.log("Ingredient not received");
     }
   }
+  onMounted(() => {
+    getIngredients();
+  });
 </script>
 
 <template>

@@ -1,3 +1,8 @@
+// This file defines the types and interfaces for the Mongoose models and schemas.
+// Turn back if you value your sanity.
+// Mongoose and TypeScript were not meant to be together.
+// Oh, and this file also defines validation, hashing, and various convenience methods.
+
 import {
   Schema,
   model,
@@ -104,7 +109,7 @@ UserSchema.method("setPassword", async function (plainPassword: string) {
     let encryptedPassword = await Bun.password.hash(plainPassword);
     this.password = encryptedPassword;
   } catch (error) {
-    console.log("Invalid password, can't set password");
+    console.log("can't set password");
   }
 });
 
@@ -170,7 +175,7 @@ UserSchema.static(
   }): Promise<User | string | null> {
     let existing = await this.findOne({ email: auth.email });
     if (existing) {
-      return "Email already exists";
+      return "email already exists";
     }
     let user = new Users();
     let ingredients = new IngredientsLists({ list: [] });

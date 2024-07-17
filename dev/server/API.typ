@@ -69,8 +69,8 @@
   v(30pt)
 }
 
-
-#let infobox(text) = align(center, box(fill: rgb(189, 148, 249, 63), inset: 15pt, radius: 15pt, align(left, text)));
+// rgb(189, 148, 249, 63)
+#let infobox(text) = align(center, box(fill: rgb(30, 32, 40), inset: 15pt, radius: 15pt, align(left, text)));
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

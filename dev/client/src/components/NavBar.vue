@@ -17,63 +17,27 @@
 </script>
 
 <template>
-  <nav>
-    <div id="nav-big">
-      <img id="small-logo" src="@/assets/logo.png" />
-      <div>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink v-if="current_user" to="/recipe">Recipes</RouterLink>
-        <RouterLink v-if="current_user" to="/ingredients"
-          >Ingredients</RouterLink
-        >
-      </div>
-      <!-- Check login with current_user, imported in the setup() block above -->
-      <RouterLink v-if="!current_user" to="/Auth">Login</RouterLink>
-      <DefaultButton v-else msg="Logout" @click="$emit('logout')" />
+  <v-app-bar color="grey-lighten-4" height="100" class="d-flex justify-center" :elevation="10">
+    <div id="NavBar">
+      <RouterLink to="/"><v-btn class="me-2" color="grey" height="40" variant="flat" width="80">Home</v-btn></RouterLink>
+
+      <RouterLink v-if="current_user" to="/recipe"><v-btn class="me-2" color="grey" height="40" variant="flat" width="100">Recipes</v-btn></RouterLink>
+
+      <RouterLink v-if="current_user" to="/ingredients"> <v-btn class="me-2" color="grey" height="40" variant="flat" width="120"> Ingredients</v-btn></RouterLink>
+
+      <RouterLink v-if="!current_user" to="/Auth"> <v-btn class="me-2" color="grey" height="40" variant="flat" width="120"> Login</v-btn></RouterLink>
+
+      <v-btn v-else msg="Logout" @click="$emit('logout')" class="me-2" color="grey" height="40" variant="flat" width="120"> Logout</v-btn>
     </div>
-  </nav>
+  </v-app-bar>
+  <!-- <v-footer color="grey" height="44" app></v-footer> -->
 </template>
 
 <style scoped>
-  #nav-big {
+  div {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    /* gap: 20rem; */
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-  .links {
-    display: flex;
-    /* background-color: aliceblue; */
-    flex-direction: column;
-  }
-  #nav-small {
-    display: none;
-  }
-  #links-small {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  #small-logo {
-    display: block;
-  }
-  #big-logo {
-    display: none;
-  }
-
-  @media (max-width: 900px) {
-    nav button {
-      font-size: xx-large;
-    }
-    #big-logo {
-      display: block;
-    }
-    nav {
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-around;
-    }
+    width: 100vw;
   }
 </style>

@@ -3,6 +3,7 @@
   import icon from "./icons/IconUpload.vue";
   import cameraIcon from "./icons/cameraIcon.vue";
   import ReviewList from "./ReviewList.vue";
+  import IngredientView from ".view/IngredientView.vue";
 
   const emit = defineEmits(["reviewIngredients", "modal"]);
 
@@ -11,6 +12,7 @@
   const image = ref<File | null>(null);
   const imageUrl = ref<string | null>(null);
   const loading = ref(false);
+  const IngredientReview = ref<string | null>(null);
 
   const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -40,7 +42,7 @@
       const response = await fetch(URL, requestOptions);
       const data = await response.json();
       // Emitting event to parent component with the uploaded image data
-      emit("reviewIngredients", data);
+      IngredientReview.value = data;
       // Assumes you are listening to this event in the parent component
       loading.value = false;
       imageUrl.value = null;
@@ -73,7 +75,7 @@
       </div>
     </div>
   </div>
-  <review-list />
+  <review-list v-model:review-list="IngredientReview" />
 </template>
 
 <style scoped>

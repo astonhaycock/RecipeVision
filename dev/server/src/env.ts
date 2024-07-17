@@ -87,13 +87,16 @@ const IMAGE_PROMPT = env(
   "Give me a list of cooking ingredients in this image, if any, as a JSON array of strings. " +
     "If no ingredients are present, return an empty JSON array. Keep each ingredient generic " +
     "and do not include brand information. Return only the JSON array, with no description, " +
-    "context, or formatting."
+    "context, or formatting. Do not include ingredients that are a part of a larger dish, " +
+    "such as the ingredients pictured on a can of soup."
 );
 /// The prompt to use for recipe generation
 const RECIPE_PROMPT = env(
   "RECIPE_PROMPT",
   "Give me a list of recipe ideas that can be made using a subset of the provided list " +
-    "of ingredients. " +
+    "of ingredients labelled 'ingredients'. Avoid recipes that are certain to use any ingredients " +
+    "listed in the 'ingredient_exclusions' list. Additionally, avoid recipes listed in the " +
+    "'recipe_exclusions' list." +
     "Provide the name of the idea only, such that I can search for each idea on a recipe website. " +
     "Return the list as a JSON array of strings. " +
     "It is permissible to include a few recipes that use a couple additional ingredients. " +

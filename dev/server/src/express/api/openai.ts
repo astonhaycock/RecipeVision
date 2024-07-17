@@ -92,7 +92,19 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
           },
           {
             type: "text",
-            text: JSON.stringify(ingredients),
+            text: `ingredients: ${JSON.stringify(ingredients)}`,
+          },
+          {
+            type: "text",
+            text: `ingredient_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
+          },
+          {
+            type: "text",
+            text: `recipe_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
         ],
       },

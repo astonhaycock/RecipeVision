@@ -7,6 +7,8 @@
     email: "",
     password: "",
   });
+  const loading = ref(false);
+  const form = ref(false);
 
   async function loginUser() {
     const myHeaders = new Headers();
@@ -18,10 +20,7 @@
       body: JSON.stringify(user.value),
     };
 
-    const response = await fetch(
-      "https://dont-pani.cc/api/session",
-      requestOptions
-    );
+    const response = await fetch("https://dont-pani.cc/api/session", requestOptions);
 
     if (response.status === 201) {
       console.log("Successfully logged in");
@@ -31,41 +30,66 @@
       console.log("Failed to login");
     }
   }
+  function required(v: string) {
+    return !!v || "Field is required";
+  }
 </script>
 
 <template>
-  <div class="login-page">
-    <h1>Login</h1>
-    <div>
-      <input placeholder="Email" v-model="user.email" />
-    </div>
-    <div>
-      <input placeholder="Password" v-model="user.password" />
-    </div>
-    <DefaultButton msg="Login" @click="loginUser" />
-    <p>or</p>
-  </div>
+  <v-sheet class="pa-12" id="sheet" rounded>
+    <v-card id="login-container" class="mx-auto px-6 py-8" min-width="344">
+      <v-form v-model="form" @submit.prevent="loginUser" min-width="300" width="500" elevation-80>
+        <v-text-field
+          v-model="user.email"
+          :readonly="loading"
+          :rules="[required]"
+          class="mb-2"
+          label="Email"
+          width="300px"
+          clearable></v-text-field>
+
+        <v-text-field
+          v-model="user.password"
+          :readonly="loading"
+          :rules="[required]"
+          label="Password"
+          placeholder="Enter your password"
+          width="300px"
+          type="password"
+          clearable></v-text-field>
+
+        <br />
+
+        <v-btn
+          :disabled="!form"
+          :loading="loading"
+          color="success"
+          size="large"
+          type="submit"
+          variant="elevated"
+          block>
+          Sign In
+        </v-btn>
+      </v-form>
+    </v-card>
+  </v-sheet>
 </template>
 
 <style scoped>
-  .login-page {
+  #sheet {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 400px;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(188, 189, 191, 0.893);
+  }
+  #login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* min-width: 350px;
+    max-width: 800px; */
     height: 400px;
-    gap: 1em;
-    font-size: 20px;
-  }
-  .login-page div input {
-    width: 200px;
-    height: 40px;
-    border-radius: 5px;
-    background-color: var(--vt-c-white-mute);
-  }
-  button {
-    width: 200px;
-    padding: 0.4rem;
   }
 </style>

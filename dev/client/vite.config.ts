@@ -8,6 +8,13 @@ export default defineConfig({
   server: {
     port: 3840,
     strictPort: true,
+    proxy: {
+      "/api": {
+        target: "https://dont-pani.cc",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   plugins: [vue()],
   resolve: {

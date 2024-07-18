@@ -13,8 +13,8 @@ function init(app: Express) {
     .catch(console.error)
     .then(() => {
       if (VUE_DEV) {
-        console.warn(
-          "Running in Vue dev mode: web requests are forwarded to the Vue dev server"
+        console.log(
+          "\x1b[33mRunning in Vue dev mode: web requests are forwarded to the Vue dev server\x1b[0m"
         );
         SITE_ROUTES.map((route) => {
           app.use(route, proxy("localhost:3840"));

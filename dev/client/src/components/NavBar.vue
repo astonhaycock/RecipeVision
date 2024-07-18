@@ -17,7 +17,7 @@ const nav_open = ref(false);
 </script>
 
 <template>
-  <v-app-bar id="navBar" color="grey-lighten-4" height="100" :elevation="10">
+  <v-app-bar color="grey-lighten-4" height="100" :elevation="10">
     <RouterLink to="/"
       ><v-btn
         class="me-2"
@@ -68,9 +68,4 @@ const nav_open = ref(false);
   </v-app-bar>
 </template>
 
-<style scoped>
-#navBar {
-  color: red;
-  background-color: aqua;
-}
-</style>
+<style scoped></style>

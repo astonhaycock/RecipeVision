@@ -59,10 +59,15 @@ const clearImage = () => {
       <h1>Ingredients</h1>
       <form @submit.prevent>
         <input type="file" id="actual-btn" @change="handleFileUpload" hidden />
-        <!-- change later with better icon -->
-        <label for="actual-btn"
-          ><img src="@/assets/imageUpload.png" alt=""
-        /></label>
+        <label for="actual-btn">
+          <v-icon
+            for="actual-btn"
+            class="ma-2"
+            size="60"
+            color="indigo"
+            icon="mdi-cloud-upload"
+          ></v-icon>
+        </label>
       </form>
     </div>
 
@@ -96,7 +101,7 @@ const clearImage = () => {
   flex-direction: column;
   gap: 1rem;
   padding-top: 1rem;
-  padding-bottom: 1rem;
+  /* padding-bottom: 1rem; */
 }
 #title {
   display: flex;

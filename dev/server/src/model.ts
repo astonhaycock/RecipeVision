@@ -201,6 +201,7 @@ UserSchema.static(
     let ingredients = new IngredientsLists({ list: [] });
     let recipe_exclusions = new RecipeExclusionsLists({ list: [] });
     let ingredient_exclusions = new IngredientExclusionsLists({ list: [] });
+    let dietary_preferences = new DietaryPreferencesLists({ list: [] });
     user.email = auth.email;
     await user.setPassword(auth.password);
     user.last_request = new Date(Date.now() - RATE_LIMIT);

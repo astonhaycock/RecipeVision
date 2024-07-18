@@ -208,6 +208,7 @@ UserSchema.static(
     user.ingredients = ingredients._id;
     user.recipe_exclusions = recipe_exclusions._id;
     user.ingredient_exclusions = ingredient_exclusions._id;
+    user.dietary_preferences = dietary_preferences._id;
 
     const val_err = await user.validateSync();
     if (val_err) {
@@ -218,6 +219,7 @@ UserSchema.static(
     await ingredients.save();
     await recipe_exclusions.save();
     await ingredient_exclusions.save();
+    await dietary_preferences.save();
 
     return user.tryPopulateAll();
   }

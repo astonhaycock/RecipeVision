@@ -64,8 +64,8 @@
 
 <template>
   <v-app id="inspire">
-    <NavBar id="nav" v-model:login="login" />
+    <NavBar id="nav" v-model:login="login" @logout="logout" />
     <!-- <FoodView /> -->
-    <RouterView @login="getSession()" @logout="logout" />
+    <RouterView @login="getSession()" />
   </v-app>
 </template>

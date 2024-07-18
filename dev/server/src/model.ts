@@ -36,6 +36,10 @@ const IngredientExclusionsLists = model<IList>(
   "Ingredient_Exclusions_List",
   ListSchema
 );
+const DietaryPreferencesLists = model<IList>(
+  "Dietary_Preferences_List",
+  ListSchema
+);
 
 //================================================================================================//
 //==| USER MODEL & SCHEMA |=======================================================================//
@@ -48,6 +52,7 @@ interface IUser {
   ingredients?: Types.ObjectId;
   recipe_exclusions?: Types.ObjectId;
   ingredient_exclusions?: Types.ObjectId;
+  dietary_preferences?: Types.ObjectId;
 }
 
 interface IPopulatedUser {
@@ -57,6 +62,7 @@ interface IPopulatedUser {
   ingredients: IngredientsList;
   recipe_exclusions: RecipeExclusionsList;
   ingredient_exclusions: IngredientExclusionsList;
+  dietary_preferences: DietaryPreferencesList;
 }
 
 interface IUserMethods {
@@ -102,6 +108,11 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
     ref: "Ingredient_Exclusions_List",
     required: true,
   },
+  dietary_preferences: {
+    type: Schema.Types.ObjectId,
+    ref: "Dietary_Preferences_List",
+    required: true,
+  },
 });
 
 UserSchema.method("setPassword", async function (plainPassword: string) {
@@ -122,13 +133,22 @@ UserSchema.method("tryPopulateAll", async function () {
   const popped = await this.populate<
     Pick<
       IPopulatedUser,
-      "ingredients" | "recipe_exclusions" | "ingredient_exclusions"
+      | "ingredients"
+      | "recipe_exclusions"
+      | "ingredient_exclusions"
+      | "dietary_preferences"
     >
-  >(["ingredients", "recipe_exclusions", "ingredient_exclusions"]);
+  >([
+    "ingredients",
+    "recipe_exclusions",
+    "ingredient_exclusions",
+    "dietary_preferences",
+  ]);
   if (
     !this.populated("ingredients") ||
     !this.populated("recipe_exclusions") ||
-    !this.populated("ingredient_exclusions")
+    !this.populated("ingredient_exclusions") ||
+    !this.populated("dietary_preferences")
   ) {
     return null;
   }
@@ -217,6 +237,8 @@ type IngredientsList = HydratedDocument<IList, {}>;
 type RecipeExclusionsList = HydratedDocument<IList, {}>;
 /// The type of a list of ingredient exclusions.
 type IngredientExclusionsList = HydratedDocument<IList, {}>;
+/// The type of a list of dietary preferences
+type DietaryPreferencesList = HydratedDocument<IList, {}>;
 
 const DB = await connect(MONGODB_URL);
 
@@ -225,10 +247,12 @@ export {
   IngredientsLists,
   RecipeExclusionsLists,
   IngredientExclusionsLists,
+  DietaryPreferencesLists,
 };
 export type {
   User,
   IngredientsList,
   RecipeExclusionsList,
   IngredientExclusionsList,
+  DietaryPreferencesList,
 };

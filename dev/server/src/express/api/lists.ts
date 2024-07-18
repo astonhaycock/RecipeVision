@@ -125,6 +125,7 @@ function init(app: Express) {
   list_routes(app, "ingredient");
   list_routes(app, "recipe_exclusion");
   list_routes(app, "ingredient_exclusion");
+  list_routes(app, "dietary_preference");
 }
 
 export { init };

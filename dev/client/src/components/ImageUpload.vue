@@ -4,7 +4,7 @@
   import cameraIcon from "./icons/cameraIcon.vue";
   import ReviewList from "./ReviewList.vue";
 
-  const emit = defineEmits(["reviewIngredients", "modal"]);
+  const emit = defineEmits(["reviewIngredients", "update"]);
 
   const URL = "https://dont-pani.cc/api/image";
   const ReviewListIngredients = ref<string>("");
@@ -74,7 +74,7 @@
       </div>
     </div>
   </div>
-  <review-list v-model:review-list="IngredientReview" />
+  <review-list v-model:review-list="IngredientReview" @addIngredients="$emit('update')" />
 </template>
 
 <style scoped>

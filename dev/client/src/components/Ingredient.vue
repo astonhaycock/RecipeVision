@@ -53,7 +53,7 @@
 
 <template>
   <v-navigation-drawer :width="350" id="ingredient-container" permanent>
-    <ImageUpload />
+    <ImageUpload @update="getIngredients()" />
     <v-card class="mx-auto" max-width="500">
       <v-container>
         <v-row align="center" justify="start">

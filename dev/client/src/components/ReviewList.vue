@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import icon from "./icons/IconUpload.vue";
-  import { defineComponent, defineModel, onMounted, defineProps, ref } from "vue";
+  import { defineComponent, defineModel, onMounted, defineProps, ref, defineEmits } from "vue";
   import type { ModelRef, PropType, Ref } from "vue";
   const amenities: Ref<Array<Number>> = ref([]);
+  const emit = defineEmits(["addIngredients"]);
 
   const ingredients: ModelRef<string[], string> = defineModel("reviewList") as ModelRef<
     string[],
@@ -49,26 +50,6 @@
 </script>
 
 <template>
-  <!-- <div id="list-container">
-    <ul>
-      <li id="ingredient" v-for="(ingredient, index) in ingredients">
-        <p v-if="editingItem !== index" id="ingredient">{{ ingredient }}</p>
-        <input
-          v-model="textInput"
-          v-if="editingItem === index"
-          :placeholder="ingredient"
-        />
-        <button v-if="editingItem !== index" id="editBtn" @click="edit(index)">
-          Edit
-        </button>
-        <button v-if="editingItem === index" id="editBtn" @click="save(index)">
-          Save
-        </button>
-        <button id="deleteBtn" @click="deleteIngredient(index)">Delete</button>
-      </li>
-    </ul>
-  </div> -->
-
   <v-card-text>
     <v-chip-group v-model="amenities" column multiple>
       <v-chip
@@ -78,7 +59,9 @@
         filter-icon="mdi-plus"></v-chip>
     </v-chip-group>
   </v-card-text>
-  <v-btn v-if="ingredients" @click="sendIngredients(ingredients)">Add Ingredients</v-btn>
+  <v-btn v-if="ingredients" @click="sendIngredients(ingredients), $emit('addIngredients')"
+    >Add Ingredients</v-btn
+  >
 </template>
 
 <style scoped></style>

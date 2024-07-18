@@ -26,8 +26,8 @@
 
     if (response.status === 201) {
       console.log("Successfully logged in");
-      user.value = { email: "", password: "" }; // Clear user form data
       router.push("/");
+      user.value = { email: "", password: "" }; // Clear user form data
       emit("login");
     } else {
       console.log("Failed to login");
@@ -41,7 +41,13 @@
 <template>
   <v-sheet class="pa-12" id="sheet" rounded>
     <v-card id="login-container" class="mx-auto px-6 py-8" min-width="344">
-      <v-form v-model="form" @submit.prevent="loginUser" min-width="300" width="500" elevation-80>
+      <v-form
+        id="form-container"
+        v-model="form"
+        @submit.prevent="loginUser"
+        min-width="300"
+        width="500"
+        elevation-80>
         <v-text-field
           v-model="user.email"
           :readonly="loading"
@@ -74,11 +80,22 @@
           Sign In
         </v-btn>
       </v-form>
+      <div id="register"><p>kasdklfas;ldkfalksjkdflkjasdf</p></div>
     </v-card>
   </v-sheet>
 </template>
 
 <style scoped>
+  #form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #register {
+    padding: 1rem;
+    width: 300px;
+  }
   #sheet {
     display: flex;
     justify-content: center;
@@ -86,11 +103,10 @@
     height: 100vh;
     width: 100vw;
     background-color: rgba(188, 189, 191, 0.893);
+    padding: 3rem;
   }
   #login-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
     /* min-width: 350px;
     max-width: 800px; */
     height: 400px;

@@ -16,7 +16,7 @@ function env(name: string, or?: string): string {
     if (or === undefined) {
       throw new Error(`unable to find required env var ${name}`);
     }
-    console.log(`unable to find env var ${name}, defaulting to ${or}`);
+    // console.log(`unable to find env var ${name}, defaulting to ${or}`);
     return or;
   }
   return value;
@@ -39,7 +39,7 @@ function envp<T>(name: string, or?: T): T {
     if (or === undefined) {
       throw new Error(`unable to find required env var ${name}`);
     }
-    console.log(`unable to find env var ${name}, defaulting to ${or}`);
+    // console.log(`unable to find env var ${name}, defaulting to ${or}`);
     return or;
   }
   let parsed: T;
@@ -52,14 +52,17 @@ function envp<T>(name: string, or?: T): T {
     if (or === undefined) {
       throw new Error(`error occurred while parsing required env var ${name}`);
     }
-    console.warn(
-      `error occurred while parsing env var ${name}, defaulting to ${or}`
-    );
+    console
+      .warn
+      // `error occurred while parsing env var ${name}, defaulting to ${or}`
+      ();
     return or;
   }
   return parsed;
 }
 
+/// Whether to redirect web files to the Vue dev server
+const VUE_DEV = envp<boolean>("VUE_DEV", false);
 /// The maximum upload size in bytes
 const FILE_LIMIT = envp<number>("FILE_LIMIT", 100 * 1024 * 1024);
 /// The port to listen on
@@ -115,6 +118,7 @@ if (url.endsWith("/")) {
 const PUBLIC_URL = url;
 
 export {
+  VUE_DEV,
   FILE_LIMIT,
   PORT,
   RATE_LIMIT,

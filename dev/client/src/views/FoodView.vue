@@ -1,21 +1,21 @@
 <script setup lang="ts">
-  import loading from "../assets/loading.gif";
-  import IngredientList from "../components/Ingredient.vue";
-  import RecipeList from "../components/Recipe.vue";
-  import { defineComponent } from "vue";
-  import { ref, type Ref } from "vue";
-  const URL = "https://dont-pani.cc";
+import loading from "../assets/loading.gif";
+import IngredientList from "../components/Ingredient.vue";
+import RecipeList from "../components/Recipe.vue";
+import { defineComponent } from "vue";
+import { ref, type Ref } from "vue";
+const URL = "https://dont-pani.cc";
 
-  const ingredients: Ref<string[]> = ref([]);
-  const ingredient = ref("#4400ff");
-  const modal = ref(false);
-  const loading_screen = ref(true);
-  const reviewList: Ref<string[]> = ref([]);
+const ingredients: Ref<string[]> = ref([]);
+const ingredient = ref("#4400ff");
+const modal = ref(false);
+const loading_screen = ref(true);
+const reviewList: Ref<string[]> = ref([]);
 
-  function handleReviewIngredients(data: string[]) {
-    reviewList.value = data;
-    loading_screen.value = false;
-  }
+function handleReviewIngredients(data: string[]) {
+  reviewList.value = data;
+  loading_screen.value = false;
+}
 </script>
 
 <template>

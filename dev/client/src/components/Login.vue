@@ -2,7 +2,7 @@
   import { ref, defineEmits } from "vue";
   import DefaultButton from "../components/DefaultButton.vue";
   import { useRouter, useRoute } from "vue-router";
-  const emit = defineEmits(["login"]);
+  const emit = defineEmits(["login", "registerPage"]);
 
   const user = ref({
     email: "",
@@ -11,6 +11,10 @@
   const loading = ref(false);
   const form = ref(false);
   const router = useRouter();
+  const page = ref("login");
+  function pageChange(pageSelected: string) {
+    page.value = pageSelected;
+  }
 
   async function loginUser() {
     const myHeaders = new Headers();
@@ -40,8 +44,9 @@
 
 <template>
   <v-sheet class="pa-12" id="sheet" rounded>
-    <v-card id="login-container" class="mx-auto px-6 py-8" min-width="344">
+    <v-card id="login-container" class="mx-auto" min-width="344">
       <v-form
+        class="pa-15"
         id="form-container"
         v-model="form"
         @submit.prevent="loginUser"
@@ -80,7 +85,11 @@
           Sign In
         </v-btn>
       </v-form>
-      <div id="register"><p>kasdklfas;ldkfalksjkdflkjasdf</p></div>
+      <div id="register" class="pa-15">
+        <h1>Welcome to login page</h1>
+        <p>Don't have an account?</p>
+        <v-chip @click="$emit('registerPage')">Sign Up</v-chip>
+      </div>
     </v-card>
   </v-sheet>
 </template>
@@ -93,8 +102,12 @@
     align-items: center;
   }
   #register {
-    padding: 1rem;
-    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #5ab2ff;
+    gap: 1rem;
   }
   #sheet {
     display: flex;
@@ -103,12 +116,9 @@
     height: 100vh;
     width: 100vw;
     background-color: rgba(188, 189, 191, 0.893);
-    padding: 3rem;
   }
   #login-container {
     display: flex;
-    /* min-width: 350px;
-    max-width: 800px; */
-    height: 400px;
+    height: 500px;
   }
 </style>

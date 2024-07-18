@@ -17,28 +17,20 @@
 </script>
 
 <template>
-  <v-app-bar color="grey-lighten-4" height="100" class="d-flex justify-center" :elevation="10">
-    <div id="NavBar">
-      <RouterLink to="/"
-        ><v-btn class="me-2" color="grey" height="40" variant="flat" width="80"
-          >Home</v-btn
-        ></RouterLink
-      >
-
-      <RouterLink v-if="current_user" to="/recipe"
-        ><v-btn class="me-2" color="grey" height="40" variant="flat" width="100"
-          >Recipes</v-btn
-        ></RouterLink
-      >
-
-      <RouterLink v-if="current_user" to="/ingredients">
-        <v-btn class="me-2" color="grey" height="40" variant="flat" width="120">
-          Ingredients</v-btn
-        ></RouterLink
-      >
-
-      <RouterLink v-if="!current_user" to="/auth">
-        <v-btn class="me-2" color="grey" height="40" variant="flat" width="120">
+  <v-app-bar id="navBar" color="grey-lighten-4" height="100" :elevation="10">
+    <RouterLink to="/"
+      ><v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="120"
+        >Home</v-btn
+      ></RouterLink
+    >
+    <RouterLink v-if="current_user" to="/food">
+      <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="120">
+        Food</v-btn
+      ></RouterLink
+    >
+    <v-app-bar-title>
+      <RouterLink v-if="!current_user" to="/Auth" class="float-right">
+        <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="120">
           Login</v-btn
         ></RouterLink
       >
@@ -47,23 +39,20 @@
         v-else
         msg="Logout"
         @click="$emit('logout')"
-        class="me-2"
-        color="grey"
-        height="40"
+        class="me-2 float-right"
+        color="grey-lighten-4"
+        height="90"
         variant="flat"
         width="120">
         Logout</v-btn
       >
-    </div>
+    </v-app-bar-title>
   </v-app-bar>
-  <!-- <v-footer color="grey" height="44" app></v-footer> -->
 </template>
 
 <style scoped>
   #navBar {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100vw;
+    color: red;
+    background-color: aqua;
   }
 </style>

@@ -9,10 +9,12 @@ import { init as middleware } from "./middleware";
 import { init as auth } from "./api/auth";
 import { init as lists } from "./api/lists";
 import { init as openai } from "./api/openai";
+import { init as statics } from "./static";
 
 middleware(app);
 auth(app);
 lists(app);
 openai(app);
+statics(app);
 
 export { app };

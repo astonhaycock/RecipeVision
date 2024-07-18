@@ -11,7 +11,9 @@ function init(app: Express) {
   mkdir(IMAGES_PATH, { recursive: true })
     .catch(console.error)
     .then(() => {
-      SITE_ROUTES.map((route) => app.use(express.static(WEBSITE_PATH)));
+      SITE_ROUTES.map((route) => {
+        app.use(route, express.static(WEBSITE_PATH));
+      });
       app.use("/images", express.static(IMAGES_PATH));
     });
 }

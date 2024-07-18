@@ -10,70 +10,49 @@
   // }>();
   const current_user = defineModel("login") as ModelRef<string>;
 
-  const login = ref(true);
+  // const login = ref(false);
   const message = ref("Hello, World!");
   const nav_open = ref(false);
   // const current_user = ref(false);
 </script>
 
 <template>
-  <nav>
-    <div id="nav-big">
-      <img id="small-logo" src="@/assets/logo.png" />
-      <div>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink v-if="current_user" to="/recipe">Recipes</RouterLink>
-        <RouterLink v-if="current_user" to="/ingredients"
-          >Ingredients</RouterLink
-        >
-      </div>
-      <!-- Check login with current_user, imported in the setup() block above -->
-      <RouterLink v-if="!current_user" to="/Auth">Login</RouterLink>
-      <DefaultButton v-else msg="Logout" @click="$emit('logout')" />
-    </div>
-  </nav>
+  <v-app-bar id="navBar" color="grey-lighten-4" height="100" :elevation="10">
+    <RouterLink to="/"
+      ><v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="120"
+        >Home</v-btn
+      ></RouterLink
+    >
+    <RouterLink v-if="current_user" to="/food">
+      <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="120">
+        Food</v-btn
+      ></RouterLink
+    >
+    <v-app-bar-title>
+      <RouterLink v-if="!current_user" to="/Auth" class="float-right">
+        <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="120">
+          Login</v-btn
+        ></RouterLink
+      >
+
+      <v-btn
+        v-else
+        msg="Logout"
+        @click="$emit('logout')"
+        class="me-2 float-right"
+        color="grey-lighten-4"
+        height="90"
+        variant="flat"
+        width="120">
+        Logout</v-btn
+      >
+    </v-app-bar-title>
+  </v-app-bar>
 </template>
 
 <style scoped>
-  #nav-big {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* gap: 20rem; */
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-  .links {
-    display: flex;
-    /* background-color: aliceblue; */
-    flex-direction: column;
-  }
-  #nav-small {
-    display: none;
-  }
-  #links-small {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  #small-logo {
-    display: block;
-  }
-  #big-logo {
-    display: none;
-  }
-
-  @media (max-width: 900px) {
-    nav button {
-      font-size: xx-large;
-    }
-    #big-logo {
-      display: block;
-    }
-    nav {
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-around;
-    }
+  #navBar {
+    color: red;
+    background-color: aqua;
   }
 </style>

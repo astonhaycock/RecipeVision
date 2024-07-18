@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { RouterLink, RouterView } from "vue-router";
+  import { onMounted } from "vue";
   // import HelloWorld from "./components/HelloWorld.vue";
   import NavBar from "./components/NavBar.vue";
   import NavBarMobile from "./components/NavBarSmall.vue";
@@ -44,6 +45,9 @@
       login.value = true;
     }
   }
+  onMounted(() => {
+    getSession();
+  });
 </script>
 
 <!-- <template>

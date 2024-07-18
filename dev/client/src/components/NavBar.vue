@@ -17,7 +17,7 @@
 </script>
 
 <template>
-  <v-app-bar id="navBar" color="grey-lighten-4" height="100" :elevation="10">
+  <v-app-bar color="grey-lighten-4" height="100" :elevation="10">
     <RouterLink to="/"
       ><v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="120"
         >Home</v-btn
@@ -50,9 +50,4 @@
   </v-app-bar>
 </template>
 
-<style scoped>
-  #navBar {
-    color: red;
-    background-color: aqua;
-  }
-</style>
+<style scoped></style>

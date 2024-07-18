@@ -2,10 +2,13 @@
   import { ref, computed, watch, onMounted } from "vue";
   import type { Ref } from "vue";
   import ImageUpload from "./ImageUpload.vue";
+  import { useMediaQuery } from "@vueuse/core";
+  const mobile = useMediaQuery("(max-width: 800px)");
 
   const items: Ref<Array<string>> = ref([]);
 
   const loading = ref(false);
+  const drawer = ref(true);
   const search = ref("");
   const selected: Ref<Array<string>> = ref([]);
 
@@ -46,13 +49,21 @@
       console.log("Ingredient not received");
     }
   }
+  function toggleIngredients() {
+    loading.value = !loading.value;
+  }
   onMounted(() => {
     getIngredients();
   });
 </script>
 
 <template>
-  <v-navigation-drawer :width="350" id="ingredient-container" permanent>
+  <v-navigation-drawer
+    v-model="drawer"
+    :width="350"
+    id="ingredient-container"
+    :location="mobile ? 'bottom' : 'left'"
+    temporary>
     <ImageUpload @update="getIngredients()" />
     <v-card class="mx-auto" max-width="500">
       <v-container>
@@ -63,8 +74,6 @@
             class="py-1 pe-0"
             cols="auto">
             <v-chip :disabled="loading" closable @click:close="selected.splice(i, 1)">
-              <v-icon start></v-icon>
-
               {{ selection }}
             </v-chip>
           </v-col>
@@ -93,7 +102,7 @@
 
       <v-divider v-if="!allSelected"></v-divider>
 
-      <v-list>
+      <v-list id="list-ingredients">
         <template v-for="item in categories">
           <v-list-item
             class="d-flex"
@@ -122,11 +131,11 @@
     margin: 0;
     align-items: center;
     justify-content: flex-start;
-    height: 500px;
+    height: 350px;
     overflow: hidden;
     overflow-y: scroll;
   }
   #ingredient-container {
-    height: 100vh;
+    height: 90vh;
   }
 </style>

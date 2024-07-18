@@ -66,6 +66,6 @@
   <v-app id="inspire">
     <NavBar id="nav" v-model:login="login" />
     <!-- <FoodView /> -->
-    <RouterView @login="getSession()" />
+    <RouterView @login="getSession()" @logout="logout" />
   </v-app>
 </template>

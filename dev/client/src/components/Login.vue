@@ -2,7 +2,10 @@
   import { ref, defineEmits } from "vue";
   import DefaultButton from "../components/DefaultButton.vue";
   import { useRouter, useRoute } from "vue-router";
+  import { useMediaQuery } from "@vueuse/core";
   const emit = defineEmits(["login", "registerPage"]);
+
+  const mobile = useMediaQuery("(min-width: 800px)");
 
   const user = ref({
     email: "",
@@ -73,19 +76,32 @@
           clearable></v-text-field>
 
         <br />
+        <div id="btn">
+          <v-btn
+            :disabled="!form"
+            :loading="loading"
+            color="success"
+            size="large"
+            type="submit"
+            variant="elevated"
+            block>
+            Login
+          </v-btn>
 
-        <v-btn
-          :disabled="!form"
-          :loading="loading"
-          color="success"
-          size="large"
-          type="submit"
-          variant="elevated"
-          block>
-          Sign In
-        </v-btn>
+          <p v-if="!mobile">or</p>
+
+          <v-chip
+            @click="$emit('registerPage')"
+            id="btn-chip"
+            v-if="!mobile"
+            size="large"
+            variant="elevated"
+            block>
+            Register
+          </v-chip>
+        </div>
       </v-form>
-      <div id="register" class="pa-15">
+      <div id="register" class="pa-10" v-if="mobile">
         <h1>Welcome to login page</h1>
         <p>Don't have an account?</p>
         <v-chip @click="$emit('registerPage')">Sign Up</v-chip>
@@ -95,6 +111,22 @@
 </template>
 
 <style scoped>
+  #btn p {
+    text-align: center;
+  }
+  #btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 200px;
+    gap: 1rem;
+  }
+  #btn-chip {
+    width: 100px;
+    text-align: center;
+  }
+
   #form-container {
     display: flex;
     flex-direction: column;
@@ -108,6 +140,7 @@
     align-items: center;
     background-color: #5ab2ff;
     gap: 1rem;
+    width: 400px;
   }
   #sheet {
     display: flex;

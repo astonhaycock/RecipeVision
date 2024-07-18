@@ -19,72 +19,25 @@
   ];
 </script>
 <template>
-  <div id="recipe-box" v-for="recipe in recipes">
-    <div id="img-box"><img :src="recipe.img" /></div>
+  <v-main>
+    <v-sheet class="mx-auto pa-2 pt-6" color="grey-lighten-4">
+      <v-sheet color="grey-lighten-2" height="24" rounded="pill" width="88"></v-sheet>
 
-    <div>
-      <h3>{{ recipe.title }}</h3>
-      <p id="description">
-        {{ recipe.description }}
-      </p>
-      <div id="info">
-        <h4>missing ingredients</h4>
-        <div class="missing-ingredients">
-          <p id="missing" v-for="ingredient in recipe.missing">
-            {{ ingredient }}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+      <v-slide-group show-arrows>
+        <v-slide-group-item v-for="n in 5" :key="n">
+          <v-sheet class="ma-3" color="grey-lighten-1" height="200" width="250" rounded></v-sheet>
+        </v-slide-group-item>
+      </v-slide-group>
+    </v-sheet>
+    <v-sheet class="mx-auto pa-2 pt-6" color="grey-lighten-4">
+      <v-sheet color="grey-lighten-2" height="24" rounded="pill" width="88"></v-sheet>
+
+      <v-slide-group show-arrows>
+        <v-slide-group-item v-for="n in 5" :key="n">
+          <v-sheet class="ma-3" color="grey-lighten-1" height="200" width="250" rounded></v-sheet>
+        </v-slide-group-item>
+      </v-slide-group>
+    </v-sheet>
+  </v-main>
 </template>
-
-<style scoped>
-  #description {
-    height: 100px;
-    /* overflow-y: scroll; */
-    overflow: hidden;
-  }
-  #info {
-    width: 100%;
-  }
-  #img-box {
-    display: flex;
-    align-items: center;
-    width: 200px;
-    height: 200px;
-  }
-  img {
-    height: auto;
-    width: 150px;
-  }
-  h4 {
-    text-align: center;
-  }
-  .missing-ingredients {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    height: 100px;
-    justify-content: center;
-  }
-  #missing {
-    display: flex;
-    background-color: red;
-    border-radius: 10px;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    height: 30px;
-  }
-  #recipe-box {
-    display: flex;
-    width: 100%;
-    height: 300px;
-    justify-content: space-around;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.104);
-    padding-left: 1rem;
-    gap: 1rem;
-  }
-</style>
+<style scoped></style>

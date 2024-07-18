@@ -38,7 +38,7 @@
       headers: myHeaders,
       body: JSON.stringify(data),
     };
-    const response = await fetch(`${URL}/api/ingredients`, requestOptions);
+    const response = await fetch("https://dont-pani.cc/api/ingredients", requestOptions);
     ingredients.value = [];
     if (response.status === 204) {
       console.log("Successfully added ingredient");

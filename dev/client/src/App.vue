@@ -5,10 +5,12 @@
   import NavBar from "./components/NavBar.vue";
   import NavBarMobile from "./components/NavBarSmall.vue";
   import FoodView from "./views/FoodView.vue";
+  import { useRouter, useRoute } from "vue-router";
 
   // `inject` is used for importing the global session data
   import { inject, ref } from "vue";
   const login = ref(false);
+  const router = useRouter();
   const nav_open = ref(false);
   const current_user: { email: string; IngredientList: string } = inject("current_user") || {
     email: "error",
@@ -40,6 +42,7 @@
     if (response.status === 200) {
       console.log(response.status);
       login.value = false;
+      router.push("/auth");
     } else {
       login.value = true;
     }

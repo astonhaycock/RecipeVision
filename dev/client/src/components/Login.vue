@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, defineEmits } from "vue";
   import DefaultButton from "../components/DefaultButton.vue";
+  import { useRouter, useRoute } from "vue-router";
   const emit = defineEmits(["login"]);
 
   const user = ref({
@@ -9,6 +10,7 @@
   });
   const loading = ref(false);
   const form = ref(false);
+  const router = useRouter();
 
   async function loginUser() {
     const myHeaders = new Headers();
@@ -25,6 +27,7 @@
     if (response.status === 201) {
       console.log("Successfully logged in");
       user.value = { email: "", password: "" }; // Clear user form data
+      router.push("/");
       emit("login");
     } else {
       console.log("Failed to login");

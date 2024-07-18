@@ -37,7 +37,7 @@
         ></RouterLink
       >
 
-      <RouterLink v-if="!current_user" to="/Auth">
+      <RouterLink v-if="!current_user" to="/auth">
         <v-btn class="me-2" color="grey" height="40" variant="flat" width="120">
           Login</v-btn
         ></RouterLink

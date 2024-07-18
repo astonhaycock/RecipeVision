@@ -42,14 +42,7 @@ import {
 
 //TODO: automate this.
 /// Which paths need to be routed to the Vue website.
-const SITE_ROUTES = [
-  "/",
-  "/login",
-  "/logout",
-  "/register",
-  "/recipe",
-  "/ingredients",
-];
+const SITE_ROUTES = ["/", "/login", "/logout", "/register", "/recipe", "/ingredients"];
 
 //================================================================================================//
 //==| NAMESPACE MERGING |=========================================================================//
@@ -183,11 +176,7 @@ app.use(
 // Create the authentication middleware
 /// Authenticate the user by checking the session, then checking the database to ensure the user
 /// exists. If the user is not found, or the session is invalid, return a 401 Unauthorized status.
-async function authenticate(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
   if (!req.session || !req.session.user_id) {
     res.status(401).send("unauthorized");
     return;
@@ -274,7 +263,7 @@ app.post("/api/session", async (req: Request, res: Response) => {
 app.get("/api/session", authenticate, async (req: Request, res: Response) => {
   // By this point, we're already authenticated. All we need to do is return data.
   //TODO: return user info
-  res.status(201);
+  res.status(201).send("logged in");
 });
 // changes cookie info to null when logout
 app.post("/api/logout", async (req: Request, res: Response) => {
@@ -335,8 +324,7 @@ app.post(
     // Rate limit the requests using session data.
     if (
       // This is ugly as beans but it gets the job done for now.
-      (user.last_request || new Date(Date.now() - RATE_LIMIT)) >
-      new Date(Date.now() - RATE_LIMIT)
+      (user.last_request || new Date(Date.now() - RATE_LIMIT)) > new Date(Date.now() - RATE_LIMIT)
     ) {
       res.status(429).send("rate limited");
       return;
@@ -417,67 +405,49 @@ app.post(
 //================================================================================================//
 
 // The route for receiving a list of new ingredients
-app.put(
-  "/api/ingredients",
-  authenticate,
-  async (req: Request, res: Response) => {
-    if (
-      req.body.ingredients === undefined ||
-      !Array.isArray(req.body.ingredients)
-    ) {
-      res.status(400).send("ingredients must be an array of strings");
+app.put("/api/ingredients", authenticate, async (req: Request, res: Response) => {
+  if (req.body.ingredients === undefined || !Array.isArray(req.body.ingredients)) {
+    res.status(400).send("ingredients must be an array of strings");
+    return;
+  }
+  let ingredients = req.body.ingredients as Array<string>;
+  for (let i = 0; i < ingredients.length; i++) {
+    if (typeof ingredients[i] !== "string" || ingredients[i].length === 0) {
+      res.status(400).send("ingredients must be an array of non-empty strings");
       return;
     }
-    let ingredients = req.body.ingredients as Array<string>;
-    for (let i = 0; i < ingredients.length; i++) {
-      if (typeof ingredients[i] !== "string" || ingredients[i].length === 0) {
-        res
-          .status(400)
-          .send("ingredients must be an array of non-empty strings");
-        return;
-      }
-      ingredients[i] = ingredients[i].toLowerCase();
-    }
-    // Merge ingredients with req.user.ingredients
-    let user = req.user as User;
-    user.ingredients.list = user.ingredients.list.concat(ingredients);
-    dedup(user.ingredients.list);
-    user.ingredients.save();
-    res.status(204).send("ingredients added");
+    ingredients[i] = ingredients[i].toLowerCase();
   }
-);
+  // Merge ingredients with req.user.ingredients
+  let user = req.user as User;
+  user.ingredients.list = user.ingredients.list.concat(ingredients);
+  dedup(user.ingredients.list);
+  user.ingredients.save();
+  res.status(204).send("ingredients added");
+});
 
 // The route for getting the user's ingredients
-app.get(
-  "/api/ingredients",
-  authenticate,
-  async (req: Request, res: Response) => {
-    let user = req.user as User;
-    res.status(200).send(user.ingredients.list);
-  }
-);
+app.get("/api/ingredients", authenticate, async (req: Request, res: Response) => {
+  let user = req.user as User;
+  res.status(200).send(user.ingredients.list);
+});
 
 // The route for deleting a single ingredient
-app.delete(
-  "/api/ingredient/:ingredient",
-  authenticate,
-  async (req: Request, res: Response) => {
-    let user = req.user as User;
-    let ingredient = req.params.ingredient.toLowerCase();
-    // iterate backwards and swap-remove
-    for (let i = user.ingredients.list.length - 1; i >= 0; i--) {
-      if (user.ingredients.list[i] === ingredient) {
-        user.ingredients.list[i] =
-          user.ingredients.list[user.ingredients.list.length - 1];
-        user.ingredients.list.pop();
-        user.ingredients.save();
-        res.status(204).send();
-        return;
-      }
+app.delete("/api/ingredient/:ingredient", authenticate, async (req: Request, res: Response) => {
+  let user = req.user as User;
+  let ingredient = req.params.ingredient.toLowerCase();
+  // iterate backwards and swap-remove
+  for (let i = user.ingredients.list.length - 1; i >= 0; i--) {
+    if (user.ingredients.list[i] === ingredient) {
+      user.ingredients.list[i] = user.ingredients.list[user.ingredients.list.length - 1];
+      user.ingredients.list.pop();
+      user.ingredients.save();
+      res.status(204).send();
+      return;
     }
-    res.status(404).send("ingredient not found");
   }
-);
+  res.status(404).send("ingredient not found");
+});
 
 // The route for renaming a single ingredient
 app.put(
@@ -501,22 +471,18 @@ app.put(
 );
 
 // The route for creating a single ingredient
-app.post(
-  "/api/ingredient/:ingredient",
-  authenticate,
-  async (req: Request, res: Response) => {
-    let user = req.user as User;
-    let ingredient = req.params.ingredient.toLowerCase();
-    if (ingredient.length === 0) {
-      res.status(400).send("ingredient must be a non-empty string");
-      return;
-    }
-    user.ingredients.list.push(ingredient);
-    dedup(user.ingredients.list);
-    user.ingredients.save();
-    res.status(201).send(ingredient);
+app.post("/api/ingredient/:ingredient", authenticate, async (req: Request, res: Response) => {
+  let user = req.user as User;
+  let ingredient = req.params.ingredient.toLowerCase();
+  if (ingredient.length === 0) {
+    res.status(400).send("ingredient must be a non-empty string");
+    return;
   }
-);
+  user.ingredients.list.push(ingredient);
+  dedup(user.ingredients.list);
+  user.ingredients.save();
+  res.status(201).send(ingredient);
+});
 
 //================================================================================================//
 //==| RECIPE GENERATION |=========================================================================//
@@ -559,9 +525,7 @@ app.get("/api/recipe", authenticate, async (req: Request, res: Response) => {
   console.log(response.choices[0].message.content);
   try {
     // Try to parse the response as a json.
-    const list = await JSON.parse(
-      (response.choices[0].message.content as string).toLowerCase()
-    );
+    const list = await JSON.parse((response.choices[0].message.content as string).toLowerCase());
     // Verify that the JSON parsed into what we expect.
     if (!Array.isArray(list) || list.some((i) => typeof i !== "string")) {
       throw new Error();

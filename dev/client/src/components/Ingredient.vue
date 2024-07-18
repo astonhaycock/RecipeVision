@@ -38,7 +38,7 @@
     const response = await fetch("https://dont-pani.cc/api/ingredients");
     const data = await response.json();
     if (response.status === 200) {
-      items.value = data.json();
+      items.value = data;
       console.log("Ingredient got Successfully");
     } else {
       console.log("Ingredient not received");

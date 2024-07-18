@@ -16,7 +16,7 @@ deploy: deploy-server deploy-client
 run: deploy
 	cd dist/server && bun run src/index.ts
 
-dev: deploy-client
+dev: deploy
 	(echo "export VUE_DEV=true && cd dev/server && bun --hot run src/index.ts"; echo "cd dev/client && bun run dev") | parallel --line-buffer
 
 # prog1 & prog2 && fg

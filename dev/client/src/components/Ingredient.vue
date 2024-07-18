@@ -40,6 +40,7 @@
     if (response.status === 200) {
       items.value = data;
       console.log("Ingredient got Successfully");
+      console.log(data);
       console.log(items.value);
     } else {
       console.log("Ingredient not received");

@@ -49,7 +49,7 @@ async function delete_api_session(req: Request, res: Response): Promise<void> {
   // Clear the user ID from the session
   req.session.user_id = undefined;
   req.user = null;
-  res.status(200).send("logged out");
+  res.status(204).send("logged out");
 }
 
 //================================================================================================//

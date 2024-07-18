@@ -1,52 +1,56 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from "vue-router";
-  import { onMounted } from "vue";
-  // import HelloWorld from "./components/HelloWorld.vue";
-  import NavBar from "./components/NavBar.vue";
-  import NavBarMobile from "./components/NavBarSmall.vue";
-  import FoodView from "./views/FoodView.vue";
+import { RouterLink, RouterView } from "vue-router";
+import { onMounted } from "vue";
+// import HelloWorld from "./components/HelloWorld.vue";
+import NavBar from "./components/NavBar.vue";
+import NavBarMobile from "./components/NavBarSmall.vue";
+import FoodView from "./views/FoodView.vue";
 
-  // `inject` is used for importing the global session data
-  import { inject, ref } from "vue";
-  const login = ref(false);
-  const nav_open = ref(false);
-  const current_user: { email: string; IngredientList: string } = inject("current_user") || {
-    email: "error",
-    IngredientList: "error",
+// `inject` is used for importing the global session data
+import { inject, ref } from "vue";
+const login = ref(false);
+const nav_open = ref(false);
+const current_user: { email: string; IngredientList: string } = inject(
+  "current_user"
+) || {
+  email: "error",
+  IngredientList: "error",
+};
+
+function handleNavOpen() {
+  nav_open.value = true;
+}
+function receiveUser(user: any) {
+  console.log(user);
+}
+async function getSession() {
+  const response = await fetch("https://dont-pani.cc/api/session");
+  if (response.status === 200) {
+    login.value = true;
+  } else {
+    login.value = false;
+  }
+}
+async function logout() {
+  const myHeaders = new Headers();
+  const requestOptions = {
+    method: "DELETE",
+    headers: myHeaders,
   };
 
-  function handleNavOpen() {
-    nav_open.value = true;
+  const response = await fetch(
+    "https://dont-pani.cc/api/session",
+    requestOptions
+  );
+  if (response.status === 200 || response.status == 401) {
+    login.value = false;
+  } else {
+    login.value = true;
   }
-  function receiveUser(user: any) {
-    console.log(user);
-  }
-  async function getSession() {
-    const response = await fetch("https://dont-pani.cc/api/session");
-    if (response.status === 201) {
-      login.value = true;
-    } else {
-      login.value = false;
-    }
-  }
-  async function logout() {
-    const myHeaders = new Headers();
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-    };
-
-    const response = await fetch("https://dont-pani.cc/api/logout", requestOptions);
-    if (response.status === 200) {
-      console.log(response.status);
-      login.value = false;
-    } else {
-      login.value = true;
-    }
-  }
-  onMounted(() => {
-    getSession();
-  });
+}
+onMounted(() => {
+  getSession();
+});
 </script>
 
 <!-- <template>

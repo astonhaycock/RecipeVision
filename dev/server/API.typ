@@ -106,7 +106,7 @@
     \"password\": \"string\"
   "),
   status:(
-    (200, "login successful"),
+    (201, "login successful"),
     (401, "invalid email/password"),
     (500, "internal server error"),
   )
@@ -128,7 +128,7 @@
   "/api/session",
   "Attempt to log out the current user.",
   status:(
-    (200, "logout successful"),
+    (204, "logout successful"),
     (401, "user is not logged in"),
     (500, "internal server error"),
   )

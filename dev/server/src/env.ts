@@ -66,7 +66,7 @@ const VUE_DEV = envp<boolean>("VUE_DEV", false);
 /// The maximum upload size in bytes
 const FILE_LIMIT = envp<number>("FILE_LIMIT", 100 * 1024 * 1024);
 /// The port to listen on
-const PORT = envp<number>("PORT", 8080);
+const PORT = envp<number>("BACKEND_PORT", 8080);
 /// The rate limit for requests in milliseconds
 const RATE_LIMIT = envp<number>("RATE_LIMIT", 15_000);
 /// The path to serve the website files

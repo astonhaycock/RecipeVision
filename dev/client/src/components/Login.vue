@@ -25,12 +25,17 @@ async function loginUser() {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  const response = await fetch("https://dont-pani.cc/api/session", {
-    credentials: "include",
-    method: "POST",
-    headers: myHeaders,
-    body: JSON.stringify(user.value),
-  });
+  const response = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}:${
+      import.meta.env.VITE_PUBLIC_PORT
+    }/api/session`,
+    {
+      credentials: "include",
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(user.value),
+    }
+  );
   if (response.status === 201) {
     console.log("Successfully logged in");
     router.push("/");

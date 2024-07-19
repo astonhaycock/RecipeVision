@@ -26,11 +26,16 @@ function receiveUser(user: any) {
 async function getSession() {
   const myHeaders = new Headers();
 
-  const response = await fetch("https://dont-pani.cc/api/session", {
-    credentials: "include",
-    method: "GET",
-    headers: myHeaders,
-  });
+  const response = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}:${
+      import.meta.env.VITE_PUBLIC_PORT
+    }/api/session`,
+    {
+      credentials: "include",
+      method: "GET",
+      headers: myHeaders,
+    }
+  );
 
   if (response.status === 200) {
     login.value = true;
@@ -46,7 +51,9 @@ async function logout() {
   };
 
   const response = await fetch(
-    "https://dont-pani.cc/api/session",
+    `${import.meta.env.VITE_PUBLIC_URL}:${
+      import.meta.env.VITE_PUBLIC_PORT
+    }/api/session`,
     requestOptions
   );
   if (response.status === 200 || response.status == 401) {

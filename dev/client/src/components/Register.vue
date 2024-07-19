@@ -30,7 +30,12 @@ async function registerUser() {
     body: JSON.stringify(user.value),
   };
 
-  const response = await fetch("https://dont-pani.cc/api/user", requestOptions);
+  const response = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}:${
+      import.meta.env.VITE_PUBLIC_PORT
+    }/api/user`,
+    requestOptions
+  );
 
   if (response.status === 201) {
     console.log("Successfully registered");
@@ -50,7 +55,9 @@ async function loginUser() {
   };
 
   const response = await fetch(
-    "https://dont-pani.cc/api/session",
+    `${import.meta.env.VITE_PUBLIC_URL}:${
+      import.meta.env.VITE_PUBLIC_PORT
+    }/api/session`,
     requestOptions
   );
 

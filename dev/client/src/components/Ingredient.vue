@@ -54,7 +54,11 @@ const next = () => {
 };
 
 async function getIngredients() {
-  const response = await fetch("https://dont-pani.cc/api/ingredients");
+  const response = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}:${
+      import.meta.env.VITE_PUBLIC_PORT
+    }/api/ingredients`
+  );
   const data = await response.json();
   if (response.status === 200) {
     items.value = data;

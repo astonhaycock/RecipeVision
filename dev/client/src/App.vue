@@ -8,8 +8,6 @@ import FoodView from "./views/FoodView.vue";
 
 // `inject` is used for importing the global session data
 import { inject, ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
-const router = useRouter();
 const login = ref(false);
 const nav_open = ref(false);
 const current_user: { email: string; IngredientList: string } = inject(
@@ -59,7 +57,6 @@ async function logout() {
     requestOptions
   );
   if (response.status === 200 || response.status == 401) {
-    router.push("/auth");
     login.value = false;
   } else {
     login.value = true;

@@ -22,9 +22,6 @@ function pageChange(pageSelected: string) {
 async function loginUser() {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  // set withCredentials
-  myHeaders.append("Access-Control-Allow-Origin", "https://dont-pani.cc");
-  myHeaders.append("Access-Control-Allow-Credentials", "true");
 
   const response = await fetch("https://dont-pani.cc/api/session", {
     credentials: "include",

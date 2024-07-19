@@ -11,12 +11,13 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       "/images": {
-        target: "https://dont-pani.cc:8443",
+        target: "http://localhost:8443",
         changeOrigin: true,
         secure: false,
       },
       "/api": {
-        target: "https://dont-pani.cc:8443",
+        target: "http://localhost:8443",
+        rewriteWsOrigin: true,
         changeOrigin: true,
         secure: false,
       },

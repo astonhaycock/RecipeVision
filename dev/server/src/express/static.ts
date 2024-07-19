@@ -41,9 +41,9 @@ async function init(app: Express) {
   //     app.use(route, proxy("http://localhost:8000"));
   //   });
   // } else {
-  SITE_ROUTES.map((route) => {
-    app.use(route, express.static(WEBSITE_PATH));
-  });
+  // SITE_ROUTES.map((route) => {
+  //   app.use(route, express.static(WEBSITE_PATH));
+  // });
   // }
 }
 

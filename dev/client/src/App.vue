@@ -25,8 +25,6 @@ function receiveUser(user: any) {
 }
 async function getSession() {
   const myHeaders = new Headers();
-  myHeaders.append("Access-Control-Allow-Origin", "https://dont-pani.cc");
-  myHeaders.append("Access-Control-Allow-Credentials", "true");
 
   const response = await fetch("https://dont-pani.cc/api/session", {
     credentials: "include",

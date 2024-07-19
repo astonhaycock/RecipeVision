@@ -35,7 +35,7 @@ const uploadImage = async () => {
     formData.append("image", image.value);
 
     const requestOptions = {
-      method: "GET",
+      method: "POST",
       body: formData,
     };
     const response = await fetch(URL, requestOptions);
@@ -48,6 +48,7 @@ const uploadImage = async () => {
     imageUrl.value = null;
   }
 };
+
 const clearImage = () => {
   imageUrl.value = null;
 };

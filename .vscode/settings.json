@@ -1,0 +1,7 @@
+{
+    "cSpell.words": [
+        "vueuse"
+    ],
+    "files.autoSave": "onFocusChange",
+    "vue.codeActions.askNewComponentName": false
+}

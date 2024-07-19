@@ -19,8 +19,10 @@ function handleReviewIngredients(data: string[]) {
 </script>
 
 <template>
-  <IngredientList />
-  <RecipeList />
+  <v-main>
+    <RecipeList />
+    <IngredientList />
+  </v-main>
 </template>
 
 <style scoped></style>

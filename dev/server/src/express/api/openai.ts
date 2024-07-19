@@ -21,7 +21,7 @@ const openai = new OpenAI({ apiKey: OPENAI_KEY });
 
 //================================================================================================//
 
-async function get_api_image(req: Request, res: Response): Promise<void> {
+async function post_api_image(req: Request, res: Response): Promise<void> {
   const user = req.user as User;
   // check rate limit
   if (user.last_request > new Date(Date.now() - RATE_LIMIT)) {
@@ -127,11 +127,11 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
 //================================================================================================//
 
 function init(app: Express) {
-  app.get(
+  app.post(
     "/api/image",
     authenticate_mw,
     image_mw.single("image"),
-    get_api_image
+    post_api_image
   );
   app.get("/api/recipes", authenticate_mw, get_api_recipes);
 }

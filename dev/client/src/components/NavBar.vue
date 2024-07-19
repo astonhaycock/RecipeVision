@@ -17,14 +17,14 @@ const nav_open = ref(false);
 </script>
 
 <template>
-  <v-app-bar color="grey-lighten-4" height="100" :elevation="10">
+  <v-app-bar color="grey-lighten-4" height="60" :elevation="10">
     <RouterLink to="/"
       ><v-btn
         class="me-2"
         color="grey-lighten-4"
-        height="90"
+        height="70"
         variant="flat"
-        width="120"
+        width="90"
         >Home</v-btn
       ></RouterLink
     >
@@ -32,9 +32,9 @@ const nav_open = ref(false);
       <v-btn
         class="me-2"
         color="grey-lighten-4"
-        height="90"
+        height="70"
         variant="flat"
-        width="120"
+        width="90"
       >
         Food</v-btn
       ></RouterLink
@@ -46,24 +46,42 @@ const nav_open = ref(false);
           color="grey-lighten-4"
           height="90"
           variant="flat"
-          width="120"
+          width="90"
         >
           Login</v-btn
         ></RouterLink
       >
-
-      <v-btn
-        v-else
-        msg="Logout"
-        @click="$emit('logout')"
-        class="me-2 float-right"
-        color="grey-lighten-4"
-        height="90"
-        variant="flat"
-        width="120"
-      >
-        Logout</v-btn
-      >
+      <v-menu v-else>
+        <template v-slot:activator="{ props }">
+          <v-btn class="me-2 float-right" icon="mdi-cog" v-bind="props"></v-btn>
+        </template>
+        <v-list class="d-flex flex-column">
+          <v-list-item>
+            <v-btn
+              msg="Logout"
+              @click="$emit('logout')"
+              color="grey-lighten-4"
+              height="60"
+              variant="flat"
+              width="125"
+            >
+              Setting</v-btn
+            >
+          </v-list-item>
+          <v-list-item>
+            <v-btn
+              msg="Logout"
+              @click="$emit('logout')"
+              color="grey-lighten-4"
+              height="60"
+              variant="flat"
+              width="125"
+            >
+              logout</v-btn
+            >
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar-title>
   </v-app-bar>
 </template>

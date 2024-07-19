@@ -141,7 +141,7 @@
 #category("OpenAI")
 
 #endpoint(
-  "GET",
+  "POST",
   "/api/image",
   "Use OpenAI to generate a list of ingredients from an image. Returns a JSON array of strings.",
   body:(

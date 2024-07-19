@@ -23,7 +23,21 @@ const categories = computed(() => {
   return items.value.filter((item) => item.toLowerCase().includes(searchText));
 });
 
+const toggleDrawerIcon = ref("mdi-chevron-left");
+
+watch(drawer, () => {
+  if (drawer.value) {
+    toggleDrawerIcon.value = "mdi-chevron-left";
+  } else {
+    toggleDrawerIcon.value = "mdi-chevron-right";
+  }
+});
+
 const selections = selected.value;
+
+function toggleDrawer() {
+  drawer.value = !drawer.value;
+}
 
 watch(selected, () => {
   search.value = "";
@@ -60,79 +74,99 @@ async function getIngredients() {
 </script>
 
 <template>
-  <v-navigation-drawer
-    v-model="drawer"
-    :width="350"
-    id="ingredient-container"
-    :location="mobile ? 'bottom' : 'left'"
-    temporary
-  >
-    <ImageUpload @update="getIngredients()" />
-    <v-card class="mx-auto" max-width="500">
-      <v-container>
-        <v-row align="center" justify="start">
-          <v-col
-            v-for="(selection, i) in selections"
-            :key="selection"
-            class="py-1 pe-0"
-            cols="auto"
-          >
-            <v-chip
-              :disabled="loading"
-              closable
-              @click:close="selected.splice(i, 1)"
-            >
-              {{ selection }}
-            </v-chip>
-          </v-col>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-
-            <v-btn
-              v-if="selected.length"
-              :loading="loading"
-              color="purple"
-              variant="text"
-              @click="next"
-            >
-              Delete
-            </v-btn>
-          </v-card-actions>
-          <v-col cols="12">
-            <v-text-field
-              ref="searchField"
-              v-model="search"
-              label="Search or Add"
-              hide-details
-              single-line
-            ></v-text-field>
-          </v-col>
-        </v-row>
+  <v-container>
+    <v-navigation-drawer
+      v-model="drawer"
+      :width="mobile && drawer ? 2400 : 350"
+      id="ingredient-container"
+      :location="left"
+      :mobile="mobile"
+      :class="mobile ? 'elevation-0' : 'elevation-2'"
+      temporary
+      disable-route-watcher
+    >
+      <!-- <v-fade-transition v-show="!drawer" mode="in-out" appear> -->
+      <!-- </v-fade-transition> -->
+      <v-container :class="mobile ? 'pr-10' : ''">
+        <ImageUpload @update="getIngredients()" />
       </v-container>
+      <v-card class="mx-auto" max-width="500">
+        <v-container>
+          <v-row align="center" justify="start">
+            <v-col
+              v-for="(selection, i) in selections"
+              :key="selection"
+              class="py-1 pe-0"
+              cols="auto"
+            >
+              <v-chip
+                :disabled="loading"
+                closable
+                @click:close="selected.splice(i, 1)"
+              >
+                {{ selection }}
+              </v-chip>
+            </v-col>
+            <v-card-actions>
+              <v-spacer></v-spacer>
 
-      <v-divider v-if="!allSelected"></v-divider>
+              <v-btn
+                v-if="selected.length"
+                :loading="loading"
+                color="purple"
+                variant="text"
+                @click="next"
+              >
+                Delete
+              </v-btn>
+            </v-card-actions>
+            <v-col cols="12">
+              <v-text-field
+                ref="searchField"
+                v-model="search"
+                label="Search or Add"
+                hide-details
+                single-line
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
 
-      <v-list id="list-ingredients">
-        <template v-for="item in categories">
-          <v-list-item
-            class="d-flex"
-            v-if="!selected.includes(item)"
-            :key="item"
-            :disabled="loading"
-            @click="selected.push(item)"
-          >
-            <template v-slot:prepend>
-              <v-icon :disabled="loading"></v-icon>
-            </template>
+        <v-divider v-if="!allSelected"></v-divider>
 
-            <v-list-item-title v-text="item"></v-list-item-title>
-          </v-list-item>
-        </template>
-      </v-list>
+        <v-list id="list-ingredients">
+          <template v-for="item in categories">
+            <v-list-item
+              class="d-flex"
+              v-if="!selected.includes(item)"
+              :key="item"
+              :disabled="loading"
+              @click="selected.push(item)"
+            >
+              <template v-slot:prepend>
+                <v-icon :disabled="loading"></v-icon>
+              </template>
 
-      <v-divider></v-divider>
-    </v-card>
-  </v-navigation-drawer>
+              <v-list-item-title v-text="item"></v-list-item-title>
+            </v-list-item>
+          </template>
+        </v-list>
+
+        <v-divider></v-divider>
+      </v-card>
+      <v-btn
+        @click="toggleDrawer"
+        :class="
+          !mobile
+            ? 'position-fixed top-0 right-0 mr-n16 mt-4'
+            : drawer
+            ? 'position-fixed top-0 right-0 mr-4 mt-4'
+            : 'position-fixed top-0 right-0 mr-n16 mt-4'
+        "
+        :icon="toggleDrawerIcon"
+      ></v-btn>
+    </v-navigation-drawer>
+  </v-container>
 </template>
 
 <style scoped>

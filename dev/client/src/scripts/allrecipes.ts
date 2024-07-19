@@ -15,12 +15,20 @@ interface RecipeCard {
   reviews: number | null;
 }
 
+// hooray, verbosity
+type RecipeListWithQuery = { query: string; cards: RecipeCard[] };
+
+/**
+ * This interface represents a list of recipes.
+ */
+type RecipeCollection = { [key: string]: RecipeCard[] };
+
 /**
  * This function searches for recipes on AllRecipes.com and gathers the data into a list.
  * This function expects the search query to consist of only letters and spaces.
  * @param query The search query
  */
-async function search(query: string): Promise<RecipeCard[]> {
+async function search(query: string): Promise<RecipeListWithQuery> {
   const response = await axios.get(
     `https://www.allrecipes.com/search/?q=${query.replace(/ /g, "+")}`
   );
@@ -58,7 +66,7 @@ async function search(query: string): Promise<RecipeCard[]> {
     el = el.next();
   }
 
-  return recipes;
+  return { query, cards: recipes };
 }
 
 /**
@@ -69,7 +77,7 @@ async function search(query: string): Promise<RecipeCard[]> {
  */
 function search_multiple(
   queries: string[],
-  callback: (cards: RecipeCard[]) => void
+  callback: (result: RecipeListWithQuery) => void
 ) {
   for (const query of queries) {
     search(query).then(callback);
@@ -77,3 +85,4 @@ function search_multiple(
 }
 
 export { search_multiple };
+export type { RecipeCard, RecipeListWithQuery, RecipeCollection };

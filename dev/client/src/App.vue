@@ -76,7 +76,7 @@ onMounted(() => {
 <template>
   <v-app id="inspire">
     <NavBar id="nav" v-model:login="login" @logout="logout" />
-    <!-- <FoodView /> -->
     <RouterView @login="getSession()" />
+    <!-- <FoodView /> -->
   </v-app>
 </template>

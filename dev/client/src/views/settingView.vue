@@ -2,5 +2,5 @@
 <iframe id="iframe" />
 
 <template>
-  <main>Home page</main>
+  <main>Settings Page</main>
 </template>

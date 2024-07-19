@@ -3,6 +3,10 @@ import { RouterLink, RouterView } from "vue-router";
 import { defineComponent, inject, ref, defineModel } from "vue";
 import type { ModelRef, PropType, Ref } from "vue";
 import DefaultButton from "./DefaultButton.vue";
+import { useMediaQuery } from "@vueuse/core";
+const mobile =
+  useMediaQuery("(max-width: 800px)") &&
+  useMediaQuery("(max-aspect-ratio: 1/1)");
 const emit = defineEmits(["logout"]);
 
 // const current_user = defineModel<{
@@ -17,7 +21,7 @@ const nav_open = ref(false);
 </script>
 
 <template>
-  <v-app-bar color="grey-lighten-4" height="60" :elevation="10">
+  <v-app-bar color="grey-lighten-4" height="60" :elevation="10" v-if="!mobile">
     <RouterLink to="/"
       ><v-btn
         class="me-2"
@@ -84,6 +88,25 @@ const nav_open = ref(false);
       </v-menu>
     </v-app-bar-title>
   </v-app-bar>
+  <v-bottom-navigation v-else>
+    <v-btn value="recent">
+      <v-icon>mdi-history</v-icon>
+
+      <span>Recent</span>
+    </v-btn>
+
+    <v-btn value="favorites">
+      <v-icon>mdi-heart</v-icon>
+
+      <span>Favorites</span>
+    </v-btn>
+
+    <v-btn value="nearby">
+      <v-icon>mdi-map-marker</v-icon>
+
+      <span>Nearby</span>
+    </v-btn>
+  </v-bottom-navigation>
 </template>
 
 <style scoped></style>

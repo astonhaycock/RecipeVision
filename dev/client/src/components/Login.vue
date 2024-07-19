@@ -46,7 +46,7 @@
 </script>
 
 <template>
-  <v-sheet class="pa-12" id="sheet" rounded>
+  <v-sheet id="sheet" rounded>
     <v-card id="login-container" class="mx-auto" min-width="344">
       <v-form
         class="pa-15"
@@ -56,11 +56,11 @@
         min-width="300"
         width="500"
         elevation-80>
+        <h1 class="pb-10">Login</h1>
         <v-text-field
           v-model="user.email"
           :readonly="loading"
           :rules="[required]"
-          class="mb-2"
           label="Email"
           width="300px"
           clearable></v-text-field>
@@ -92,6 +92,7 @@
 
           <v-chip
             @click="$emit('registerPage')"
+            class="d-flex justify-center align-center"
             id="btn-chip"
             v-if="!mobile"
             size="large"

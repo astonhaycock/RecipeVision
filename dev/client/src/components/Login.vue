@@ -26,16 +26,12 @@ async function loginUser() {
   myHeaders.append("Access-Control-Allow-Origin", "https://dont-pani.cc");
   myHeaders.append("Access-Control-Allow-Credentials", "true");
 
-  const requestOptions = {
+  const response = await fetch("https://dont-pani.cc/api/session", {
+    credentials: "include",
     method: "POST",
     headers: myHeaders,
     body: JSON.stringify(user.value),
-  };
-
-  const response = await fetch(
-    "https://dont-pani.cc/api/session",
-    requestOptions
-  );
+  });
 
   if (response.status === 201) {
     console.log("Successfully logged in");

@@ -15,6 +15,6 @@ middleware(app);
 auth(app);
 lists(app);
 openai(app);
-statics(app);
+await statics(app);
 
 export { app };

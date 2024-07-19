@@ -11,6 +11,7 @@
   const user = ref({
     email: "",
     password: "",
+    password2: "",
   });
   const loading = ref(false);
   const form = ref(false);
@@ -55,7 +56,7 @@
     if (response.status === 201) {
       console.log("Successfully logged in");
       router.push("/");
-      user.value = { email: "", password: "" }; // Clear user form data
+      user.value = { email: "", password: "", password2: "" }; // Clear user form data
       emit("login");
     } else {
       console.log("Failed to login");
@@ -67,11 +68,14 @@
   function validEmail(v: string) {
     return !!v.match(email_regex) || "Email not valid";
   }
+  function passwordMatch(v: string) {
+    return user.value.password === v || "Passwords do not match";
+  }
 </script>
 
 <template>
   <v-sheet id="sheet" rounded>
-    <v-card id="login-container" class="mx-auto" min-width="344">
+    <v-card id="login-container" class="mx-auto" height="600px" min-width="344">
       <v-form
         class="pa-15"
         id="form-container"
@@ -94,6 +98,15 @@
           :readonly="loading"
           :rules="[required]"
           label="Password"
+          placeholder="Enter your password"
+          width="300px"
+          type="password"
+          clearable></v-text-field>
+        <v-text-field
+          v-model="user.password2"
+          :readonly="loading"
+          :rules="[required, passwordMatch]"
+          label="Confirm Password"
           placeholder="Enter your password"
           width="300px"
           type="password"

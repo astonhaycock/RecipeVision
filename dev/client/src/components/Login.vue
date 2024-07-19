@@ -1,56 +1,56 @@
 <script setup lang="ts">
-import { ref, defineEmits } from "vue";
-import DefaultButton from "../components/DefaultButton.vue";
-import { useRouter, useRoute } from "vue-router";
-import { useMediaQuery } from "@vueuse/core";
-const emit = defineEmits(["login", "registerPage"]);
-const email_regex =
-  /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  import { ref, defineEmits } from "vue";
+  import DefaultButton from "../components/DefaultButton.vue";
+  import { useRouter, useRoute } from "vue-router";
+  import { useMediaQuery } from "@vueuse/core";
+  const emit = defineEmits(["login", "registerPage"]);
+  const email_regex =
+    /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const mobile = useMediaQuery("(min-width: 800px)");
+  const mobile = useMediaQuery("(min-width: 800px)");
 
-const user = ref({
-  email: "",
-  password: "",
-});
-const loading = ref(false);
-const form = ref(false);
-const router = useRouter();
-const page = ref("login");
-function pageChange(pageSelected: string) {
-  page.value = pageSelected;
-}
-
-async function loginUser() {
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  const response = await fetch("https://dont-pani.cc/api/session", {
-    credentials: "include",
-    method: "POST",
-    headers: myHeaders,
-    body: JSON.stringify(user.value),
+  const user = ref({
+    email: "",
+    password: "",
   });
-  if (response.status === 201) {
-    console.log("Successfully logged in");
-    router.push("/");
-    user.value = { email: "", password: "" }; // Clear user form data
-    emit("login");
-  } else {
-    console.log("Failed to login");
+  const loading = ref(false);
+  const form = ref(false);
+  const router = useRouter();
+  const page = ref("login");
+  function pageChange(pageSelected: string) {
+    page.value = pageSelected;
   }
-}
-function required(v: string) {
-  return !!v || "Field is required";
-}
-function validEmail(v: string) {
-  return !!v.match(email_regex) || "Email not valid";
-}
+
+  async function loginUser() {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const response = await fetch("https://dont-pani.cc/api/session", {
+      credentials: "include",
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(user.value),
+    });
+    if (response.status === 201) {
+      console.log("Successfully logged in");
+      router.push("/");
+      user.value = { email: "", password: "" }; // Clear user form data
+      emit("login");
+    } else {
+      console.log("Failed to login");
+    }
+  }
+  function required(v: string) {
+    return !!v || "Field is required";
+  }
+  function validEmail(v: string) {
+    return !!v.match(email_regex) || "Email not valid";
+  }
 </script>
 
 <template>
   <v-sheet id="sheet" rounded>
-    <v-card id="login-container" class="mx-auto" min-width="344">
+    <v-card id="login-container" class="mx-auto" height="600px" min-width="344">
       <v-form
         class="pa-15"
         id="form-container"
@@ -58,8 +58,7 @@ function validEmail(v: string) {
         @submit.prevent="loginUser"
         min-width="300"
         width="500"
-        elevation-80
-      >
+        elevation-80>
         <h1 class="pb-10">Login</h1>
         <v-text-field
           id="input"
@@ -69,8 +68,7 @@ function validEmail(v: string) {
           :rules="[required, validEmail]"
           label="Email"
           width="300px"
-          clearable
-        ></v-text-field>
+          clearable></v-text-field>
 
         <v-text-field
           class="mx-auto"
@@ -81,8 +79,7 @@ function validEmail(v: string) {
           placeholder="Enter your password"
           width="300px"
           type="password"
-          clearable
-        ></v-text-field>
+          clearable></v-text-field>
 
         <br />
         <div id="btn">
@@ -93,8 +90,7 @@ function validEmail(v: string) {
             size="large"
             type="submit"
             variant="elevated"
-            block
-          >
+            block>
             Login
           </v-btn>
 
@@ -107,8 +103,7 @@ function validEmail(v: string) {
             v-if="!mobile"
             size="large"
             variant="elevated"
-            block
-          >
+            block>
             Register
           </v-chip>
         </div>
@@ -123,47 +118,47 @@ function validEmail(v: string) {
 </template>
 
 <style scoped>
-#btn p {
-  text-align: center;
-}
-#btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 200px;
-  gap: 1rem;
-}
-#btn-chip {
-  width: 100px;
-  text-align: center;
-}
+  #btn p {
+    text-align: center;
+  }
+  #btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 200px;
+    gap: 1rem;
+  }
+  #btn-chip {
+    width: 100px;
+    text-align: center;
+  }
 
-#form-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-#register {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #5ab2ff;
-  gap: 1rem;
-  width: 400px;
-}
-#sheet {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: rgba(188, 189, 191, 0.893);
-}
-#login-container {
-  display: flex;
-  height: 500px;
-}
+  #form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #register {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #5ab2ff;
+    gap: 1rem;
+    width: 400px;
+  }
+  #sheet {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(188, 189, 191, 0.893);
+  }
+  #login-container {
+    display: flex;
+    height: 500px;
+  }
 </style>

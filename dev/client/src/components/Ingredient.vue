@@ -8,7 +8,7 @@ const mobile = useMediaQuery("(max-width: 800px)");
 const items: Ref<Array<string>> = ref([]);
 
 const loading = ref(false);
-const drawer = ref(true);
+const drawer = ref(false);
 const search = ref("");
 const selected: Ref<Array<string>> = ref([]);
 

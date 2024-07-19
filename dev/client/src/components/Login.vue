@@ -55,7 +55,7 @@ function validEmail(v: string) {
 
 <template>
   <v-sheet id="sheet" rounded>
-    <v-card id="login-container" class="mx-auto" min-width="344">
+    <v-card id="login-container" class="mx-auto" height="600px" min-width="344">
       <v-form
         class="pa-15"
         id="form-container"

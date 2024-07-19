@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import RecipeRow from "./RecipeRow.vue";
+  import RecipeRow from "./RecipeRow.vue";
 </script>
 
 <template>
@@ -14,8 +14,4 @@ import RecipeRow from "./RecipeRow.vue";
     </v-container>
   </v-main>
 </template>
-<style scoped>
-#iframe {
-  z-index: top;
-}
-</style>
+<style scoped></style>

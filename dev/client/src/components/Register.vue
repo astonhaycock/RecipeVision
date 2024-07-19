@@ -1,74 +1,72 @@
 <script setup lang="ts">
-import { ref, defineEmits } from "vue";
-import DefaultButton from "../components/DefaultButton.vue";
-import { useRouter, useRoute } from "vue-router";
-import { useMediaQuery } from "@vueuse/core";
-const emit = defineEmits(["login", "loginPage"]);
-const mobile = useMediaQuery("(min-width: 800px)");
-const email_regex =
-  /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  import { ref, defineEmits } from "vue";
+  import DefaultButton from "../components/DefaultButton.vue";
+  import { useRouter, useRoute } from "vue-router";
+  import { useMediaQuery } from "@vueuse/core";
+  const emit = defineEmits(["login", "loginPage"]);
+  const mobile = useMediaQuery("(min-width: 800px)");
+  const email_regex =
+    /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const user = ref({
-  email: "",
-  password: "",
-});
-const loading = ref(false);
-const form = ref(false);
-const router = useRouter();
-const page = ref("login");
-function pageChange(pageSelected: string) {
-  page.value = pageSelected;
-}
-async function registerUser() {
-  console.log(user.value);
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+  const user = ref({
+    email: "",
+    password: "",
+  });
+  const loading = ref(false);
+  const form = ref(false);
 
-  const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: JSON.stringify(user.value),
-  };
-
-  const response = await fetch("https://dont-pani.cc/api/user", requestOptions);
-
-  if (response.status === 201) {
-    console.log("Successfully registered");
-    await loginUser();
-  } else {
-    console.log("Failed to register");
+  const router = useRouter();
+  const page = ref("login");
+  function pageChange(pageSelected: string) {
+    page.value = pageSelected;
   }
-}
-async function loginUser() {
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+  async function registerUser() {
+    console.log(user.value);
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
-  const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: JSON.stringify(user.value),
-  };
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(user.value),
+    };
 
-  const response = await fetch(
-    "https://dont-pani.cc/api/session",
-    requestOptions
-  );
+    const response = await fetch("https://dont-pani.cc/api/user", requestOptions);
 
-  if (response.status === 201) {
-    console.log("Successfully logged in");
-    router.push("/");
-    user.value = { email: "", password: "" }; // Clear user form data
-    emit("login");
-  } else {
-    console.log("Failed to login");
+    if (response.status === 201) {
+      console.log("Successfully registered");
+      await loginUser();
+    } else {
+      console.log("Failed to register");
+    }
   }
-}
-function required(v: string) {
-  return !!v || "Field is required";
-}
-function validEmail(v: string) {
-  return !!v.match(email_regex) || "Email not valid";
-}
+  async function loginUser() {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(user.value),
+    };
+
+    const response = await fetch("https://dont-pani.cc/api/session", requestOptions);
+
+    if (response.status === 201) {
+      console.log("Successfully logged in");
+      router.push("/");
+      user.value = { email: "", password: "" }; // Clear user form data
+      emit("login");
+    } else {
+      console.log("Failed to login");
+    }
+  }
+  function required(v: string) {
+    return !!v || "Field is required";
+  }
+  function validEmail(v: string) {
+    return !!v.match(email_regex) || "Email not valid";
+  }
 </script>
 
 <template>
@@ -81,8 +79,7 @@ function validEmail(v: string) {
         @submit.prevent="registerUser"
         min-width="300"
         width="500"
-        elevation-80
-      >
+        elevation-80>
         <h1 class="pb-10">Create an Account</h1>
         <v-text-field
           v-model="user.email"
@@ -90,8 +87,7 @@ function validEmail(v: string) {
           :rules="[required, validEmail]"
           label="Email"
           width="300px"
-          clearable
-        ></v-text-field>
+          clearable></v-text-field>
 
         <v-text-field
           v-model="user.password"
@@ -101,8 +97,7 @@ function validEmail(v: string) {
           placeholder="Enter your password"
           width="300px"
           type="password"
-          clearable
-        ></v-text-field>
+          clearable></v-text-field>
 
         <br />
 
@@ -114,8 +109,7 @@ function validEmail(v: string) {
             size="large"
             type="submit"
             variant="elevated"
-            block
-          >
+            block>
             Register
           </v-btn>
 
@@ -128,8 +122,7 @@ function validEmail(v: string) {
             v-if="!mobile"
             size="large"
             variant="elevated"
-            block
-          >
+            block>
             Login
           </v-chip>
         </div>
@@ -144,47 +137,47 @@ function validEmail(v: string) {
 </template>
 
 <style scoped>
-#btn p {
-  text-align: center;
-}
-#btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 200px;
-  gap: 1rem;
-}
-#btn-chip {
-  width: 100px;
-  text-align: center;
-}
+  #btn p {
+    text-align: center;
+  }
+  #btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 200px;
+    gap: 1rem;
+  }
+  #btn-chip {
+    width: 100px;
+    text-align: center;
+  }
 
-#form-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-#login {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #5ab2ff;
-  gap: 1rem;
-  width: 400px;
-}
-#sheet {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: rgba(188, 189, 191, 0.893);
-}
-#login-container {
-  display: flex;
-  height: 500px;
-}
+  #form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  #login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #5ab2ff;
+    gap: 1rem;
+    width: 400px;
+  }
+  #sheet {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(188, 189, 191, 0.893);
+  }
+  #login-container {
+    display: flex;
+    height: 500px;
+  }
 </style>

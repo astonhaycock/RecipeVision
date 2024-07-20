@@ -29,9 +29,11 @@ type RecipeCollection = { [key: string]: RecipeCard[] };
  * @param query The search query
  */
 async function search(query: string): Promise<RecipeListWithQuery> {
-  const response = await axios.get(
-    `https://www.allrecipes.com/search/?q=${query.replace(/ /g, "+")}`
-  );
+  const response = await axios({
+    method: "get",
+    url: `${import.meta.env.VITE_PUBLIC_URL}?q=${query.replace(/ /g, "+")}`,
+    withCredentials: false,
+  });
   const selector = cheerio.load(response.data);
   let el = selector(".mntl-card-list-items").first();
 

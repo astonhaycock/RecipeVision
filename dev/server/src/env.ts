@@ -80,10 +80,7 @@ const MONGODB_URL = env("MONGODB_URL");
 /// The session secret
 const SESSION_SECRET = env("SESSION_SECRET", "your-secret-key");
 /// The cookie expiration time in milliseconds
-const COOKIE_EXPIRATION = envp<number>(
-  "COOKIE_EXPIRATION",
-  1000 * 60 * 60 * 24 * 7
-);
+const COOKIE_EXPIRATION = envp<number>("COOKIE_EXPIRATION", 1000 * 60 * 60 * 24 * 7);
 /// The prompt to use for the OpenAI API when reading images
 const IMAGE_PROMPT = env(
   "IMAGE_PROMPT",

@@ -110,6 +110,7 @@ function list_mw(list_name: string | string[]) {
         return;
       }
       req.body[list_name] = dedup(req.body[list_name] as string[]);
+      next();
     };
   } else {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -125,6 +126,7 @@ function list_mw(list_name: string | string[]) {
           return;
         }
         req.body[name] = dedup(list);
+        next();
       }
     };
   }

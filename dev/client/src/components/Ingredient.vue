@@ -87,7 +87,9 @@
     }
   }
   onMounted(() => {
-    getIngredients();
+    if (!mobile) {
+      getIngredients();
+    }
   });
 </script>
 
@@ -99,7 +101,7 @@
       id="ingredient-container"
       location="left"
       :mobile="mobile"
-      :class="mobile ? 'elevation-0' : 'elevation-2'"
+      :class="mobile ? 'elevation-0' : 'elevation-2 '"
       temporary
       disable-route-watcher>
       <!-- <v-fade-transition v-show="!drawer" mode="in-out" appear> -->

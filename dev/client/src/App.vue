@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from "vue-router";
-  import { onMounted } from "vue";
+  import { RouterLink, RouterView, useRouter } from "vue-router";
+  import { onMounted, onBeforeMount } from "vue";
   // import HelloWorld from "./components/HelloWorld.vue";
   import NavBar from "./components/NavBar.vue";
   import { useMediaQuery } from "@vueuse/core";
@@ -10,6 +10,7 @@
   import { inject, ref } from "vue";
   const login = ref(false);
   const nav_open = ref(false);
+  const router = useRouter();
   const current_user: { email: string; IngredientList: string } = inject("current_user") || {
     email: "error",
     IngredientList: "error",
@@ -33,6 +34,7 @@
     if (response.status === 200) {
       login.value = true;
     } else {
+      router.push("/auth");
       login.value = false;
     }
   }
@@ -50,7 +52,7 @@
       login.value = true;
     }
   }
-  onMounted(() => {
+  onBeforeMount(() => {
     getSession();
   });
 </script>

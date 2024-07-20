@@ -59,15 +59,14 @@
     );
     if (response.status === 204) {
       console.log("List deleted Successfully");
+      setTimeout(() => {
+        search.value = "";
+        selected.value = [];
+        loading.value = false;
+      }, 2000);
     } else {
       console.log("List not deleted");
     }
-
-    setTimeout(() => {
-      search.value = "";
-      selected.value = [];
-      loading.value = false;
-    }, 2000);
   }
 
   async function getIngredients() {
@@ -85,10 +84,10 @@
     function toggleIngredients() {
       loading.value = !loading.value;
     }
-    onMounted(() => {
-      getIngredients();
-    });
   }
+  onMounted(() => {
+    getIngredients();
+  });
 </script>
 
 <template>

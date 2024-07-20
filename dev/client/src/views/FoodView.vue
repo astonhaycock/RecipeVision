@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import loading from "../assets/loading.gif";
 import IngredientList from "../components/Ingredient.vue";
-import RecipeList from "../components/Recipe.vue";
+import RecipeList from "../components/recipes/Recipe.vue";
 import { defineComponent } from "vue";
 import { ref, type Ref } from "vue";
 const URL = "https://dont-pani.cc";

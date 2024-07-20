@@ -6,9 +6,7 @@ import icon from "./icons/IconUpload.vue";
 import cameraIcon from "./icons/cameraIcon.vue";
 import ReviewList from "./ReviewList.vue";
 
-const URL = `${import.meta.env.VITE_PUBLIC_URL}:${
-  import.meta.env.VITE_PUBLIC_PORT
-}/api/recipe`;
+const URL = `${import.meta.env.VITE_PUBLIC_URL}/api/recipe`;
 const modal = ref(false);
 const ReviewListIngredients = ref<string>("");
 const image = ref<File | null>(null);

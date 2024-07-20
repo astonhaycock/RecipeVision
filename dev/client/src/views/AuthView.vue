@@ -2,7 +2,7 @@
 import { defineComponent, defineEmits, ref } from "vue";
 import login from "../components/Login.vue";
 import register from "../components/Register.vue";
-import Recipe from "../components/Recipe.vue";
+import Recipe from "../components/recipes/Recipe.vue";
 import DefaultButton from "../components/DefaultButton.vue";
 const emit = defineEmits(["login", "register"]);
 const page = ref("login");

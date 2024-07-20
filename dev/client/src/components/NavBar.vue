@@ -1,38 +1,57 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from "vue-router";
-  import { defineComponent, inject, ref, defineModel } from "vue";
-  import type { ModelRef, PropType, Ref } from "vue";
-  import DefaultButton from "./DefaultButton.vue";
-  import { useMediaQuery } from "@vueuse/core";
-  const mobile = useMediaQuery("(max-width: 800px)") && useMediaQuery("(max-aspect-ratio: 1/1)");
-  const emit = defineEmits(["logout"]);
+import { RouterLink, RouterView } from "vue-router";
+import { defineComponent, inject, ref, defineModel } from "vue";
+import type { ModelRef, PropType, Ref } from "vue";
+import DefaultButton from "./DefaultButton.vue";
+import { useMediaQuery } from "@vueuse/core";
+const mobile =
+  useMediaQuery("(max-width: 800px)") &&
+  useMediaQuery("(max-aspect-ratio: 5/8)");
+const emit = defineEmits(["logout"]);
 
-  // const current_user = defineModel<{
-  //   login: boolean;
-  // }>();
-  const current_user = defineModel("login") as ModelRef<string>;
+// const current_user = defineModel<{
+//   login: boolean;
+// }>();
+const current_user = defineModel("login") as ModelRef<string>;
 
-  // const login = ref(false);
-  const message = ref("Hello, World!");
-  const nav_open = ref(false);
-  // const current_user = ref(false);
+// const login = ref(false);
+const message = ref("Hello, World!");
+const nav_open = ref(false);
+// const current_user = ref(false);
 </script>
 
 <template>
   <v-app-bar color="grey-lighten-4" height="60" :elevation="10" v-if="!mobile">
     <RouterLink to="/"
-      ><v-btn class="me-2" color="grey-lighten-4" height="70" variant="flat" width="90"
+      ><v-btn
+        class="me-2"
+        color="grey-lighten-4"
+        height="70"
+        variant="flat"
+        width="90"
         >Home</v-btn
       ></RouterLink
     >
     <RouterLink v-if="current_user" to="/food">
-      <v-btn class="me-2" color="grey-lighten-4" height="70" variant="flat" width="90">
+      <v-btn
+        class="me-2"
+        color="grey-lighten-4"
+        height="70"
+        variant="flat"
+        width="90"
+      >
         Food</v-btn
       ></RouterLink
     >
     <v-app-bar-title>
       <RouterLink v-if="!current_user" to="/auth" class="float-right">
-        <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="90">
+        <v-btn
+          class="me-2"
+          color="grey-lighten-4"
+          height="90"
+          variant="flat"
+          width="90"
+        >
           Login</v-btn
         ></RouterLink
       >
@@ -48,7 +67,8 @@
               color="grey-lighten-4"
               height="60"
               variant="flat"
-              width="125">
+              width="125"
+            >
               Setting</v-btn
             >
           </v-list-item>
@@ -59,7 +79,8 @@
               color="grey-lighten-4"
               height="60"
               variant="flat"
-              width="125">
+              width="125"
+            >
               logout</v-btn
             >
           </v-list-item>
@@ -69,18 +90,40 @@
   </v-app-bar>
   <v-bottom-navigation v-else height="90" class="pt-5">
     <RouterLink to="/">
-      <v-btn class="me-2" color="grey-lighten-4" height="100" variant="flat" width="90"
+      <v-btn
+        class="me-2"
+        color="grey-lighten-4"
+        height="100"
+        variant="flat"
+        width="90"
         ><v-icon icon="mdi-home"></v-icon
       ></v-btn>
     </RouterLink>
     <RouterLink v-if="current_user" to="/food">
-      <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="90">
-        <v-icon color="brown" icon="mdi-silverware-spoon" size="x-large" end></v-icon>
+      <v-btn
+        class="me-2"
+        color="grey-lighten-4"
+        height="90"
+        variant="flat"
+        width="90"
+      >
+        <v-icon
+          color="brown"
+          icon="mdi-silverware-spoon"
+          size="x-large"
+          end
+        ></v-icon>
         <h2>Food</h2>
       </v-btn></RouterLink
     >
     <RouterLink v-if="!current_user" to="/auth" class="float-right">
-      <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="90">
+      <v-btn
+        class="me-2"
+        color="grey-lighten-4"
+        height="90"
+        variant="flat"
+        width="90"
+      >
         Login</v-btn
       ></RouterLink
     >
@@ -96,7 +139,8 @@
             color="grey-lighten-4"
             height="60"
             variant="flat"
-            width="125">
+            width="125"
+          >
             Setting</v-btn
           >
         </v-list-item>
@@ -107,7 +151,8 @@
             color="grey-lighten-4"
             height="60"
             variant="flat"
-            width="125">
+            width="125"
+          >
             logout</v-btn
           >
         </v-list-item>

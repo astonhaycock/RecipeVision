@@ -24,7 +24,6 @@ run: deploy
 dev: dependencies
 	export BACKEND_PORT=8443 && \
 	export LOCAL_PORT=8080 && \
-	export VITE_PUBLIC_PORT=80 && \
 	export VITE_PUBLIC_HOST="https://dont-pani.cc" && \
 	( \
 		echo "cd dev/server && bun --hot run src/index.ts"; \
@@ -34,8 +33,7 @@ dev: dependencies
 dev2: dependencies
 	export BACKEND_PORT=9990 && \
 	export LOCAL_PORT=8880 && \
-	export VITE_PUBLIC_PORT=8880 && \
-	export VITE_PUBLIC_HOST="https://dont-pani.cc" && \
+	export VITE_PUBLIC_HOST="https://dont-pani.cc:8880" && \
 	( \
 		echo "cd dev/server && bun --hot run src/index.ts"; \
 		echo "cd dev/client && bun run dev" \

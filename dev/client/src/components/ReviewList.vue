@@ -46,9 +46,7 @@ async function sendIngredients(reviewList: Array<string>) {
     body: JSON.stringify(data),
   };
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}:${
-      import.meta.env.VITE_PUBLIC_PORT
-    }/api/ingredients`,
+    `${import.meta.env.VITE_PUBLIC_URL}/api/ingredients`,
     requestOptions
   );
   ingredients.value = [];

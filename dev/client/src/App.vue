@@ -3,7 +3,6 @@ import { RouterLink, RouterView } from "vue-router";
 import { onMounted } from "vue";
 // import HelloWorld from "./components/HelloWorld.vue";
 import NavBar from "./components/NavBar.vue";
-import NavBarMobile from "./components/NavBarSmall.vue";
 import FoodView from "./views/FoodView.vue";
 
 // `inject` is used for importing the global session data
@@ -27,9 +26,7 @@ async function getSession() {
   const myHeaders = new Headers();
 
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}:${
-      import.meta.env.VITE_PUBLIC_PORT
-    }/api/session`,
+    `${import.meta.env.VITE_PUBLIC_URL}/api/session`,
     {
       credentials: "include",
       method: "GET",
@@ -51,9 +48,7 @@ async function logout() {
   };
 
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}:${
-      import.meta.env.VITE_PUBLIC_PORT
-    }/api/session`,
+    `${import.meta.env.VITE_PUBLIC_URL}/api/session`,
     requestOptions
   );
   if (response.status === 200 || response.status == 401) {

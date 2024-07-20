@@ -69,7 +69,7 @@
 <style scoped></style>
 
 <template>
-  <v-app id="inspire" class="d-flex" :class="mobile ? 'pt-4 mb-16' : 'pt-0'">
+  <v-app id="inspire" class="d-flex bg-grey-lighten-4" :class="mobile ? 'pt-4 mb-16' : 'pt-0'">
     <NavBar id="nav" v-model:login="login" @logout="logout" />
     <RouterView @login="getSession()" />
     <!-- <FoodView /> -->

@@ -2,48 +2,49 @@
 import RecipeRow from "@/components/recipes/RecipeRow.vue";
 import { search_multiple as allrecipes } from "@/scripts/allrecipes";
 import type { RecipeCard, RecipeCollection } from "@/scripts/allrecipes";
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
-const recipes = reactive<RecipeCollection>({
-  "beef roast": [
-    {
-      title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-      id: "217132",
-      url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-      image:
-        "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-      stars: 4,
-      reviews: 117,
-    },
-    {
-      title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-      id: "217132",
-      url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-      image:
-        "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-      stars: 4,
-      reviews: 117,
-    },
-    {
-      title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-      id: "217132",
-      url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-      image:
-        "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-      stars: 4,
-      reviews: 117,
-    },
-    {
-      title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-      id: "217132",
-      url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-      image:
-        "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-      stars: 4,
-      reviews: 117,
-    },
-  ],
-});
+const recipes = reactive<RecipeCollection>({});
+// const recipes = reactive<RecipeCollection>({
+//   "beef roast": [
+//     {
+//       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+//       id: "217132",
+//       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+//       image:
+//         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+//       stars: 4,
+//       reviews: 117,
+//     },
+//     {
+//       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+//       id: "217132",
+//       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+//       image:
+//         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+//       stars: 4,
+//       reviews: 117,
+//     },
+//     {
+//       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+//       id: "217132",
+//       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+//       image:
+//         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+//       stars: 4,
+//       reviews: 117,
+//     },
+//     {
+//       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+//       id: "217132",
+//       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+//       image:
+//         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+//       stars: 4,
+//       reviews: 117,
+//     },
+//   ],
+// });
 
 //TODO: Split this off into multiple functions.
 //TODO: sanity check to avoid yelling at the server.
@@ -74,7 +75,7 @@ async function updateRecipes() {
     <v-container class="mx-auto" fluid>
       <v-row class="my-4">
         <v-spacer></v-spacer>
-        <v-text class="text-h3">Recipes</v-text>
+        <v-text class="text-h3" @click="updateRecipes">Recipes</v-text>
         <v-spacer></v-spacer>
       </v-row>
       <RecipeRow

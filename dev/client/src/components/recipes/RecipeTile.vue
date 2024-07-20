@@ -7,36 +7,15 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div id="main">
-    <img :src="props.recipe.image as string" alt="recipe image" height="300" />
-    <div id="inlay">
-      <h3>{{ props.recipe.title }}</h3>
-      <div id="row">
-        <p>Stars: {{ props.recipe.stars }}</p>
-        <p>Reviews: {{ props.recipe.reviews }}</p>
-      </div>
-    </div>
-  </div>
+  <v-card height="400" max-width="400" class="pa-0 ma-4">
+    <v-img
+      :src="recipe.image as string"
+      height="300px"
+      class="position-relative top-0 left-0 ma-0"
+    />
+    <v-card-title class="text-body-3 text-wrap mt-2"
+      ><p class="text-body-3">{{ recipe.title as string }}</p></v-card-title
+    >
+    <v-card-actions> </v-card-actions>
+  </v-card>
 </template>
-
-<style scoped>
-#main {
-  margin: 10px;
-  max-width: 600px;
-  display: table;
-}
-#inlay {
-  display: table-caption;
-  position: relative;
-  width: 100%;
-  height: 75px;
-  bottom: 75px;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px;
-  color: white;
-}
-#row {
-  display: flex;
-  justify-content: space-around;
-}
-</style>

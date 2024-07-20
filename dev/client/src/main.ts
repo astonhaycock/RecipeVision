@@ -11,6 +11,8 @@ import router from "./router";
 
 const app = createApp(App);
 
+console.log(`\x1b[92mVue client sends requests to ${import.meta.env.VITE_PUBLIC_URL}:{import.meta.env.VITE_PUBLIC_PORT}`);
+
 const vuetify = createVuetify({
   components,
   directives,

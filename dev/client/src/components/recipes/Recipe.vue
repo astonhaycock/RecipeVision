@@ -86,7 +86,7 @@
     <v-container class="mx-auto mb-16 bg-grey-lighten-4" fluid>
       <v-row class="mt-3 mb-8">
         <v-spacer></v-spacer>
-        <v-text class="text-h3" @click="updateRecipes">Recipes</v-text>
+        <div class="text-h3" @click="updateRecipes">Recipes</div>
         <v-spacer></v-spacer>
       </v-row>
       <RecipeRow

@@ -63,10 +63,10 @@
         <label for="actual-btn">
           <v-icon
             for="actual-btn"
-            class="ma-2"
-            size="60"
-            color="indigo"
-            icon="mdi-cloud-upload"></v-icon>
+            class="ma-2 bg-blue rounded-circle pa-8"
+            size="40"
+            color="black"
+            icon="mdi-file-image-plus-outline"></v-icon>
         </label>
       </form>
     </div>

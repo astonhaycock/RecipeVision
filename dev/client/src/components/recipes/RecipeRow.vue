@@ -34,9 +34,9 @@
     <v-row color="grey-lighten-4">
       <!-- <v-spacer></v-spacer> -->
       <v-sheet color="grey-lighten-2" rounded="pill" :class="style.pill_label">
-        <v-text class="text-h6 text-capitalize">
+        <div class="text-h6 text-capitalize">
           {{ props.recipes.query }}
-        </v-text>
+        </div>
       </v-sheet>
       <v-spacer></v-spacer>
     </v-row>

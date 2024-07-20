@@ -6,7 +6,9 @@ import ReviewList from "./ReviewList.vue";
 
 const emit = defineEmits(["reviewIngredients", "update"]);
 
-const URL = "https://dont-pani.cc/api/image";
+const URL = `${import.meta.env.VITE_PUBLIC_URL}:${
+  import.meta.env.VITE_PUBLIC_PORT
+}/api/image`;
 const ReviewListIngredients = ref<string>("");
 const image = ref<File | null>(null);
 const imageUrl = ref<string | null>(null);

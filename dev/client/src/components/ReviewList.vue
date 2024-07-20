@@ -46,7 +46,9 @@ async function sendIngredients(reviewList: Array<string>) {
     body: JSON.stringify(data),
   };
   const response = await fetch(
-    "https://dont-pani.cc/api/ingredients",
+    `${import.meta.env.VITE_PUBLIC_URL}:${
+      import.meta.env.VITE_PUBLIC_PORT
+    }/api/ingredients`,
     requestOptions
   );
   ingredients.value = [];

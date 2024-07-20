@@ -49,15 +49,22 @@ const recipes = reactive<RecipeCollection>({});
 //TODO: Split this off into multiple functions.
 //TODO: sanity check to avoid yelling at the server.
 async function updateRecipes() {
-  const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}/api/recipes`
-  );
-  //TODO: Handle errors in a more user-friendly way.
-  if (response.status !== 200) {
-    console.error("Failed to fetch recipes.");
-    return;
-  }
-  let recipe_ideas = await response.json();
+  // const response = await fetch(
+  //   `${import.meta.env.VITE_PUBLIC_URL}/api/recipes`
+  // );
+  // //TODO: Handle errors in a more user-friendly way.
+  // if (response.status !== 200) {
+  //   console.error("Failed to fetch recipes.");
+  //   return;
+  // }
+  // const recipe_ideas = await response.json();
+  const recipe_ideas = [
+    "spinache casserole",
+    "beef roast",
+    "roast chicken",
+    "lentil soup",
+    "parmesan chicken",
+  ];
   allrecipes(recipe_ideas, (recipe) => {
     if (recipe.query in recipes) {
       recipes[recipe.query].push(...recipe.cards);

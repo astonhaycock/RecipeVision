@@ -12,6 +12,7 @@
   const drawer = ref(false);
   const search = ref("");
   const selected: Ref<Array<string>> = ref([]);
+  const removedItems: Ref<Array<string>> = ref([]);
 
   const allSelected = computed(() => selected.value.length === items.value.length);
 
@@ -32,7 +33,7 @@
     }
   });
 
-  const selections = selected.value;
+  // const selections = selected.value;
 
   function toggleDrawer() {
     drawer.value = !drawer.value;
@@ -44,6 +45,7 @@
   });
 
   async function deleteList() {
+    console.log(selected.value);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     loading.value = true;
@@ -58,26 +60,26 @@
       requestOptions
     );
     if (response.status === 204) {
-      console.log("List deleted Successfully");
       setTimeout(() => {
-        search.value = "";
+        removedItems.value = removedItems.value.concat(selected.value);
+        items.value = items.value.filter((item) => !removedItems.value.includes(item));
         selected.value = [];
         loading.value = false;
       }, 2000);
+      console.log("List deleted Successfully");
     } else {
       console.log("List not deleted");
     }
   }
 
   async function getIngredients() {
+    removedItems.value = [];
     console.log("Getting Ingredients...");
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ingredients`);
     const data = await response.json();
     if (response.status === 200) {
       items.value = data;
       console.log("Ingredient got Successfully");
-      console.log(data);
-      console.log(items.value);
     } else {
       console.log("Ingredients not received");
     }
@@ -110,7 +112,7 @@
         <v-container>
           <v-row align="center" justify="start">
             <v-col
-              v-for="(selection, i) in selections"
+              v-for="(selection, i) in selected"
               :key="selection"
               class="py-1 pe-0"
               cols="auto">

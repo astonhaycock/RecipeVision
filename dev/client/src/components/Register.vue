@@ -74,10 +74,11 @@
 </script>
 
 <template>
-  <v-sheet id="sheet" rounded>
-    <v-card id="login-container" class="mx-auto" height="600px" min-width="344">
+  <v-sheet id="sheet" rounded :class="mobile ? 'align-center' : 'align-start pt-8'">
+    <v-card id="login-container" class="mx-auto" height="600px" min-width="300">
       <v-form
         class="pa-15"
+        :class="mobile ? 'pa-15' : ' pt-0'"
         id="form-container"
         v-model="form"
         @submit.prevent="registerUser"
@@ -186,7 +187,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    width: 100vw;
+    /* width: 100vw; */
     background-color: rgba(188, 189, 191, 0.893);
   }
   #login-container {

@@ -3,6 +3,7 @@
   import DefaultButton from "../components/DefaultButton.vue";
   import { useRouter, useRoute } from "vue-router";
   import { useMediaQuery } from "@vueuse/core";
+  import { start } from "repl";
   const emit = defineEmits(["login", "registerPage"]);
   const email_regex =
     /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -49,7 +50,7 @@
 </script>
 
 <template>
-  <v-sheet id="sheet" rounded>
+  <v-sheet id="sheet" rounded :class="mobile ? 'align-center' : 'align-start pt-8'">
     <v-card id="login-container" class="mx-auto" height="600px" min-width="344">
       <v-form
         class="pa-15"

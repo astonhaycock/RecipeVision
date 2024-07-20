@@ -67,7 +67,7 @@
       </v-menu>
     </v-app-bar-title>
   </v-app-bar>
-  <v-bottom-navigation v-else height="90">
+  <v-bottom-navigation v-else height="90" class="pt-5">
     <RouterLink to="/">
       <v-btn class="me-2" color="grey-lighten-4" height="100" variant="flat" width="90"
         ><v-icon icon="mdi-home"></v-icon

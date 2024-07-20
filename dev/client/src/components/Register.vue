@@ -33,9 +33,7 @@ async function registerUser() {
   };
 
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}:${
-      import.meta.env.VITE_PUBLIC_PORT
-    }/api/user`,
+    `${import.meta.env.VITE_PUBLIC_URL}/api/user`,
     requestOptions
   );
 
@@ -57,9 +55,7 @@ async function loginUser() {
   };
 
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}:${
-      import.meta.env.VITE_PUBLIC_PORT
-    }/api/session`,
+    `${import.meta.env.VITE_PUBLIC_URL}/api/session`,
     requestOptions
   );
 

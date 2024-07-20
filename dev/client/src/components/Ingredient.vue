@@ -23,7 +23,7 @@ const categories = computed(() => {
   return items.value.filter((item) => item.toLowerCase().includes(searchText));
 });
 
-const toggleDrawerIcon = ref("mdi-chevron-left");
+const toggleDrawerIcon = ref("mdi-chevron-right");
 
 watch(drawer, () => {
   if (drawer.value) {
@@ -55,9 +55,7 @@ const next = () => {
 
 async function getIngredients() {
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}:${
-      import.meta.env.VITE_PUBLIC_PORT
-    }/api/ingredients`
+    `${import.meta.env.VITE_PUBLIC_URL}/api/ingredients`
   );
   const data = await response.json();
   if (response.status === 200) {
@@ -83,7 +81,7 @@ async function getIngredients() {
       v-model="drawer"
       :width="mobile && drawer ? 2400 : 350"
       id="ingredient-container"
-      :location="left"
+      location="left"
       :mobile="mobile"
       :class="mobile ? 'elevation-0' : 'elevation-2'"
       temporary

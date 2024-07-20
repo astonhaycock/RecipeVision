@@ -26,9 +26,7 @@ async function loginUser() {
   myHeaders.append("Content-Type", "application/json");
 
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}:${
-      import.meta.env.VITE_PUBLIC_PORT
-    }/api/session`,
+    `${import.meta.env.VITE_PUBLIC_URL}/api/session`,
     {
       credentials: "include",
       method: "POST",

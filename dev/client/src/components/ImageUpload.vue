@@ -12,6 +12,7 @@
   const imageUrl = ref<string | null>(null);
   const loading = ref(false);
   const IngredientReview = ref<string | null>(null);
+  const imageFail = ref(false);
 
   const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -30,6 +31,7 @@
 
   const uploadImage = async () => {
     loading.value = true;
+    imageFail.value = false;
     if (image.value) {
       const formData = new FormData();
       formData.append("image", image.value);
@@ -42,10 +44,17 @@
       //TODO: Check response status. 200 on success.
       const data = await response.json();
       // Emitting event to parent component with the uploaded image data
-      IngredientReview.value = data;
-      // Assumes you are listening to this event in the parent component
-      loading.value = false;
-      imageUrl.value = null;
+      console.log(response.status);
+      if (response.status === 200 && data.length > 0) {
+        IngredientReview.value = data;
+        // Assumes you are listening to this event in the parent component
+        loading.value = false;
+        imageUrl.value = null;
+      } else {
+        loading.value = false;
+        imageUrl.value = null;
+        imageFail.value = true;
+      }
     }
   };
 
@@ -81,6 +90,7 @@
         <v-progress-linear id="bar" :indeterminate="true"></v-progress-linear>
       </div>
     </div>
+    <h3 class="text-center bg-red rounded" v-if="imageFail">Image Failed</h3>
   </div>
   <review-list v-model:review-list="IngredientReview" @addIngredients="$emit('update')" />
 </template>

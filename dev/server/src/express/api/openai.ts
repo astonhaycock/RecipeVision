@@ -3,13 +3,7 @@
 // specified in the `init` function at the bottom, which is called from `server.ts`
 
 import { OpenAI } from "openai";
-import {
-  IMAGE_PROMPT,
-  OPENAI_KEY,
-  PUBLIC_URL,
-  RATE_LIMIT,
-  RECIPE_PROMPT,
-} from "../../env";
+import { IMAGE_PROMPT, OPENAI_KEY, PUBLIC_URL, RATE_LIMIT, RECIPE_PROMPT } from "../../env";
 import type { Express, Request, Response } from "express";
 import type { User } from "../../model";
 import { unlink } from "fs-extra";
@@ -60,9 +54,7 @@ async function post_api_image(req: Request, res: Response): Promise<void> {
     ],
   });
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(
-    response.choices[0].message.content as string
-  );
+  const result = parse_ai_response(response.choices[0].message.content as string);
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -96,15 +88,11 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(
-              user.recipe_exclusions.list
-            )}`,
+            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(
-              user.recipe_exclusions.list
-            )}`,
+            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
           },
         ],
       },
@@ -112,9 +100,7 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
   });
 
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(
-    response.choices[0].message.content as string
-  );
+  const result = parse_ai_response(response.choices[0].message.content as string);
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -127,12 +113,7 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
 //================================================================================================//
 
 function init(app: Express) {
-  app.post(
-    "/api/image",
-    authenticate_mw,
-    image_mw.single("image"),
-    post_api_image
-  );
+  app.post("/api/image", authenticate_mw, image_mw.single("image"), post_api_image);
   app.get("/api/recipes", authenticate_mw, get_api_recipes);
 }
 

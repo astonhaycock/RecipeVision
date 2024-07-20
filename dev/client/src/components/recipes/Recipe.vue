@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import RecipeRow from "@/components/recipes/RecipeRow.vue";
 import { search_multiple as allrecipes } from "@/scripts/allrecipes";
-import type { RecipeCard, RecipeCollection } from "@/scripts/allrecipes";
+import type { RecipeCollection } from "@/scripts/allrecipes";
 import { onMounted, reactive, ref } from "vue";
 
 const recipes = reactive<RecipeCollection>({});
@@ -49,6 +49,8 @@ const recipes = reactive<RecipeCollection>({});
 //TODO: Split this off into multiple functions.
 //TODO: sanity check to avoid yelling at the server.
 async function updateRecipes() {
+  //TODO: This should just be on the server, honestly
+
   // const response = await fetch(
   //   `${import.meta.env.VITE_PUBLIC_URL}/api/recipes`
   // );
@@ -59,7 +61,7 @@ async function updateRecipes() {
   // }
   // const recipe_ideas = await response.json();
   const recipe_ideas = [
-    "spinache casserole",
+    "spinach casserole",
     "beef roast",
     "roast chicken",
     "lentil soup",
@@ -73,14 +75,18 @@ async function updateRecipes() {
     }
   });
 }
+
+onMounted(() => {
+  updateRecipes();
+});
 </script>
 
 <template>
   <v-main
     class="position-absolute top-0 mx-0 px-0 w-100 fill-height bg-grey-lighten-4"
   >
-    <v-container class="mx-auto" fluid>
-      <v-row class="my-4">
+    <v-container class="mx-auto mb-16" fluid>
+      <v-row class="mt-3 mb-8">
         <v-spacer></v-spacer>
         <v-text class="text-h3" @click="updateRecipes">Recipes</v-text>
         <v-spacer></v-spacer>

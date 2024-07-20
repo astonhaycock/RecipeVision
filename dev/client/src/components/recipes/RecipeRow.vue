@@ -1,6 +1,30 @@
 <script setup lang="ts">
 import RecipeTile from "@/components/recipes/RecipeTile.vue";
 import type { RecipeListWithQuery, RecipeCard } from "@/scripts/allrecipes";
+import { useMediaQuery } from "@vueuse/core";
+import { onMounted, reactive, watch } from "vue";
+const mobile =
+  useMediaQuery("(max-width: 800px)") &&
+  useMediaQuery("(max-aspect-ratio: 5/8)");
+
+const style = reactive<{
+  pill_label: string;
+  container: string;
+}>({ pill_label: "", container: "" });
+
+function update() {
+  if (mobile.value) {
+    style.container = "mx-1 mt-4 mb-6";
+    style.pill_label = "px-4 py-1 mt-2 ml-6 w-auto";
+  } else {
+    style.container = "mx-10 mt-16 mb-16";
+    style.pill_label = "px-4 py-1 mt-4 ml-6 w-auto";
+  }
+}
+
+watch(mobile, update);
+
+onMounted(update);
 
 const props = defineProps<{
   recipes: RecipeListWithQuery;
@@ -8,13 +32,15 @@ const props = defineProps<{
 </script>
 
 <template>
-  <v-sheet tag="v-container" class="mx-10 mt-8" color="grey-lighten-1" rounded>
+  <v-sheet
+    tag="v-container"
+    :class="style.container"
+    color="grey-lighten-1"
+    rounded
+  >
     <v-row>
-      <v-sheet
-        color="grey-lighten-2"
-        rounded="pill"
-        class="px-4 py-1 mt-4 ml-6 w-auto"
-      >
+      <!-- <v-spacer></v-spacer> -->
+      <v-sheet color="grey-lighten-2" rounded="pill" :class="style.pill_label">
         <v-text class="text-h6 text-capitalize">
           {{ props.recipes.query }}
         </v-text>
@@ -22,7 +48,7 @@ const props = defineProps<{
       <v-spacer></v-spacer>
     </v-row>
 
-    <v-slide-group show-arrows class="mt-2">
+    <v-slide-group class="mt-2 px-2" :mobile="mobile" :show-arrows="!mobile">
       <v-slide-group-item v-for="(card, key) in props.recipes.cards">
         <RecipeTile :recipe="card" />
         <!-- <v-sheet

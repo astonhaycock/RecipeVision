@@ -10,11 +10,13 @@ import { init as auth } from "./api/auth";
 import { init as lists } from "./api/lists";
 import { init as openai } from "./api/openai";
 import { init as statics } from "./static";
+import { init as allrecipes } from "./api/allrecipes";
 
 middleware(app);
 auth(app);
 lists(app);
 openai(app);
 await statics(app);
+allrecipes(app);
 
 export { app };

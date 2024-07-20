@@ -38,7 +38,7 @@
       body: JSON.stringify(data),
     };
     const response = await fetch(
-      `${import.meta.env.VITE_PUBLIC_URL}/api/ingredient`,
+      `${import.meta.env.VITE_PUBLIC_URL}/api/ingredients`,
       requestOptions
     );
     ingredients.value = [];

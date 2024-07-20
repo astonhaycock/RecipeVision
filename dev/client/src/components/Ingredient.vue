@@ -3,7 +3,6 @@
   import type { Ref } from "vue";
   import ImageUpload from "./ImageUpload.vue";
   import { useMediaQuery } from "@vueuse/core";
-  import Response from "express";
   const mobile = useMediaQuery("(max-width: 800px)");
 
   const items: Ref<Array<string>> = ref([]);
@@ -190,6 +189,6 @@
     overflow-y: scroll;
   }
   #ingredient-container {
-    height: 90vh;
+    height: 100vh;
   }
 </style>

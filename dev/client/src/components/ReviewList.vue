@@ -5,10 +5,7 @@
   const amenities: Ref<Array<Number>> = ref([]);
   const emit = defineEmits(["addIngredients"]);
 
-  const ingredients: ModelRef<string[], string> = defineModel("reviewList") as ModelRef<
-    string[],
-    string
-  >;
+  const ingredients: ModelRef<string[], string> = defineModel("reviewList") as ModelRef<string[]>;
 
   const editingItem = ref(-1);
   const textInput = ref("");
@@ -33,6 +30,7 @@
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const data = { items: reviewList };
+    console.log(data);
 
     const requestOptions = {
       method: "PUT",

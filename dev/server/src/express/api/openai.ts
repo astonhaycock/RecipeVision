@@ -6,6 +6,7 @@ import { OpenAI } from "openai";
 import {
   GENERATE_RECIPE_IMAGE_PROMPT,
   GENERATE_RECIPE_PROMPT,
+  GENERATED_IMAGES_PATH,
   IMAGE_PROMPT,
   OPENAI_KEY,
   PUBLIC_URL,
@@ -119,6 +120,8 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
 //================================================================================================//
 
 async function generate_api_recipe(req: Request, res: Response): Promise<void> {
+  const https = require("https"); // or 'http' for http:// URLs
+  const fs = require("fs");
   const user = req.user as User;
   const ingredients = user.ingredients.list;
   if (ingredients.length === 0) {
@@ -161,11 +164,21 @@ async function generate_api_recipe(req: Request, res: Response): Promise<void> {
   }
   const image = await openai.images.generate({
     model: "dall-e-2",
-    prompt: GENERATE_RECIPE_IMAGE_PROMPT + `${result}`,
+    prompt: GENERATE_RECIPE_IMAGE_PROMPT + ", " + result,
     n: 1,
     size: "512x512",
   });
   const image_url = image.data[0].url;
+  const file = fs.createWriteStream(`${GENERATED_IMAGES_PATH}/${image_url}`);
+  const request = https.get(image_url, function (download_response: { pipe: (arg0: any) => void }) {
+    download_response.pipe(file);
+    ("");
+    // after download completed close filestream
+    file.on("finish", () => {
+      file.close();
+      console.log("Download Completed");
+    });
+  });
 
   res.status(200).send(result + "\n" + image_url);
 }

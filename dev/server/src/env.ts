@@ -73,6 +73,8 @@ const RATE_LIMIT = envp<number>("RATE_LIMIT", 15_000);
 const WEBSITE_PATH = env("WEBSITE_PATH", "../client");
 /// The path to serve the images to OpenAI
 const IMAGES_PATH = env("IMAGES_PATH", "../images");
+
+const GENERATED_IMAGES_PATH = env("GENERATED_PATH", "../GENERATED_IMAGES");
 /// The OpenAI API key
 const OPENAI_KEY = env("OPENAI_KEY");
 /// The MongoDB connection string
@@ -136,6 +138,7 @@ export {
   RATE_LIMIT,
   WEBSITE_PATH,
   IMAGES_PATH,
+  GENERATED_IMAGES_PATH,
   PUBLIC_URL,
   OPENAI_KEY,
   MONGODB_URL,

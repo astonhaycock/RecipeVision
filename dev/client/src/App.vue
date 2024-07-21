@@ -39,6 +39,7 @@
     }
   }
   async function logout() {
+    router.push("/auth");
     const myHeaders = new Headers();
     const requestOptions = {
       method: "DELETE",

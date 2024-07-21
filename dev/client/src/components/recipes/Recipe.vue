@@ -75,6 +75,9 @@
       }
     });
   }
+  async function generateRecipes() {
+    const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipe/generate`);
+  }
 
   onMounted(() => {
     updateRecipes();

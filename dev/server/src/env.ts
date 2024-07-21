@@ -102,6 +102,21 @@ const RECIPE_PROMPT = env(
     "It is permissible to include a few recipes that use a couple additional ingredients. " +
     "If no ideas can be generated using the provided ingredients, return an empty JSON array."
 );
+const GENERATE_RECIPE_PROMPT = env(
+  "RECIPE_PROMPT",
+  "Give me one recipe ideas that can be made using a subset of the provided list " +
+    "of ingredients labelled 'ingredients'. Avoid recipes that are certain to use any ingredients " +
+    "listed in the 'ingredient_exclusions' list. Additionally, avoid recipes listed in the " +
+    "'recipe_exclusions' list." +
+    "Provide the name of recipe, description of recipe, how long it takes to cook, ingredients required, and step by step instructions " +
+    "Return the lists as a JSON array of strings. " +
+    "It is permissible to include a recipes that use a couple additional ingredients. " +
+    "If no ideas can be generated using the provided ingredients, return an empty JSON array."
+);
+const GENERATE_RECIPE_IMAGE_PROMPT = env(
+  "RECIPE_IMAGE_PROMPT",
+  "with the recipe information provided generate me an image of the recipe."
+);
 
 let url = env("PUBLIC_URL");
 // sanitize the URL so it plays nicely with the rest of the code
@@ -128,4 +143,6 @@ export {
   COOKIE_EXPIRATION,
   IMAGE_PROMPT,
   RECIPE_PROMPT,
+  GENERATE_RECIPE_PROMPT,
+  GENERATE_RECIPE_IMAGE_PROMPT,
 };

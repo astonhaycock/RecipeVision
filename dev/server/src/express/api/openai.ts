@@ -3,7 +3,15 @@
 // specified in the `init` function at the bottom, which is called from `server.ts`
 
 import { OpenAI } from "openai";
-import { IMAGE_PROMPT, OPENAI_KEY, PUBLIC_URL, RATE_LIMIT, RECIPE_PROMPT } from "../../env";
+import {
+  GENERATE_RECIPE_IMAGE_PROMPT,
+  GENERATE_RECIPE_PROMPT,
+  IMAGE_PROMPT,
+  OPENAI_KEY,
+  PUBLIC_URL,
+  RATE_LIMIT,
+  RECIPE_PROMPT,
+} from "../../env";
 import type { Express, Request, Response } from "express";
 import type { User } from "../../model";
 import { unlink } from "fs-extra";
@@ -109,12 +117,67 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
 }
 
 //================================================================================================//
+
+async function generate_api_recipe(req: Request, res: Response): Promise<void> {
+  const user = req.user as User;
+  const ingredients = user.ingredients.list;
+  if (ingredients.length === 0) {
+    res.status(400).send("no ingredients provided");
+    return;
+  }
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: GENERATE_RECIPE_PROMPT,
+          },
+          {
+            type: "text",
+            text: `ingredients: ${JSON.stringify(ingredients)}`,
+          },
+          {
+            type: "text",
+            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+          },
+          {
+            type: "text",
+            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+          },
+        ],
+      },
+    ],
+  });
+
+  console.log(response.choices[0].message.content);
+  const result = response.choices[0].message.content;
+  if (!result) {
+    res.status(500).send("AI response failed to parse");
+    return;
+  }
+  const image = await openai.images.generate({
+    model: "dall-e-2",
+    prompt: GENERATE_RECIPE_IMAGE_PROMPT + `${result}`,
+    n: 1,
+    size: "512x512",
+  });
+  const image_url = image.data[0].url;
+
+  res.status(200).send(result + "\n" + image_url);
+}
+
+//================================================================================================//
 //==| Export |====================================================================================//
 //================================================================================================//
 
 function init(app: Express) {
   app.post("/api/image", authenticate_mw, image_mw.single("image"), post_api_image);
   app.get("/api/recipes", authenticate_mw, get_api_recipes);
+  app.get("/api/recipe/generate", authenticate_mw, generate_api_recipe);
 }
 
 export { init };

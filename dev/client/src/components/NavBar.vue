@@ -80,7 +80,7 @@
     <!-- logo -->
     <!-- <companyLogo height="50px" width="50px" class="d-flex justify-center align-center" /> -->
     <RouterLink to="/">
-      <v-btn class="me-2" color="grey-lighten-4" variant="flat" height="90" idth="90"
+      <v-btn class="me-2" color="grey-lighten-4" variant="flat" height="90" width="90"
         ><v-icon icon="mdi-home"></v-icon
       ></v-btn>
     </RouterLink>

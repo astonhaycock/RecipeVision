@@ -74,7 +74,7 @@ const WEBSITE_PATH = env("WEBSITE_PATH", "../client");
 /// The path to serve the images to OpenAI
 const IMAGES_PATH = env("IMAGES_PATH", "../images");
 
-const GENERATED_IMAGES_PATH = env("GENERATED_PATH", "../GENERATED_IMAGES");
+const GENERATED_IMAGES_PATH = env("GENERATED_PATH", "../generated_images");
 /// The OpenAI API key
 const OPENAI_KEY = env("OPENAI_KEY");
 /// The MongoDB connection string
@@ -110,7 +110,9 @@ const GENERATE_RECIPE_PROMPT = env(
     "of ingredients labelled 'ingredients'. Avoid recipes that are certain to use any ingredients " +
     "listed in the 'ingredient_exclusions' list. Additionally, avoid recipes listed in the " +
     "'recipe_exclusions' list." +
-    "Provide the name of recipe, description of recipe, how long it takes to cook, ingredients required, and step by step instructions " +
+    "Provide the name of recipe labelled 'recipe_name', description of recipe labelled 'description'" +
+    "how long it takes to cook labelled 'cook_time', ingredients required labelled 'required_ingredients'" +
+    "step by step instructions labelled 'instructions' " +
     "Return the lists as a JSON array of strings. " +
     "It is permissible to include a recipes that use a couple additional ingredients. " +
     "If no ideas can be generated using the provided ingredients, return an empty JSON array."

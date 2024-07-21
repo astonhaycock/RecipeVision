@@ -18,6 +18,8 @@ import type { User } from "../../model";
 import { unlink } from "fs-extra";
 import { parse_ai_response } from "../../utils";
 import { authenticate_mw, image_mw } from "../middleware";
+import { get } from "https"; // or 'http' depending on the URL protocol
+import { createWriteStream } from "fs";
 
 // Create the OpenAI client
 const openai = new OpenAI({ apiKey: OPENAI_KEY });
@@ -119,68 +121,102 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
 
 //================================================================================================//
 
+function downloadImage(url: string, filepath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    get(url, (res) => {
+      if (res.statusCode === 200) {
+        res
+          .pipe(createWriteStream(filepath))
+          .on("error", reject)
+          .once("close", () => resolve(filepath));
+      } else {
+        // Consume response data to free up memory
+        res.resume();
+        reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+      }
+    }).on("error", reject);
+  });
+}
+
 async function generate_api_recipe(req: Request, res: Response): Promise<void> {
-  const https = require("https"); // or 'http' for http:// URLs
-  const fs = require("fs");
   const user = req.user as User;
   const ingredients = user.ingredients.list;
-  if (ingredients.length === 0) {
-    res.status(400).send("no ingredients provided");
+
+  if (ingredients.length < 10) {
+    res.status(400).send("Not enough ingredients provided");
     return;
   }
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: GENERATE_RECIPE_PROMPT,
-          },
-          {
-            type: "text",
-            text: `ingredients: ${JSON.stringify(ingredients)}`,
-          },
-          {
-            type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
-          },
-          {
-            type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
-          },
-        ],
-      },
-    ],
-  });
-
-  console.log(response.choices[0].message.content);
-  const result = response.choices[0].message.content;
-  if (!result) {
-    res.status(500).send("AI response failed to parse");
-    return;
-  }
-  const image = await openai.images.generate({
-    model: "dall-e-2",
-    prompt: GENERATE_RECIPE_IMAGE_PROMPT + ", " + result,
-    n: 1,
-    size: "512x512",
-  });
-  const image_url = image.data[0].url;
-  const file = fs.createWriteStream(`${GENERATED_IMAGES_PATH}/${image_url}`);
-  const request = https.get(image_url, function (download_response: { pipe: (arg0: any) => void }) {
-    download_response.pipe(file);
-    ("");
-    // after download completed close filestream
-    file.on("finish", () => {
-      file.close();
-      console.log("Download Completed");
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: GENERATE_RECIPE_PROMPT,
+            },
+            {
+              type: "text",
+              text: `ingredients: ${JSON.stringify(ingredients)}`,
+            },
+            {
+              type: "text",
+              text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            },
+            {
+              type: "text",
+              text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            },
+          ],
+        },
+      ],
     });
-  });
 
-  res.status(200).send(result + "\n" + image_url);
+    const content = response.choices[0].message.content as string;
+    console.log("API Response Content:", content);
+
+    // Clean the content to ensure it is valid JSON
+    const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
+    if (!jsonMatch) {
+      console.error("No valid JSON found in the response");
+      res.status(500).send("AI response failed to parse");
+      return;
+    }
+
+    const cleanedContent = jsonMatch[1].trim();
+    cleanedContent.replace(/\/\/ Optional for garnish/g, "");
+
+    let result;
+    try {
+      result = JSON.parse(cleanedContent);
+    } catch (jsonError) {
+      console.error("Error parsing JSON:", jsonError);
+      res.status(500).send("AI response failed to parse");
+      return;
+    }
+
+    if (!result) {
+      res.status(500).send("AI response failed to parse");
+      return;
+    }
+    const image = await openai.images.generate({
+      model: "dall-e-2",
+      prompt: "generate an image for this recipe" + result.recipe_name + result.description,
+      n: 1,
+      size: "512x512",
+    });
+    const image_url = image.data[0].url as string;
+    downloadImage(image_url, GENERATED_IMAGES_PATH + "/" + image_url.split("/").pop() + ".png")
+      .then(console.log)
+      .catch(console.error);
+    res.status(200).send(cleanedContent + "\n" + image_url);
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
+    res.status(500).send("Error fetching recipe details");
+  }
 }
 
 //================================================================================================//

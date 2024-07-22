@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRouter } from "vue-router";
-import { onMounted, onBeforeMount } from "vue";
+import { onMounted, onBeforeMount, watch } from "vue";
 // import HelloWorld from "./components/HelloWorld.vue";
 import NavBar from "./components/NavBar.vue";
 import { useMediaQuery } from "@vueuse/core";

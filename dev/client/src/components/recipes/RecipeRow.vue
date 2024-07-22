@@ -2,7 +2,7 @@
 import RecipeTile from "@/components/recipes/RecipeTile.vue";
 import type { RecipeListWithQuery, RecipeCard } from "@/scripts/allrecipes";
 import { useMediaQuery } from "@vueuse/core";
-import { onMounted, reactive, watch } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 
 const mobile_width = useMediaQuery("(max-width: 800px)");
 const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");

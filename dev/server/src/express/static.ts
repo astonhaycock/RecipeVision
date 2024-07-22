@@ -3,13 +3,19 @@
 import express from "express";
 import type { Express, NextFunction, Request, Response } from "express";
 import { mkdir } from "fs/promises";
-import { IMAGES_PATH, WEBSITE_PATH, VUE_DEV } from "../env";
+import {
+  IMAGES_PATH,
+  WEBSITE_PATH,
+  VUE_DEV,
+  GENERATED_IMAGES_PATH,
+} from "../env";
 
 const SITE_ROUTES = ["/", "/auth", "/home", "/food", "/recipe"];
 
 async function init(app: Express) {
   mkdir(IMAGES_PATH, { recursive: true }).catch(console.error);
   app.use("/images", express.static(IMAGES_PATH));
+  // app.use("/api/ai/image", express.static(GENERATED_IMAGES_PATH));
 
   // if (VUE_DEV) {
   //   console.log("\x1b[34mRunning in Vue dev mode\x1b[0m");

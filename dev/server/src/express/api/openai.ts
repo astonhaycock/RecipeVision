@@ -244,7 +244,7 @@ async function get_api_recipe_generate(
     image_name = `${crypto.randomUUID()}.png`;
     const tags: string[] = [];
     recipe = new Recipes({
-      title: data.tile,
+      title: data.title,
       description: data.description,
       cook_time: data.cook_time,
       ingredients: data.required_ingredients,

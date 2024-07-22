@@ -1,5 +1,5 @@
-<script setup>
-  import category_cards from "../components/HomeCategory.vue";
+<script setup lang="ts">
+import category_cards from "../components/HomeCategory.vue";
 </script>
 <template>
   <div id="hero-img" elevation-16>
@@ -17,46 +17,46 @@
   <category_cards />
 </template>
 <style>
-  #hero-text {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  /* #hero-text #btn {
+#hero-text {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+/* #hero-text #btn {
     display: flex;
     justify-content: center;
     align-items: ;
   } */
+#hero-img {
+  background-image: url(../assets/heroimgnew.png);
+  width: 100vw;
+  height: 450px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: self-end;
+  padding-right: 9rem;
+  text-align: left;
+  font-size: x-large;
+  margin-top: 5rem;
+}
+@media ((max-width: 800px)) {
   #hero-img {
-    background-image: url(../assets/heroimgnew.png);
-    width: 100vw;
-    height: 450px;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: self-end;
-    padding-right: 9rem;
-    text-align: left;
-    font-size: x-large;
-    margin-top: 5rem;
+    height: 300px;
+    padding-right: 4rem;
+    font-size: large;
+    margin-top: 0rem;
   }
-  @media ((max-width: 800px)) {
-    #hero-img {
-      height: 300px;
-      padding-right: 4rem;
-      font-size: large;
-      margin-top: 0rem;
-    }
+}
+@media ((max-width: 550px)) {
+  #hero-img {
+    height: 300px;
+    padding-right: 1rem;
+    font-size: medium;
   }
-  @media ((max-width: 550px)) {
-    #hero-img {
-      height: 300px;
-      padding-right: 1rem;
-      font-size: medium;
-    }
-  }
+}
 </style>

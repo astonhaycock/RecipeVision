@@ -197,6 +197,18 @@ UserSchema.static(
     if (existing) {
       return "email already exists";
     }
+    if (
+      typeof auth.password !== "string" ||
+      auth.password.length < 8 ||
+      auth.password.length > 64 ||
+      !auth.password.match(/\d/) ||
+      !auth.password.match(/[a-z]/) ||
+      !auth.password.match(/[A-Z]/) ||
+      !auth.password.match(/[^a-zA-Z\d]/)
+    ) {
+      return "password must be 8-64 characters, with at least one digit, lowercase letter, uppercase letter, and special character";
+    }
+
     let user = new Users();
     let ingredients = new IngredientsLists({ list: [] });
     let recipe_exclusions = new RecipeExclusionsLists({ list: [] });

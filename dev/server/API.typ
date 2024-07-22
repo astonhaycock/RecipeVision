@@ -171,6 +171,18 @@
     (500, "internal server error"),
   )
 )
+#endpoint(
+  "GET",
+  "/api/recipe/generate",
+  "User OpenAI to generate a a recipe ideas based on the user's ingredients in the database. Returns a JSON array of strings.",
+  status:(
+    (200, "recipes generated successfully"),
+    (400, "no ingredients in database"),
+    (401, "user is not logged in"),
+    (429, "rate limit exceeded"),
+    (500, "internal server error"),
+  )
+)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////

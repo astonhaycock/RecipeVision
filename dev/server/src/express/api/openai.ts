@@ -3,12 +3,23 @@
 // specified in the `init` function at the bottom, which is called from `server.ts`
 
 import { OpenAI } from "openai";
-import { IMAGE_PROMPT, OPENAI_KEY, PUBLIC_URL, RATE_LIMIT, RECIPE_PROMPT } from "../../env";
+import {
+  GENERATE_RECIPE_IMAGE_PROMPT,
+  GENERATE_RECIPE_PROMPT,
+  GENERATED_IMAGES_PATH,
+  IMAGE_PROMPT,
+  OPENAI_KEY,
+  PUBLIC_URL,
+  RATE_LIMIT,
+  RECIPE_PROMPT,
+} from "../../env";
 import type { Express, Request, Response } from "express";
 import type { User } from "../../model";
 import { unlink } from "fs-extra";
 import { parse_ai_response } from "../../utils";
 import { authenticate_mw, image_mw } from "../middleware";
+import { get } from "https"; // or 'http' depending on the URL protocol
+import { createWriteStream } from "fs";
 
 // Create the OpenAI client
 const openai = new OpenAI({ apiKey: OPENAI_KEY });
@@ -109,12 +120,113 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
 }
 
 //================================================================================================//
+
+function downloadImage(url: string, filepath: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    get(url, (res) => {
+      if (res.statusCode === 200) {
+        res
+          .pipe(createWriteStream(filepath))
+          .on("error", reject)
+          .once("close", () => resolve(filepath));
+      } else {
+        // Consume response data to free up memory
+        res.resume();
+        reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+      }
+    }).on("error", reject);
+  });
+}
+
+async function generate_api_recipe(req: Request, res: Response): Promise<void> {
+  const user = req.user as User;
+  const ingredients = user.ingredients.list;
+
+  if (ingredients.length < 10) {
+    res.status(400).send("Not enough ingredients provided");
+    return;
+  }
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: GENERATE_RECIPE_PROMPT,
+            },
+            {
+              type: "text",
+              text: `ingredients: ${JSON.stringify(ingredients)}`,
+            },
+            {
+              type: "text",
+              text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            },
+            {
+              type: "text",
+              text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            },
+          ],
+        },
+      ],
+    });
+
+    const content = response.choices[0].message.content as string;
+    console.log("API Response Content:", content);
+
+    // Clean the content to ensure it is valid JSON
+    const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
+    if (!jsonMatch) {
+      console.error("No valid JSON found in the response");
+      res.status(500).send("AI response failed to parse");
+      return;
+    }
+
+    const cleanedContent = jsonMatch[1].trim();
+    cleanedContent.replace(/\/\/ Optional for garnish/g, "");
+
+    let result;
+    try {
+      result = JSON.parse(cleanedContent);
+    } catch (jsonError) {
+      console.error("Error parsing JSON:", jsonError);
+      res.status(500).send("AI response failed to parse");
+      return;
+    }
+
+    if (!result) {
+      res.status(500).send("AI response failed to parse");
+      return;
+    }
+    const image = await openai.images.generate({
+      model: "dall-e-2",
+      prompt: "generate an image for this recipe" + result.recipe_name + result.description,
+      n: 1,
+      size: "512x512",
+    });
+    const image_url = image.data[0].url as string;
+    downloadImage(image_url, GENERATED_IMAGES_PATH + "/" + image_url.split("/").pop() + ".png")
+      .then(console.log)
+      .catch(console.error);
+    res.status(200).send(cleanedContent + "\n" + image_url);
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
+    res.status(500).send("Error fetching recipe details");
+  }
+}
+
+//================================================================================================//
 //==| Export |====================================================================================//
 //================================================================================================//
 
 function init(app: Express) {
   app.post("/api/image", authenticate_mw, image_mw.single("image"), post_api_image);
   app.get("/api/recipes", authenticate_mw, get_api_recipes);
+  app.get("/api/recipe/generate", authenticate_mw, generate_api_recipe);
 }
 
 export { init };

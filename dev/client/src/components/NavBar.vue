@@ -76,19 +76,19 @@
       </v-menu>
     </v-app-bar-title>
   </v-app-bar>
-  <v-bottom-navigation v-else height="90" class="d-flex justify-center align-center">
+  <v-bottom-navigation v-else height="100" class="d-flex justify-center align-center">
     <!-- logo -->
     <!-- <companyLogo height="50px" width="50px" class="d-flex justify-center align-center" /> -->
     <RouterLink to="/">
-      <v-btn class="me-2" color="grey-lighten-4" variant="flat" height="90" idth="90"
-        ><v-icon icon="mdi-home"></v-icon
+      <v-btn class="me-2" color="grey-lighten-4" variant="flat" height="90" width="90"
+        ><v-icon icon="mdi-home" size="35"</v-icon
       ></v-btn>
     </RouterLink>
     <RouterLink v-if="current_user" to="/food">
       <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="90">
         <!-- <v-icon color="brown" icon="mdi-silverware-spoon" size="x-large" end></v-icon> -->
-        <companyLogo height="50px" width="50px" class="d-flex justify-center align-center" />
-        <h2>Food</h2>
+        <companyLogo height="60px" width="60px" class="d-flex justify-center align-center" />
+      
       </v-btn></RouterLink
     >
     <RouterLink v-if="!current_user" to="/auth" class="float-right">
@@ -98,10 +98,12 @@
     >
     <v-menu v-else>
       <template v-slot:activator="{ props }">
-        <v-btn class="me-2 float-right" height="90" icon="mdi-cog" v-bind="props"></v-btn>
+        <v-btn class="me-2 float-right" height="90" v-bind="props"
+          ><v-icon icon="mdi-cog" size="35"></v-icon
+        ></v-btn>
       </template>
       <v-list class="d-flex flex-column">
-        <v-list-item>
+        <!-- <v-list-item>
           <v-btn
             msg="Logout"
             @click="$emit('logout')"
@@ -111,7 +113,7 @@
             width="125">
             Setting</v-btn
           >
-        </v-list-item>
+        </v-list-item> -->
         <v-list-item>
           <v-btn
             msg="Logout"

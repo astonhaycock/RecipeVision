@@ -1,38 +1,62 @@
-<script setup lang="ts">
-  import { ref } from "vue";
-  const isHovering = ref(false);
+<script setup>
+  import category_cards from "../components/HomeCategory.vue";
 </script>
-
 <template>
-  <div class="d-flex">
-    <v-hover v-slot="{ isHovering, props }" v-for="i in 3">
-      <v-card class="mx-auto" max-width="344" v-bind="props">
-        <v-img src="https://cdn.vuetifyjs.com/images/cards/forest-art.jpg"></v-img>
+  <div id="hero-img" elevation-16>
+    <div id="hero-text">
+      <div>
+        <h2>Discover your next</h2>
+        <h2>favorite recipe</h2>
+      </div>
 
-        <v-card-text>
-          <h2 class="text-h6 text-primary">Magento Forests</h2>
-          Travel to the best outdoor experience on planet Earth. A vacation you will never forget!
-        </v-card-text>
-
-        <v-card-title>
-          <v-rating
-            :model-value="4"
-            background-color="orange"
-            class="me-2"
-            color="orange"
-            dense
-            hover></v-rating>
-          <span class="text-primary text-subtitle-2">64 Reviews</span>
-        </v-card-title>
-
-        <v-overlay
-          :model-value="isHovering"
-          class="align-center justify-center"
-          scrim="#036358"
-          contained>
-          <v-btn variant="flat">See more info</v-btn>
-        </v-overlay>
-      </v-card>
-    </v-hover>
+      <RouterLink id="btn" to="/food">
+        <v-btn>Try now</v-btn>
+      </RouterLink>
+    </div>
   </div>
+  <category_cards />
 </template>
+<style>
+  #hero-text {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  /* #hero-text #btn {
+    display: flex;
+    justify-content: center;
+    align-items: ;
+  } */
+  #hero-img {
+    background-image: url(../assets/heroimgnew.png);
+    width: 100vw;
+    height: 450px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: self-end;
+    padding-right: 9rem;
+    text-align: left;
+    font-size: x-large;
+    margin-top: 5rem;
+  }
+  @media ((max-width: 800px)) {
+    #hero-img {
+      height: 300px;
+      padding-right: 4rem;
+      font-size: large;
+      margin-top: 0rem;
+    }
+  }
+  @media ((max-width: 550px)) {
+    #hero-img {
+      height: 300px;
+      padding-right: 1rem;
+      font-size: medium;
+    }
+  }
+</style>

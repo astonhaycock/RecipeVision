@@ -1,10 +1,13 @@
 <script setup lang="ts">
   import RecipeRow from "@/components/recipes/RecipeRow.vue";
+  import AiRecipeRow from "@/components/recipes/AiRecipeRow.vue";
   import { search_multiple as allrecipes } from "@/scripts/allrecipes";
   import type { RecipeCollection } from "@/scripts/allrecipes";
+  import type { AiRecipeCollection } from "@/scripts/airecipes";
   import { onMounted, reactive, ref } from "vue";
 
   const recipes = reactive<RecipeCollection>({});
+  const ai_recipes = reactive<AiRecipeCollection>([]);
   // const recipes = reactive<RecipeCollection>({
   //   "beef roast": [
   //     {
@@ -75,12 +78,20 @@
       }
     });
   }
+  async function getGenerateRecipes() {
+    const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipe`);
+    if (response.status === 200) {
+      const data = await response.json();
+      ai_recipes.push(data);
+    }
+  }
   async function generateRecipes() {
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipe/generate`);
   }
 
   onMounted(() => {
     updateRecipes();
+    getGenerateRecipes();
   });
 </script>
 
@@ -92,6 +103,7 @@
         <div class="text-h3" @click="updateRecipes">Recipes</div>
         <v-spacer></v-spacer>
       </v-row>
+      <AiRecipeRow :recipes="ai_recipes" v-if="ai_recipes.length > 0" />
       <RecipeRow
         v-for="(cards, query) in recipes"
         :recipes="{ query: query as string, cards: cards }" />

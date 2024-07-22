@@ -61,8 +61,6 @@ function envp<T>(name: string, or?: T): T {
   return parsed;
 }
 
-/// Whether to redirect web files to the Vue dev server
-const VUE_DEV = envp<boolean>("VUE_DEV", false);
 /// The maximum upload size in bytes
 const FILE_LIMIT = envp<number>("FILE_LIMIT", 100 * 1024 * 1024);
 /// The port to listen on
@@ -141,7 +139,6 @@ if (url.endsWith("/")) {
 const PUBLIC_URL = url;
 
 export {
-  VUE_DEV,
   FILE_LIMIT,
   PORT,
   RATE_LIMIT,

@@ -58,16 +58,6 @@
   });
 </script>
 
-<!-- <template>
-  <NavBar id="bigNav" v-model:login="login" @logout="logout" />
-  <NavBarMobile
-    id="mobileNav"
-    @nav_open="handleNavOpen()"
-    v-model:login="login"
-    @logout="logout"
-  />
-  <RouterView v-if="nav_open === false" @login="getSession()" />
-</template> -->
 
 <style scoped></style>
 

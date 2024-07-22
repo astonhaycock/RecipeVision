@@ -46,7 +46,8 @@
             class="me-2"
             color="orange"
             dense
-            hover></v-rating>
+            hover
+            readonly></v-rating>
           <span class="text-primary text-subtitle-2">{{ recipe.reviews }} Reviews</span>
         </v-card-title>
         <v-card-text class="d-flex flex-column align-center me-2">

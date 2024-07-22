@@ -1,32 +1,38 @@
 <script setup lang="ts">
-  import RecipeTile from "@/components/recipes/RecipeTile.vue";
-  import type { RecipeListWithQuery, RecipeCard } from "@/scripts/allrecipes";
-  import { useMediaQuery } from "@vueuse/core";
-  import { onMounted, reactive, watch } from "vue";
-  const mobile = useMediaQuery("(max-width: 800px)") && useMediaQuery("(max-aspect-ratio: 5/8)");
+import RecipeTile from "@/components/recipes/RecipeTile.vue";
+import type { RecipeListWithQuery, RecipeCard } from "@/scripts/allrecipes";
+import { useMediaQuery } from "@vueuse/core";
+import { onMounted, reactive, watch } from "vue";
 
-  const style = reactive<{
-    pill_label: string;
-    container: string;
-  }>({ pill_label: "", container: "" });
+const mobile_width = useMediaQuery("(max-width: 800px)");
+const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");
+const mobile = ref(false);
+function mobile_update() {
+  mobile.value = mobile_width.value && mobile_aspect.value;
+}
 
-  function update() {
-    if (mobile.value) {
-      style.container = "mx-1 mt-4 mb-6";
-      style.pill_label = "px-4 py-1 mt-2 ml-6 w-auto";
-    } else {
-      style.container = "mx-10 mt-16 mb-16";
-      style.pill_label = "px-4 py-1 mt-4 ml-6 w-auto";
-    }
+const style = reactive<{
+  pill_label: string;
+  container: string;
+}>({ pill_label: "", container: "" });
+
+function update() {
+  if (mobile.value) {
+    style.container = "mx-1 mt-4 mb-6";
+    style.pill_label = "px-4 py-1 mt-2 ml-6 w-auto";
+  } else {
+    style.container = "mx-10 mt-16 mb-16";
+    style.pill_label = "px-4 py-1 mt-4 ml-6 w-auto";
   }
+}
 
-  watch(mobile, update);
+watch(mobile, update);
 
-  onMounted(update);
+onMounted(update);
 
-  const props = defineProps<{
-    recipes: RecipeListWithQuery;
-  }>();
+const props = defineProps<{
+  recipes: RecipeListWithQuery;
+}>();
 </script>
 
 <template>

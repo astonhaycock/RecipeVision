@@ -87,6 +87,11 @@
   }
   async function generateRecipes() {
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipe/generate`);
+    if (response.status === 200) {
+      const data = await response.json();
+      ai_recipes.push(data);
+      getGenerateRecipes();
+    }
   }
 
   onMounted(() => {
@@ -100,7 +105,7 @@
     <v-container class="mx-auto mb-16 bg-grey-lighten-4" fluid>
       <v-row class="mt-3 mb-8">
         <v-spacer></v-spacer>
-        <div class="text-h3" @click="updateRecipes">Recipes</div>
+        <div class="text-h3" @click="generateRecipes">Recipes</div>
         <v-spacer></v-spacer>
       </v-row>
       <AiRecipeRow :recipes="ai_recipes" v-if="ai_recipes.length > 0" />

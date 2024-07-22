@@ -6,6 +6,7 @@
     recipe: AiCard;
   }>();
   const isHovering = ref(false);
+  const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
 
   const starColor = ref("yellow-darken-4");
 </script>
@@ -16,20 +17,23 @@
       <v-card class="mx-auto" max-width="344" v-bind="props" height="500">
         <div class="d-flex justify-center align-center">
           <v-img
-            :src="recipe.image"
+            :src="URL_image + recipe.image"
             loading
             height="300px"
             width="400px"
-            lazy-src="@/assets/loadingscreen.jpeg">
+            lazy-src="https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2">
             <template v-slot:placeholder>
               <div class="d-flex align-center justify-center fill-height">
                 <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
               </div> </template
           ></v-img>
         </div>
-
+        <p>{{ URL_image + recipe.image }}</p>
         <v-card-text class="d-flex flex-column align-center me-2">
           <h2 class="text-h6 text-primary text-center">{{ recipe.title }}</h2>
+        </v-card-text>
+        <v-card-text class="d-flex flex-column align-center me-2">
+          <h2 class="text-h6 text-primary text-center">{{ recipe.description }}</h2>
         </v-card-text>
 
         <!-- <v-overlay

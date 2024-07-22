@@ -70,11 +70,11 @@ const PORT = envp<number>("BACKEND_PORT", 8080);
 /// The rate limit for requests in milliseconds
 const RATE_LIMIT = envp<number>("RATE_LIMIT", 15_000);
 /// The path to serve the website files
-const WEBSITE_PATH = env("WEBSITE_PATH", "../client");
+const WEBSITE_PATH = env("WEBSITE_PATH", "client");
 /// The path to serve the images to OpenAI
-const IMAGES_PATH = env("IMAGES_PATH", "../images");
+const IMAGES_PATH = env("IMAGES_PATH", "images");
 
-const GENERATED_IMAGES_PATH = env("GENERATED_PATH", "../generated_images");
+const GENERATED_IMAGES_PATH = env("GENERATED_PATH", "generated_images");
 /// The OpenAI API key
 const OPENAI_KEY = env("OPENAI_KEY");
 /// The MongoDB connection string

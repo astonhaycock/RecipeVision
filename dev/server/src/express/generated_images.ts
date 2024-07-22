@@ -61,6 +61,7 @@ function init(app: Express) {
   });
   process.on("SIGINT", () => {
     watcher.close();
+    process.exit();
   });
   app.get("/api/ai/image/:name", authenticate_mw, get_api_ai_image);
 }

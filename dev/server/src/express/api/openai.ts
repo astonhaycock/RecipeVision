@@ -28,11 +28,6 @@ const openai = new OpenAI({ apiKey: OPENAI_KEY });
 
 async function post_api_image(req: Request, res: Response): Promise<void> {
   const user = req.user as User;
-  // check rate limit
-  if (user.last_request > new Date(Date.now() - RATE_LIMIT)) {
-    res.status(429).send("rate limited");
-    return;
-  }
   user.last_request = new Date(Date.now());
 
   if (req.file === undefined) {

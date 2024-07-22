@@ -65,9 +65,10 @@ async function post_api_user(req: Request, res: Response): Promise<void> {
     res.status(400).send("register with email and password as a json object");
     return;
   }
+
   const result = await Users.newUser(req.body);
   if (!result) {
-    res.status(500).send("eternal server error");
+    res.status(500).send("internal server error");
     return;
   }
   if (typeof result === "string") {

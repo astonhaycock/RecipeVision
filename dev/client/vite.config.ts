@@ -7,7 +7,6 @@ import vue from "@vitejs/plugin-vue";
 /** @type {import('vite').UserConfig} */
 export default defineConfig(({ mode }) => {
   let env = process.env;
-  console.log(`\x1b[96mStarting Vite on port ${env.LOCAL_PORT}\x1b[0m`);
   return {
     server: {
       host: true,

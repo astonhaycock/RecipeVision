@@ -82,7 +82,10 @@ const MONGODB_URL = env("MONGODB_URL");
 /// The session secret
 const SESSION_SECRET = env("SESSION_SECRET", "your-secret-key");
 /// The cookie expiration time in milliseconds
-const COOKIE_EXPIRATION = envp<number>("COOKIE_EXPIRATION", 1000 * 60 * 60 * 24 * 7);
+const COOKIE_EXPIRATION = envp<number>(
+  "COOKIE_EXPIRATION",
+  1000 * 60 * 60 * 24 * 7
+);
 /// The prompt to use for the OpenAI API when reading images
 const IMAGE_PROMPT = env(
   "IMAGE_PROMPT",
@@ -106,20 +109,23 @@ const RECIPE_PROMPT = env(
 );
 const GENERATE_RECIPE_PROMPT = env(
   "RECIPE_PROMPT",
-  "Give me one recipe ideas that can be made using a subset of the provided list " +
+  "Give me one recipe idea that can be made using a subset of the provided list " +
     "of ingredients labelled 'ingredients'. Avoid recipes that are certain to use any ingredients " +
     "listed in the 'ingredient_exclusions' list. Additionally, avoid recipes listed in the " +
-    "'recipe_exclusions' list." +
-    "Provide the name of recipe labelled 'recipe_name', description of recipe labelled 'description'" +
-    "how long it takes to cook labelled 'cook_time', ingredients required labelled 'required_ingredients'" +
-    "step by step instructions labelled 'instructions' " +
-    "Return the lists as a JSON array of strings. " +
-    "It is permissible to include a recipes that use a couple additional ingredients. " +
-    "If no ideas can be generated using the provided ingredients, return an empty JSON array."
+    "'recipe_exclusions' list. Return a single JSON oject inside a JSON array with no special formatting. " +
+    "The expected format for the keys in the JSON object are as follows: " +
+    "`title` should be the string name of the recipe, " +
+    "`description` should be a string description of the receipe, " +
+    "`cook_time` should be the numeric cook time in minutes, " +
+    "`required_ingredients` should be a JSON array of strings of the required ingredients, " +
+    "`instructions` should be a string of the step by step instructions. " +
+    "Your response should be parseable by any JSON parser. " +
+    "It is permissible to generate a recipe that use a couple additional ingredients. " +
+    "If no ideas can be generated using the provided ingredients, return an empty JSON array. "
 );
 const GENERATE_RECIPE_IMAGE_PROMPT = env(
   "RECIPE_IMAGE_PROMPT",
-  "with the recipe information provided generate me an image of the recipe."
+  "with the recipe information provided, generate an image of the recipe."
 );
 
 let url = env("PUBLIC_URL");

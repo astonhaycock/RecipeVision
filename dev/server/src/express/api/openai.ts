@@ -14,7 +14,7 @@ import {
   RECIPE_PROMPT,
 } from "../../env";
 import type { Express, Request, Response } from "express";
-import type { User } from "../../model";
+import { RecipeExclusionsLists, Recipes, type User } from "../../model";
 import { unlink } from "fs-extra";
 import { parse_ai_response } from "../../utils";
 import { authenticate_mw, image_mw } from "../middleware";
@@ -65,7 +65,9 @@ async function post_api_image(req: Request, res: Response): Promise<void> {
     ],
   });
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(response.choices[0].message.content as string);
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -99,11 +101,15 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `ingredient_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `recipe_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
         ],
       },
@@ -111,7 +117,9 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
   });
 
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(response.choices[0].message.content as string);
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -132,13 +140,18 @@ function downloadImage(url: string, filepath: string): Promise<string> {
       } else {
         // Consume response data to free up memory
         res.resume();
-        reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+        reject(
+          new Error(`Request Failed With a Status Code: ${res.statusCode}`)
+        );
       }
     }).on("error", reject);
   });
 }
 
-async function generate_api_recipe(req: Request, res: Response): Promise<void> {
+async function get_api_recipe_generate(
+  req: Request,
+  res: Response
+): Promise<void> {
   const user = req.user as User;
   const ingredients = user.ingredients.list;
 
@@ -147,76 +160,163 @@ async function generate_api_recipe(req: Request, res: Response): Promise<void> {
     return;
   }
 
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: GENERATE_RECIPE_PROMPT,
+          },
+          {
+            type: "text",
+            text: `ingredients: ${JSON.stringify(ingredients)}`,
+          },
+          {
+            type: "text",
+            text: `ingredient_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
+          },
+          {
+            type: "text",
+            text: `recipe_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
+          },
+        ],
+      },
+    ],
+  });
+
+  const content = response.choices[0].message.content as string;
+  console.log("API Response Content:", content);
+
+  let recipe = null;
+  let image_name = null;
+
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: GENERATE_RECIPE_PROMPT,
-            },
-            {
-              type: "text",
-              text: `ingredients: ${JSON.stringify(ingredients)}`,
-            },
-            {
-              type: "text",
-              text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
-            },
-            {
-              type: "text",
-              text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
-            },
-          ],
-        },
-      ],
-    });
-
-    const content = response.choices[0].message.content as string;
-    console.log("API Response Content:", content);
-
-    // Clean the content to ensure it is valid JSON
-    const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
-    if (!jsonMatch) {
-      console.error("No valid JSON found in the response");
-      res.status(500).send("AI response failed to parse");
-      return;
-    }
-
-    const cleanedContent = jsonMatch[1].trim();
-    cleanedContent.replace(/\/\/ Optional for garnish/g, "");
-
-    let result;
-    try {
-      result = JSON.parse(cleanedContent);
-    } catch (jsonError) {
-      console.error("Error parsing JSON:", jsonError);
-      res.status(500).send("AI response failed to parse");
-      return;
-    }
-
+    const result = JSON.parse(content);
     if (!result) {
-      res.status(500).send("AI response failed to parse");
-      return;
+      throw new Error();
     }
-    const image = await openai.images.generate({
-      model: "dall-e-2",
-      prompt: "generate an image for this recipe" + result.recipe_name + result.description,
-      n: 1,
-      size: "512x512",
+    if (result.length === 0 || result.length > 1) {
+      throw new Error();
+    }
+    const data = result[0];
+    if (
+      !data.title ||
+      !data.description ||
+      !data.cook_time ||
+      !data.required_ingredients ||
+      !data.instructions
+    ) {
+      throw new Error();
+    }
+    if (!Array.isArray(data.required_ingredients)) {
+      throw new Error();
+    }
+    for (let i = 0; i < data.required_ingredients.length; i++) {
+      if (typeof data.required_ingredients[i] !== "string") {
+        throw new Error();
+      }
+    }
+    if (data.required_ingredients.length === 0) {
+      throw new Error();
+    }
+    if (
+      typeof data.title !== "string" ||
+      typeof data.description !== "string" ||
+      typeof data.cook_time !== "number" ||
+      typeof data.instructions !== "string"
+    ) {
+      throw new Error();
+    }
+    if (
+      data.title.length === 0 ||
+      data.description.length === 0 ||
+      data.instructions.length === 0
+    ) {
+      throw new Error();
+    }
+    image_name = `${crypto.randomUUID()}.png`;
+    const tags: string[] = [];
+    recipe = new Recipes({
+      title: data.tile,
+      description: data.description,
+      cook_time: data.cook_time,
+      ingredients: data.required_ingredients,
+      instructions: data.instructions,
+      tags: tags,
+      image: image_name,
     });
-    const image_url = image.data[0].url as string;
-    downloadImage(image_url, GENERATED_IMAGES_PATH + "/" + image_url.split("/").pop() + ".png")
-      .then(console.log)
-      .catch(console.error);
-    res.status(200).send(cleanedContent + "\n" + image_url);
-  } catch (error) {
-    console.error("Error fetching recipe details:", error);
-    res.status(500).send("Error fetching recipe details");
+  } catch {
+    res.status(500).send("AI response failed to parse");
+    return;
   }
+
+  // Send response
+  res.status(200).send(recipe);
+
+  // Generate image
+  const image = await openai.images.generate({
+    model: "dall-e-2",
+    prompt: `Generate an image for a recipe named "${recipe.title}" with the description "${recipe.description}"`,
+    n: 1,
+    size: "512x512",
+  });
+  const image_url = image.data[0].url as string;
+  await downloadImage(image_url, GENERATED_IMAGES_PATH + "/" + image_name)
+    .then(console.log)
+    .catch(console.error);
+
+  // Clean the content to ensure it is valid JSON
+  // const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
+  // if (!jsonMatch) {
+  // console.error("No valid JSON found in the response");
+  // res.status(500).send("AI response failed to parse");
+  // return;
+  // }
+
+  // const cleanedContent = jsonMatch[1].trim();
+  // cleanedContent.replace(/\/\/ Optional for garnish/g, "");
+
+  //   let result;
+  //   try {
+  //     result = JSON.parse(cleanedContent);
+  //   } catch (jsonError) {
+  //     console.error("Error parsing JSON:", jsonError);
+  //     res.status(500).send("AI response failed to parse");
+  //     return;
+  //   }
+
+  //   if (!result) {
+  //     res.status(500).send("AI response failed to parse");
+  //     return;
+  //   }
+  //   const image = await openai.images.generate({
+  //     model: "dall-e-2",
+  //     prompt:
+  //       "generate an image for this recipe" +
+  //       result.recipe_name +
+  //       result.description,
+  //     n: 1,
+  //     size: "512x512",
+  //   });
+  //   const image_url = image.data[0].url as string;
+  //   downloadImage(
+  //     image_url,
+  //     GENERATED_IMAGES_PATH + "/" + image_url.split("/").pop() + ".png"
+  //   )
+  //     .then(console.log)
+  //     .catch(console.error);
+  //   res.status(200).send(cleanedContent + "\n" + image_url);
+  // } catch (error) {
+  //   console.error("Error fetching recipe details:", error);
+  //   res.status(500).send("Error fetching recipe details");
+  // }
 }
 
 //================================================================================================//
@@ -224,9 +324,14 @@ async function generate_api_recipe(req: Request, res: Response): Promise<void> {
 //================================================================================================//
 
 function init(app: Express) {
-  app.post("/api/image", authenticate_mw, image_mw.single("image"), post_api_image);
+  app.post(
+    "/api/image",
+    authenticate_mw,
+    image_mw.single("image"),
+    post_api_image
+  );
   app.get("/api/recipes", authenticate_mw, get_api_recipes);
-  app.get("/api/recipe/generate", authenticate_mw, generate_api_recipe);
+  app.get("/api/recipe/generate", authenticate_mw, get_api_recipe_generate);
 }
 
 export { init };

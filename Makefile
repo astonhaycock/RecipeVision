@@ -43,7 +43,8 @@ dev2: dependencies
 
 clean:
 	rm -rf ./dist
-	rm -rf ./dev/images
+	rm -rf ./dev/server/images
+	rm -rf ./dev/server/generated_images
 	rm -rf ./dev/server/node_modules
 	rm -rf ./dev/client/node_modules
 	rm -rf ./dev/client/dist

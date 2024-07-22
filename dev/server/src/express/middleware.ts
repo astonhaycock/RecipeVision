@@ -165,10 +165,24 @@ async function authenticate_mw(
   next();
 }
 
+function timeout_mw(millis: number) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as User;
+    const time = user.last_request.getUTCMilliseconds();
+    if (Date.now() - time < millis) {
+      res.status(429).send("too many requests");
+      return;
+    }
+    user.last_request = new Date(Date.now());
+    user.save();
+    next();
+  };
+}
+
 function init(app: Express) {
   app.use(cors_mw);
   app.use(body_parser_mw);
   app.use(session_mw);
 }
 
-export { init, image_mw, authenticate_mw, list_mw };
+export { init, image_mw, authenticate_mw, list_mw, timeout_mw };

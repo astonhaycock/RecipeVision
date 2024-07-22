@@ -17,7 +17,7 @@ import type { Express, Request, Response } from "express";
 import { RecipeExclusionsLists, Recipes, type User } from "../../model";
 import { unlink } from "fs-extra";
 import { parse_ai_response } from "../../utils";
-import { authenticate_mw, image_mw } from "../middleware";
+import { authenticate_mw, image_mw, timeout_mw } from "../middleware";
 import { get } from "https"; // or 'http' depending on the URL protocol
 import { createWriteStream } from "fs";
 
@@ -328,10 +328,21 @@ function init(app: Express) {
     "/api/image",
     authenticate_mw,
     image_mw.single("image"),
+    timeout_mw(RATE_LIMIT),
     post_api_image
   );
-  app.get("/api/recipes", authenticate_mw, get_api_recipes);
-  app.get("/api/recipe/generate", authenticate_mw, get_api_recipe_generate);
+  app.get(
+    "/api/recipes",
+    authenticate_mw,
+    timeout_mw(RATE_LIMIT),
+    get_api_recipes
+  );
+  app.get(
+    "/api/recipe/generate",
+    authenticate_mw,
+    timeout_mw(RATE_LIMIT),
+    get_api_recipe_generate
+  );
 }
 
 export { init };

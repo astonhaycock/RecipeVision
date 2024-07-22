@@ -103,7 +103,8 @@ const RECIPE_PROMPT = env(
     "listed in the 'ingredient_exclusions' list. Additionally, avoid recipes listed in the " +
     "'recipe_exclusions' list." +
     "Provide the name of the idea only, such that I can search for each idea on a recipe website. " +
-    "Return the list as a JSON array of strings. " +
+    "Return the list as a JSON array of strings with no special formatting. " +
+    "Your response should be parseable by any JSON parser. " +
     "It is permissible to include a few recipes that use a couple additional ingredients. " +
     "If no ideas can be generated using the provided ingredients, return an empty JSON array."
 );

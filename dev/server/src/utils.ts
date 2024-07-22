@@ -101,11 +101,7 @@ function parse_ai_response(input: string): string[] | null {
         list.splice(i, 1);
         continue;
       }
-      list[i] = list[i]
-        .trim()
-        .replace(/[^a-z ]/g, "")
-        .replace(/  +/g, " ")
-        .toLowerCase();
+      list[i] = list[i].trim().replace(/  +/g, " ").toLowerCase();
       if (list[i].length > 50) {
         list.splice(i, 1);
       }

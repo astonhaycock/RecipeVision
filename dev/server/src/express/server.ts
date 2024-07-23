@@ -13,6 +13,7 @@ import { init as statics } from "./static";
 import { init as allrecipes } from "./api/allrecipes";
 import { init as generated_images } from "./generated_images";
 import { init as demo_auth } from "./api/demo_auth";
+import { init as ai } from "./api/ai";
 
 await middleware(app);
 await auth(app);
@@ -22,5 +23,6 @@ await statics(app);
 await allrecipes(app);
 await generated_images(app);
 await demo_auth(app);
+await ai(app);
 
 export { app };

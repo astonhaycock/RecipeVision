@@ -1,12 +1,11 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from "vue-router";
-  import { defineComponent, inject, ref, defineModel } from "vue";
-  import type { ModelRef, PropType, Ref } from "vue";
-  import DefaultButton from "./DefaultButton.vue";
+  import { RouterLink} from "vue-router";
+  import { inject, ref, defineModel } from "vue";
+  import type { ModelRef, Ref } from "vue";
   import companyLogo from "./icons/logo.vue";
-  import { useMediaQuery } from "@vueuse/core";
-  const mobile = useMediaQuery("(max-width: 800px)") && useMediaQuery("(max-aspect-ratio: 5/8)");
   const emit = defineEmits(["logout"]);
+
+  const mobile = inject("mobile") as Ref<boolean>;
 
   // const current_user = defineModel<{
   //   login: boolean;
@@ -88,7 +87,7 @@
       <v-btn class="me-2" color="grey-lighten-4" height="90" variant="flat" width="90">
         <!-- <v-icon color="brown" icon="mdi-silverware-spoon" size="x-large" end></v-icon> -->
         <companyLogo height="60px" width="60px" class="d-flex justify-center align-center" />
-      
+
       </v-btn></RouterLink
     >
     <RouterLink v-if="!current_user" to="/auth" class="float-right">

@@ -1,15 +1,9 @@
 <script setup lang="ts">
 import RecipeTile from "@/components/recipes/RecipeTile.vue";
 import type { RecipeListWithQuery, RecipeCard } from "@/scripts/allrecipes";
-import { useMediaQuery } from "@vueuse/core";
-import { onMounted, reactive, ref, watch } from "vue";
+import { inject, onMounted, reactive, watch, type Ref } from "vue";
 
-const mobile_width = useMediaQuery("(max-width: 800px)");
-const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");
-const mobile = ref(false);
-function mobile_update() {
-  mobile.value = mobile_width.value && mobile_aspect.value;
-}
+const mobile = inject("mobile") as Ref<boolean>;
 
 const style = reactive<{
   pill_label: string;
@@ -27,7 +21,6 @@ function update() {
 }
 
 watch(mobile, update);
-
 onMounted(update);
 
 const props = defineProps<{

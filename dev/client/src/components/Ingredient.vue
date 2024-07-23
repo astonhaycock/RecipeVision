@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted, inject } from "vue";
 import type { Ref } from "vue";
 import ImageUpload from "./ImageUpload.vue";
-import { useMediaQuery } from "@vueuse/core";
 
-const mobile_width = useMediaQuery("(max-width: 800px)");
-const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");
-const mobile = ref(false);
-function mobile_update() {
-  mobile.value = mobile_width.value && mobile_aspect.value;
-}
+const mobile = inject("mobile") as Ref<boolean>;
 
 const items: Ref<Array<string>> = ref([]);
 

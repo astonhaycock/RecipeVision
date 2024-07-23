@@ -1,17 +1,8 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRouter } from "vue-router";
-import { onMounted, onBeforeMount, watch } from "vue";
+import { RouterView, useRouter } from "vue-router";
+import { onBeforeMount, type Ref } from "vue";
 // import HelloWorld from "./components/HelloWorld.vue";
 import NavBar from "./components/NavBar.vue";
-import { useMediaQuery } from "@vueuse/core";
-
-const mobile_width = useMediaQuery("(max-width: 800px)");
-const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");
-const mobile = ref(false);
-function mobile_update() {
-  mobile.value = mobile_width.value && mobile_aspect.value;
-}
-watch([mobile_width, mobile_aspect], mobile_update);
 
 // `inject` is used for importing the global session data
 import { inject, ref } from "vue";
@@ -24,6 +15,7 @@ const current_user: { email: string; IngredientList: string } = inject(
   email: "error",
   IngredientList: "error",
 };
+const mobile = inject("mobile") as Ref<boolean>;
 
 function handleNavOpen() {
   nav_open.value = true;
@@ -71,8 +63,6 @@ async function logout() {
 onBeforeMount(() => {
   getSession();
 });
-
-onMounted(mobile_update);
 </script>
 
 <style scoped></style>

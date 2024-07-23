@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { RecipeCard } from "@/scripts/allrecipes";
-import { ref } from "vue";
+import { inject, ref, type Ref } from "vue";
+
+const mobile = inject("mobile") as Ref<boolean>;
 
 const props = defineProps<{
   recipe: RecipeCard;
@@ -36,12 +38,12 @@ const starColor = ref("yellow-darken-4");
     <v-hover v-slot="{ isHovering, props }">
       <v-card class="mx-auto" max-width="344" v-bind="props" height="500">
         <div class="d-flex justify-center align-center">
-          <v-img :src="recipe.image" height="300px" width="400px" />
+          <v-img :src="recipe.image as string" height="300px" width="400px" />
         </div>
 
         <v-card-title class="d-flex flex-column align-center">
           <v-rating
-            :model-value="recipe.stars"
+            :model-value="recipe.stars as number"
             background-color="orange"
             class="me-2"
             color="orange"
@@ -58,7 +60,7 @@ const starColor = ref("yellow-darken-4");
         </v-card-text>
 
         <v-overlay
-          :model-value="isHovering"
+          :model-value="isHovering as boolean"
           class="align-center justify-center"
           scrim="#036358"
           contained

@@ -11,6 +11,7 @@
   const ai_recipes = reactive<AiRecipeCollection>([]);
   const modal = inject("recipe_modal") as Ref<AiCard | null>;
   const hover = ref(false);
+  const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
   // console.log(modal);
   // const recipes = reactive<RecipeCollection>({
   //   "beef roast": [
@@ -118,10 +119,10 @@
 <template>
   <v-main class="position-absolute top-0 mx-0 px-0 w-100 fill-height bg-grey-lighten-4">
     <v-container class="mx-auto mb-16 bg-grey-lighten-4" fluid>
-      <v-row class="mt-3 mb-8">
+      <v-row class="mt-3 mb-8 d-flex justify-center align-center ga-5">
         <v-spacer></v-spacer>
         <div class="text-h3" @click="generateRecipes">Recipes</div>
-        <v-btn @click="generateRecipes">Generate ai recipe</v-btn>
+        <v-btn class="text-h6 bg-green" @click="generateRecipes">Generate ai recipe</v-btn>
         <v-spacer></v-spacer>
       </v-row>
       <AiRecipeRow :recipes="ai_recipes" v-if="ai_recipes.length > 0" />
@@ -147,7 +148,7 @@
               :class="mobile ? 'flex-column justify-center align-center' : 'flex-row'">
               <v-img
                 lazy-src="https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                :src="modal?.image"
+                :src="URL_image + modal?.image"
                 class="w-50"
                 alt="Recipe Image" />
               <div class="text-h4 pt-5 ma-4 d-flex justify-center align-center">

@@ -2,21 +2,27 @@
 import category_cards from "../components/HomeCategory.vue";
 </script>
 <template>
-  <div id="hero-img" elevation-16>
-    <div id="hero-text">
-      <div>
-        <h2>Discover your next</h2>
-        <h2>favorite recipe</h2>
-      </div>
+  <div id="inner">
+    <div id="hero-img" elevation-16>
+      <div id="hero-text">
+        <div>
+          <h2>Discover your next</h2>
+          <h2>favorite recipe</h2>
+        </div>
 
-      <RouterLink id="btn" to="/food">
-        <v-btn>Try now</v-btn>
-      </RouterLink>
+        <RouterLink id="btn" to="/food">
+          <v-btn>Try now</v-btn>
+        </RouterLink>
+      </div>
     </div>
+    <category_cards />
   </div>
-  <category_cards />
 </template>
 <style>
+#inner {
+  max-width: 1200px;
+  margin: auto;
+}
 #hero-text {
   display: flex;
   gap: 1rem;

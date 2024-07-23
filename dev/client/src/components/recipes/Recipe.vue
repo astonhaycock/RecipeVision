@@ -123,19 +123,38 @@
         v-for="(cards, query) in recipes"
         :recipes="{ query: query as string, cards: cards }" />
 
-      <div id="recipe_modal" v-if="modal">
-        <div id="paper">
-          <p>{{ modal }}</p>
-          <div>
-            <div class="d-flex">
-              <div class="text-body2">
-                <!-- <img :src="modal?.image" alt="Recipe Image" /> -->
+      <v-card
+        ><div id="recipe_modal" v-if="modal">
+          <div id="paper" class="d-flex flex-column">
+            <div class="d-flex h-50">
+              <v-img
+                lazy-src="https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                :src="modal?.image"
+                class="w-50"
+                alt="Recipe Image" />
+              <div class="text-h4 pt-5 ma-4 d-flex justify-center align-center">
+                {{ modal.title }}
               </div>
-              <div class="text-h4">{{ modal?.value }}</div>
+            </div>
+            <div>
+              <h4>{{ modal.description }}</h4>
+              <div class="d-flex justify-space-around">
+                <ul>
+                  <!-- <li v-for="instruction in modal.instructions" :key="ingredient">
+                    {{ ingredient }}
+                  </li> -->
+                  <li>test</li>
+                </ul>
+                <ul>
+                  <li v-for="ingredient in modal.ingredients" :key="ingredient">
+                    {{ ingredient }}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div></v-card
+      >
     </v-container>
   </v-main>
 </template>
@@ -160,9 +179,6 @@
     max-width: 1000px;
     margin: 2rem;
     height: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     margin-bottom: 5rem;
   }
 </style>

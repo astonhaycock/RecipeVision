@@ -36,9 +36,10 @@ async function getSession() {
   );
 
   if (response.status === 200) {
+    router.push("/food");
     login.value = true;
   } else {
-    router.push("/auth");
+    router.push("/home");
     login.value = false;
   }
 }

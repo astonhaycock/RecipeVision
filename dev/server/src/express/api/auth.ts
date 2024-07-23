@@ -16,19 +16,20 @@ async function post_api_session(req: Request, res: Response): Promise<void> {
     res.status(500).send();
     return;
   }
-  if (
-    req.body === undefined ||
-    req.body.email === undefined ||
-    req.body.password === undefined
-  ) {
+  if (req.body === undefined) {
     res.status(400).send("register with email and password as a json object");
     return;
   }
+  if (req.body.email === undefined || typeof req.body.email !== "string") {
+    res.status(400).send("email must be a string");
+    return;
+  }
   if (
-    typeof req.body.email !== "string" ||
+    req.body.password === undefined ||
     typeof req.body.password !== "string"
   ) {
-    res.status(400).send("email and password must be strings");
+    res.status(400).send("password must be a string");
+    return;
   }
   req.body.email = req.body.email.toLowerCase();
 

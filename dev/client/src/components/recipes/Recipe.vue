@@ -4,53 +4,61 @@
   import { search_multiple as allrecipes } from "@/scripts/allrecipes";
   import type { RecipeCollection } from "@/scripts/allrecipes";
   import type { AiRecipeCollection } from "@/scripts/airecipes";
-  import { onMounted, reactive, ref, provide, onBeforeMount, inject, type Ref } from "vue";
+  import {
+    onMounted,
+    reactive,
+    ref,
+    provide,
+    onBeforeMount,
+    inject,
+    type Ref,
+  } from "vue";
   import type { AiCard } from "@/scripts/airecipes";
 
-  const recipes = reactive<RecipeCollection>({});
-  const ai_recipes = reactive<AiRecipeCollection>([]);
-  const modal = inject("recipe_modal") as Ref<AiCard | null>;
-  console.log(modal);
-  // const recipes = reactive<RecipeCollection>({
-  //   "beef roast": [
-  //     {
-  //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-  //       id: "217132",
-  //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-  //       image:
-  //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-  //       stars: 4,
-  //       reviews: 117,
-  //     },
-  //     {
-  //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-  //       id: "217132",
-  //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-  //       image:
-  //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-  //       stars: 4,
-  //       reviews: 117,
-  //     },
-  //     {
-  //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-  //       id: "217132",
-  //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-  //       image:
-  //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-  //       stars: 4,
-  //       reviews: 117,
-  //     },
-  //     {
-  //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
-  //       id: "217132",
-  //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
-  //       image:
-  //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
-  //       stars: 4,
-  //       reviews: 117,
-  //     },
-  //   ],
-  // });
+    const recipes = reactive<RecipeCollection>({});
+    const ai_recipes = reactive<AiRecipeCollection>([]);
+    const modal = inject("recipe_modal") as Ref<AiCard | null>;
+    console.log(modal);
+    // const recipes = reactive<RecipeCollection>({
+    //   "beef roast": [
+    //     {
+    //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+    //       id: "217132",
+    //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+    //       image:
+    //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+    //       stars: 4,
+    //       reviews: 117,
+    //     },
+    //     {
+    //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+    //       id: "217132",
+    //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+    //       image:
+    //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+    //       stars: 4,
+    //       reviews: 117,
+    //     },
+    //     {
+    //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+    //       id: "217132",
+    //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+    //       image:
+    //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+    //       stars: 4,
+    //       reviews: 117,
+    //     },
+    //     {
+    //       title: "Beef Roast in Red Wine (Carni Arrosto al Vino Rosso)",
+    //       id: "217132",
+    //       url: "https://www.allrecipes.com/recipe/217132/beef-roast-in-red-wine-carni-arrosto-al-vino-rosso/",
+    //       image:
+    //         "https://www.allrecipes.com/thmb/tN-kiBmzWiFV5Vbw-FCivOz8pOI=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/9158202-8a884398db364e868e2e0f2b80a772bf.jpg",
+    //       stars: 4,
+    //       reviews: 117,
+    //     },
+    //   ],
+    // });
 
   //TODO: Split this off into multiple functions.
   //TODO: sanity check to avoid yelling at the server.
@@ -79,30 +87,48 @@
       } else {
         recipes[recipe.query] = recipe.cards;
       }
+    }
+    async function generateRecipes() {
+      const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipe/generate`);
+      if (response.status === 200) {
+        const data = await response.json();
+        ai_recipes.push(data);
+        getGenerateRecipes();
+      }
+    }
+    onBeforeMount(() => {
+      onBeforeMount(() => {
+        if (modal) {
+          modal.value = null;
+        }
+      });
+    });
+
+    onMounted(() => {
+      updateRecipes();
+      getGenerateRecipes();
     });
   }
   async function getGenerateRecipes() {
-    const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipe`);
+    const response = await fetch(
+      `${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipe`
+    );
     if (response.status === 200) {
       const data = await response.json();
       ai_recipes.push(data);
     }
   }
   async function generateRecipes() {
-    const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipe/generate`);
+    const response = await fetch(
+      `${import.meta.env.VITE_PUBLIC_URL}/api/recipe/generate`
+    );
     if (response.status === 200) {
       const data = await response.json();
       ai_recipes.push(data);
       getGenerateRecipes();
     }
   }
-  onBeforeMount(() => {
-    onBeforeMount(() => {
-      if (modal) {
-        modal.value = null;
-      }
-    });
-  });
+  onBeforeMount(() => {});
 
   onMounted(() => {
     updateRecipes();
@@ -179,6 +205,9 @@
     max-width: 1000px;
     margin: 2rem;
     height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     margin-bottom: 5rem;
   }
 </style>

@@ -11,6 +11,8 @@ function purint(text: string) {
   console.log(`\x1b[95m${text}\x1b[0m`);
 }
 
+// sendFile expects a fully qualified path, so we get the current working directory.
+// After two hours of debugging, I remembered this has a trailing newline.
 const pwd = (await $`pwd`).text().trim();
 
 /**

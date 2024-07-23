@@ -6,11 +6,12 @@
   import type { AiRecipeCollection } from "@/scripts/airecipes";
   import { onMounted, reactive, ref, provide, onBeforeMount, inject, type Ref } from "vue";
   import type { AiCard } from "@/scripts/airecipes";
-
+  const mobile = inject("mobile") as Ref<boolean>;
   const recipes = reactive<RecipeCollection>({});
   const ai_recipes = reactive<AiRecipeCollection>([]);
   const modal = inject("recipe_modal") as Ref<AiCard | null>;
-  console.log(modal);
+  const hover = ref(false);
+  // console.log(modal);
   // const recipes = reactive<RecipeCollection>({
   //   "beef roast": [
   //     {
@@ -96,6 +97,9 @@
       getGenerateRecipes();
     }
   }
+  function closeModal() {
+    modal.value = null;
+  }
   onBeforeMount(() => {
     onBeforeMount(() => {
       if (modal) {
@@ -125,8 +129,20 @@
 
       <v-card
         ><div id="recipe_modal" v-if="modal">
-          <div id="paper" class="d-flex flex-column">
-            <div class="d-flex h-50">
+          <div id="paper" class="d-flex flex-column ga-2">
+            <div class="d-flex justify-end">
+              <v-icon
+                size="40"
+                color="white"
+                class="bg-red"
+                icon="mdi-close-thick"
+                id="icon_exit"
+                @click="closeModal"></v-icon>
+            </div>
+
+            <div
+              class="d-flex h-50 ga-2"
+              :class="mobile ? 'flex-column justify-center align-center' : 'flex-row'">
               <v-img
                 lazy-src="https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                 :src="modal?.image"
@@ -138,17 +154,24 @@
             </div>
             <div>
               <h4>{{ modal.description }}</h4>
-              <div class="d-flex justify-space-around">
-                <ul>
-                  <li v-for="instruction in modal.instructions" :key="instruction">
-                    {{ instruction }}
-                  </li>
-                </ul>
-                <ul>
-                  <li v-for="ingredient in modal.ingredients" :key="ingredient">
-                    {{ ingredient }}
-                  </li>
-                </ul>
+              <div class="d-flex justify-space-around" :class="mobile ? 'flex-column' : 'flex-row'">
+                <div class="d-flex flex-column" :class="mobile ? 'w-90' : 'w-50'">
+                  <h2>Instructions</h2>
+                  <ol class="ml-8">
+                    <li v-for="instruction in modal.instructions" :key="instruction">
+                      {{ instruction }}
+                    </li>
+                  </ol>
+                </div>
+
+                <div class="d-flex flex-column">
+                  <h2>Ingredients</h2>
+                  <ul class="ml-8">
+                    <li v-for="ingredient in modal.ingredients" :key="ingredient">
+                      {{ ingredient }}
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

@@ -18,6 +18,12 @@ function registerPage() {
 function loginPage() {
   page.value = "login";
 }
+function demoLogin() {
+  fetch(`${URL}/api/demo`, {
+    method: "POST",
+    credentials: "same-origin",
+  });
+}
 </script>
 
 <template>
@@ -26,11 +32,13 @@ function loginPage() {
       v-if="page === 'login'"
       @login="loginF"
       @registerPage="registerPage"
+      @demo-login="demoLogin"
     />
     <register
       v-if="page === 'register'"
       @login="loginF"
       @loginPage="loginPage"
+      @demo-login="demoLogin"
     />
   </div>
 </template>

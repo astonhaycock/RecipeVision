@@ -1,104 +1,115 @@
 <script setup lang="ts">
-  import { ref, defineEmits, inject, type Ref } from "vue";
-  import { useRouter } from "vue-router";
-  const emit = defineEmits(["login", "loginPage"]);
+import { ref, defineEmits, inject, type Ref } from "vue";
+import { useRouter } from "vue-router";
+const emit = defineEmits(["login", "loginPage", "demoLogin"]);
 
-  const mobile = inject("mobile") as Ref<boolean>;
+const demo_mode = import.meta.env.VITE_DEMO_AUTH === "true";
+const mobile = inject("mobile") as Ref<boolean>;
 
-  const email_regex =
-    /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const password_specialC_regex = /[!@#$%^&*(),.?":{}|<>]/;
-  const password_uppercase_regex = /[A-Z]/;
-  const password_lowercase_regex = /[a-z]/;
-  const password_number_regex = /[0-9]/;
-  const user = ref({
-    email: "",
-    password: "",
-    password2: "",
-  });
-  const loading = ref(false);
-  const form = ref(false);
+const email_regex =
+  /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const password_specialC_regex = /[!@#$%^&*(),.?":{}|<>]/;
+const password_uppercase_regex = /[A-Z]/;
+const password_lowercase_regex = /[a-z]/;
+const password_number_regex = /[0-9]/;
+const user = ref({
+  email: "",
+  password: "",
+  password2: "",
+});
+const loading = ref(false);
+const form = ref(false);
 
-  const router = useRouter();
-  const page = ref("login");
-  function pageChange(pageSelected: string) {
-    page.value = pageSelected;
+const router = useRouter();
+const page = ref("login");
+function pageChange(pageSelected: string) {
+  page.value = pageSelected;
+}
+async function registerUser() {
+  console.log(user.value);
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(user.value),
+  };
+
+  const response = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}/api/user`,
+    requestOptions
+  );
+
+  if (response.status === 201) {
+    console.log("Successfully registered");
+    await loginUser();
+  } else {
+    console.log("Failed to register");
   }
-  async function registerUser() {
-    console.log(user.value);
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+}
+async function loginUser() {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(user.value),
-    };
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(user.value),
+  };
 
-    const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/user`, requestOptions);
+  const response = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}/api/session`,
+    requestOptions
+  );
 
-    if (response.status === 201) {
-      console.log("Successfully registered");
-      await loginUser();
-    } else {
-      console.log("Failed to register");
-    }
+  if (response.status === 201) {
+    console.log("Successfully logged in");
+    router.push("/");
+    user.value = { email: "", password: "", password2: "" }; // Clear user form data
+    emit("login");
+  } else {
+    console.log("Failed to login");
   }
-  async function loginUser() {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(user.value),
-    };
-
-    const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/session`, requestOptions);
-
-    if (response.status === 201) {
-      console.log("Successfully logged in");
-      router.push("/");
-      user.value = { email: "", password: "", password2: "" }; // Clear user form data
-      emit("login");
-    } else {
-      console.log("Failed to login");
-    }
+}
+function validPassword(v: string) {
+  if (v.length < 8) {
+    return "Password must be at least 8 characters long";
   }
-  function validPassword(v: string) {
-    if (v.length < 8) {
-      return "Password must be at least 8 characters long";
-    }
-    if (v.length > 64) {
-      return "Password must not exceed 64 characters";
-    }
-    if (!v.match(password_specialC_regex)) {
-      return "Password must contain at least one special character";
-    }
-    if (!v.match(password_uppercase_regex)) {
-      return "Password must contain at least one uppercase letter";
-    }
-    if (!v.match(password_lowercase_regex)) {
-      return "Password must contain at least one lowercase letter";
-    }
-    if (!v.match(password_number_regex)) {
-      return "Password must contain at least one number";
-    }
-    return !!v;
+  if (v.length > 64) {
+    return "Password must not exceed 64 characters";
   }
-  function required(v: string) {
-    return !!v || "Field is required";
+  if (!v.match(password_specialC_regex)) {
+    return "Password must contain at least one special character";
   }
-  function validEmail(v: string) {
-    return !!v.match(email_regex) || "Email not valid";
+  if (!v.match(password_uppercase_regex)) {
+    return "Password must contain at least one uppercase letter";
   }
-  function passwordMatch(v: string) {
-    return user.value.password === v || "Passwords do not match";
+  if (!v.match(password_lowercase_regex)) {
+    return "Password must contain at least one lowercase letter";
   }
+  if (!v.match(password_number_regex)) {
+    return "Password must contain at least one number";
+  }
+  return !!v;
+}
+function required(v: string) {
+  return !!v || "Field is required";
+}
+function validEmail(v: string) {
+  return !!v.match(email_regex) || "Email not valid";
+}
+function passwordMatch(v: string) {
+  return user.value.password === v || "Passwords do not match";
+}
 </script>
 
 <template>
-  <v-sheet id="sheet" rounded :class="mobile ? 'align-center' : 'align-start pt-8'">
+  <v-sheet
+    id="sheet"
+    rounded
+    :class="mobile ? 'align-center' : 'align-start pt-8'"
+  >
     <v-card id="login-container" class="mx-auto" height="600px" min-width="300">
       <v-form
         class="pa-15"
@@ -108,7 +119,8 @@
         @submit.prevent="registerUser"
         min-width="300"
         width="500"
-        elevation-80>
+        elevation-80
+      >
         <h1 class="pb-10">Create an Account</h1>
         <v-text-field
           v-model="user.email"
@@ -116,7 +128,8 @@
           :rules="[required, validEmail]"
           label="Email"
           width="300px"
-          clearable></v-text-field>
+          clearable
+        ></v-text-field>
 
         <v-text-field
           v-model="user.password"
@@ -126,7 +139,8 @@
           placeholder="Enter your password"
           width="300px"
           type="password"
-          clearable></v-text-field>
+          clearable
+        ></v-text-field>
         <v-text-field
           v-model="user.password2"
           :readonly="loading"
@@ -135,7 +149,8 @@
           placeholder="Enter your password"
           width="300px"
           type="password"
-          clearable></v-text-field>
+          clearable
+        ></v-text-field>
 
         <br />
 
@@ -147,7 +162,8 @@
             size="large"
             type="submit"
             variant="elevated"
-            block>
+            block
+          >
             Register
           </v-btn>
 
@@ -160,18 +176,21 @@
             v-if="mobile"
             size="large"
             variant="elevated"
-            block>
+            block
+          >
             Login
           </v-chip>
+
           <v-chip
-            @click="$emit('loginPage')"
+            @click="$emit('demoLogin')"
+            class="d-flex justify-center align-center bg-red"
             id="btn-chip"
-            class="d-flex justify-center align-center"
-            v-if="mobile"
+            v-if="mobile && demo_mode"
             size="large"
             variant="elevated"
-            block>
-            DEV MODE
+            block
+          >
+            Demo Access
           </v-chip>
         </div>
       </v-form>
@@ -179,53 +198,54 @@
         <h1>Welcome to Register page</h1>
         <p>have an account?</p>
         <v-chip @click="$emit('loginPage')">Login</v-chip>
+        <v-chip @click="$emit('demoLogin')" class="bg-red">Demo Access</v-chip>
       </div>
     </v-card>
   </v-sheet>
 </template>
 
 <style scoped>
-  #btn p {
-    text-align: center;
-  }
-  #btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 200px;
-    gap: 1rem;
-  }
-  #btn-chip {
-    width: 100px;
-    text-align: center;
-  }
+#btn p {
+  text-align: center;
+}
+#btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 200px;
+  gap: 1rem;
+}
+#btn-chip {
+  width: 100px;
+  text-align: center;
+}
 
-  #form-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  #login {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #5ab2ff;
-    gap: 1rem;
-    width: 400px;
-  }
-  #sheet {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(188, 189, 191, 0.893);
-  }
-  #login-container {
-    display: flex;
-    height: 500px;
-  }
+#form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #5ab2ff;
+  gap: 1rem;
+  width: 400px;
+}
+#sheet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(188, 189, 191, 0.893);
+}
+#login-container {
+  display: flex;
+  height: 500px;
+}
 </style>

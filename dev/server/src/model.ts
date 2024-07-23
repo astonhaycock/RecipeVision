@@ -51,7 +51,7 @@ interface IAiRecipe {
   description: string;
   cook_time: string;
   ingredients: Array<string>;
-  instructions: string;
+  instructions: Array<string>;
   tags: Array<string>;
   image: string;
   user: Types.ObjectId;
@@ -61,7 +61,7 @@ const AiRecipeSchema = new Schema<IAiRecipe>({
   description: { type: String, required: true },
   cook_time: { type: String, required: true },
   ingredients: { type: [String], required: true },
-  instructions: { type: String, required: true },
+  instructions: { type: [String], required: true },
   tags: { type: [String], required: true },
   image: { type: String, required: true },
 });

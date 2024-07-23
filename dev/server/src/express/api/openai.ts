@@ -214,8 +214,16 @@ async function get_api_recipe_generate(
     if (!Array.isArray(data.required_ingredients)) {
       throw new Error();
     }
+    if (!Array.isArray(data.instructions)) {
+      throw new Error();
+    }
     for (let i = 0; i < data.required_ingredients.length; i++) {
       if (typeof data.required_ingredients[i] !== "string") {
+        throw new Error();
+      }
+    }
+    for (let i = 0; i < data.instructions.length; i++) {
+      if (typeof data.instructions[i] !== "string") {
         throw new Error();
       }
     }
@@ -225,8 +233,7 @@ async function get_api_recipe_generate(
     if (
       typeof data.title !== "string" ||
       typeof data.description !== "string" ||
-      typeof data.cook_time !== "number" ||
-      typeof data.instructions !== "string"
+      typeof data.cook_time !== "number"
     ) {
       throw new Error();
     }

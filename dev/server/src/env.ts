@@ -84,7 +84,7 @@ const COOKIE_EXPIRATION = envp<number>(
   "COOKIE_EXPIRATION",
   1000 * 60 * 60 * 24 * 7
 );
-const DEV_MODE: boolean = envp("DEV_MODE", false);
+const DEMO_AUTH: boolean = envp("DEMO_AUTH", false);
 
 /// The prompt to use for the OpenAI API when reading images
 const IMAGE_PROMPT = env(
@@ -119,7 +119,7 @@ const GENERATE_RECIPE_PROMPT = env(
     "`description` should be a string description of the receipe, " +
     "`cook_time` should be the numeric cook time in minutes, " +
     "`required_ingredients` should be a JSON array of strings of the required ingredients, " +
-    "`instructions` should be a string of the step by step instructions. " +
+    "`instructions` should be a JSON array of strings, representing steps to make the recipe." +
     "Your response should be parseable by any JSON parser. " +
     "It is permissible to generate a recipe that use a couple additional ingredients. " +
     "If no ideas can be generated using the provided ingredients, return an empty JSON array. "
@@ -141,7 +141,7 @@ if (url.endsWith("/")) {
 const PUBLIC_URL = url;
 
 export {
-  DEV_MODE,
+  DEMO_AUTH,
   FILE_LIMIT,
   PORT,
   RATE_LIMIT,

@@ -21,9 +21,17 @@ async function post_api_session(req: Request, res: Response): Promise<void> {
     req.body.email === undefined ||
     req.body.password === undefined
   ) {
-    res.status(400).send("log in with email and password as a json object");
+    res.status(400).send("register with email and password as a json object");
     return;
   }
+  if (
+    typeof req.body.email !== "string" ||
+    typeof req.body.password !== "string"
+  ) {
+    res.status(400).send("email and password must be strings");
+  }
+  req.body.email = req.body.email.toLowerCase();
+
   // Get the user from the database to compare the password
   let user = await Users.findOneAndPopulate({ email: req.body.email });
   if (!user) {
@@ -69,7 +77,9 @@ async function post_api_user(req: Request, res: Response): Promise<void> {
     typeof req.body.email !== "string" ||
     typeof req.body.password !== "string"
   ) {
+    res.status(400).send("email and password must be strings");
   }
+  req.body.email = req.body.email.toLowerCase();
 
   const result = await Users.newUser(req.body);
   if (!result) {

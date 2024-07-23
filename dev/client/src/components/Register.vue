@@ -163,6 +163,16 @@
             block>
             Login
           </v-chip>
+          <v-chip
+            @click="$emit('loginPage')"
+            id="btn-chip"
+            class="d-flex justify-center align-center"
+            v-if="mobile"
+            size="large"
+            variant="elevated"
+            block>
+            DEV MODE
+          </v-chip>
         </div>
       </v-form>
       <div id="login" class="pa-10" v-if="!mobile">

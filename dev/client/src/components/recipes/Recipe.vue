@@ -83,6 +83,7 @@
     });
   }
   async function getGenerateRecipes() {
+    console.log("Generating recipes...");
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipe`);
     if (response.status === 200) {
       const data = await response.json();
@@ -120,6 +121,7 @@
       <v-row class="mt-3 mb-8">
         <v-spacer></v-spacer>
         <div class="text-h3" @click="generateRecipes">Recipes</div>
+        <v-btn @click="generateRecipes">Generate ai recipe</v-btn>
         <v-spacer></v-spacer>
       </v-row>
       <AiRecipeRow :recipes="ai_recipes" v-if="ai_recipes.length > 0" />

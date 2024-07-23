@@ -30,6 +30,6 @@ app.use(vuetify);
 app.use(router);
 app.provide("current_user", { email: "", IngredientList: "" });
 app.provide("mobile", mobile);
-app.provide("recipe_modal", {});
+app.provide("recipe_modal", ref(null));
 
 app.mount("#app");

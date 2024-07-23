@@ -14,6 +14,8 @@ const recipe_overlay = ref(false);
 // const selectedRecipe = {};
 function selectedRecipe() {
   modal.value = props.recipe;
+  console.log(modal);
+  console.log(props.recipe);
 }
 </script>
 

@@ -1,17 +1,20 @@
 <script setup lang="ts">
   import type { AiCard } from "@/scripts/airecipes";
-  import { ref } from "vue";
+  import { ref, inject, type Ref } from "vue";
 
   const props = defineProps<{
     recipe: AiCard;
   }>();
-  const modal = inject("recipe_modal") as Ref<AiCard | >;
+  const modal = inject("recipe_modal") as Ref<AiCard | {}>;
   const isHovering = ref(false);
   const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
 
   const starColor = ref("yellow-darken-4");
   const recipe_overlay = ref(false);
-  const selectedRecipe = {};
+  // const selectedRecipe = {};
+  function selectedRecipe() {
+    modal.value = props;
+  }
 </script>
 
 <template>
@@ -43,9 +46,7 @@
           class="align-center justify-center"
           scrim="#036358"
           contained>
-          <a class="ma-4"
-            ><v-btn variant="flat" @click="$emit('openModal')">See more info</v-btn></a
-          >
+          <a class="ma-4"><v-btn variant="flat" @click="selectedRecipe">See more info</v-btn></a>
         </v-overlay>
       </v-card>
     </v-hover>

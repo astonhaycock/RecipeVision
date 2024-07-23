@@ -4,10 +4,12 @@
   import { search_multiple as allrecipes } from "@/scripts/allrecipes";
   import type { RecipeCollection } from "@/scripts/allrecipes";
   import type { AiRecipeCollection } from "@/scripts/airecipes";
-  import { onMounted, reactive, ref, provide } from "vue";
+  import { onMounted, reactive, ref, provide, onBeforeMount, inject, type Ref } from "vue";
+  import type { AiCard } from "@/scripts/airecipes";
 
   const recipes = reactive<RecipeCollection>({});
   const ai_recipes = reactive<AiRecipeCollection>([]);
+  const modal = inject("recipe_modal") as Ref<AiCard | {}>;
   // const recipes = reactive<RecipeCollection>({
   //   "beef roast": [
   //     {
@@ -93,6 +95,7 @@
       getGenerateRecipes();
     }
   }
+  onBeforeMount(() => {});
 
   onMounted(() => {
     updateRecipes();
@@ -112,7 +115,47 @@
       <RecipeRow
         v-for="(cards, query) in recipes"
         :recipes="{ query: query as string, cards: cards }" />
+
+      <div id="recipe_modal" v-if="!modal">
+        <div id="paper">
+          <p>{{ modal }}</p>
+          <div>
+            <div class="d-flex">
+              <div class="text-body2">
+                <!-- <img :src="modal?.image" alt="Recipe Image" /> -->
+              </div>
+              <div class="text-h4">{{ modal?.title }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </v-container>
   </v-main>
 </template>
-<style scoped></style>
+<style scoped>
+  #recipe_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #paper {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    min-width: 300px;
+    width: 800px;
+    max-width: 1000px;
+    margin: 2rem;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 5rem;
+  }
+</style>

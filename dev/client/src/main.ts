@@ -18,7 +18,7 @@ const vuetify = createVuetify({
 });
 
 const mobile_width = useMediaQuery("(max-width: 800px)");
-const mobile_aspect = useMediaQuery("(min-aspect-ratio: 16/9)");
+const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");
 const mobile = ref(false);
 function mobile_update() {
   mobile.value = mobile_width.value || mobile_aspect.value;
@@ -30,6 +30,6 @@ app.use(vuetify);
 app.use(router);
 app.provide("current_user", { email: "", IngredientList: "" });
 app.provide("mobile", mobile);
-app.provide("recipe_modal", null);
+app.provide("recipe_modal", {});
 
 app.mount("#app");

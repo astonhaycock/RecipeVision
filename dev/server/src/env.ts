@@ -84,6 +84,8 @@ const COOKIE_EXPIRATION = envp<number>(
   "COOKIE_EXPIRATION",
   1000 * 60 * 60 * 24 * 7
 );
+const DEV_MODE: boolean = envp("DEV_MODE", false);
+
 /// The prompt to use for the OpenAI API when reading images
 const IMAGE_PROMPT = env(
   "IMAGE_PROMPT",
@@ -139,6 +141,7 @@ if (url.endsWith("/")) {
 const PUBLIC_URL = url;
 
 export {
+  DEV_MODE,
   FILE_LIMIT,
   PORT,
   RATE_LIMIT,

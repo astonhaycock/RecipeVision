@@ -5,6 +5,7 @@
 import type { Express, Request, Response } from "express";
 import { Users } from "../../model";
 import { authenticate_mw } from "../middleware";
+import { DEV_MODE } from "../../env";
 
 //================================================================================================//
 //==| Session Endpoints |=========================================================================//
@@ -16,23 +17,23 @@ async function post_api_session(req: Request, res: Response): Promise<void> {
     res.status(500).send();
     return;
   }
-  if (!req.user.demo_account) {
-    if (
-      req.body === undefined ||
-      req.body.email === undefined ||
-      req.body.password === undefined
-    ) {
-      res.status(400).send("register with email and password as a json object");
-      return;
-    }
-    if (
-      typeof req.body.email !== "string" ||
-      typeof req.body.password !== "string"
-    ) {
-      res.status(400).send("email and password must be strings");
-    }
-    req.body.email = req.body.email.toLowerCase();
+  if (DEV_MODE) {
   }
+  if (
+    req.body === undefined ||
+    req.body.email === undefined ||
+    req.body.password === undefined
+  ) {
+    res.status(400).send("register with email and password as a json object");
+    return;
+  }
+  if (
+    typeof req.body.email !== "string" ||
+    typeof req.body.password !== "string"
+  ) {
+    res.status(400).send("email and password must be strings");
+  }
+  req.body.email = req.body.email.toLowerCase();
 
   // Get the user from the database to compare the password
   let user = await Users.findOneAndPopulate({ email: req.body.email });

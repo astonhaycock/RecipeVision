@@ -4,8 +4,12 @@ import login from "../components/Login.vue";
 import register from "../components/Register.vue";
 import Recipe from "../components/recipes/Recipe.vue";
 import DefaultButton from "../components/DefaultButton.vue";
+import router from "@/router";
 const emit = defineEmits(["login", "register"]);
 const page = ref("login");
+
+const URL = import.meta.env.VITE_PUBLIC_URL;
+
 function pageChange(pageSelected: string) {
   page.value = pageSelected;
 }
@@ -18,11 +22,18 @@ function registerPage() {
 function loginPage() {
   page.value = "login";
 }
-function demoLogin() {
-  fetch(`${URL}/api/demo`, {
+async function demoLogin() {
+  const response = await fetch(`${URL}/api/demo_auth`, {
     method: "POST",
     credentials: "same-origin",
   });
+  if (response.status === 201) {
+    console.log("Successfully logged in");
+    router.push("/");
+    emit("login");
+  } else {
+    console.log("Failed to login");
+  }
 }
 </script>
 

@@ -219,6 +219,7 @@ UserSchema.static(
     email: string;
     password: string;
   }): Promise<User | string | null> {
+    auth.email = auth.email.toLowerCase();
     let existing = await this.findOne({ email: auth.email });
     if (existing) {
       return "email already exists";

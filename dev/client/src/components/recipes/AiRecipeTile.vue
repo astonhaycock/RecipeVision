@@ -5,6 +5,7 @@
   const props = defineProps<{
     recipe: AiCard;
   }>();
+  const modal = inject("recipe_modal") as Ref<AiCard | >;
   const isHovering = ref(false);
   const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
 
@@ -52,7 +53,6 @@
 </template>
 
 <style scoped>
-
   #main {
     position: relative;
     border-radius: 5px;

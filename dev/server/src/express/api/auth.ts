@@ -65,6 +65,11 @@ async function post_api_user(req: Request, res: Response): Promise<void> {
     res.status(400).send("register with email and password as a json object");
     return;
   }
+  if (
+    typeof req.body.email !== "string" ||
+    typeof req.body.password !== "string"
+  ) {
+  }
 
   const result = await Users.newUser(req.body);
   if (!result) {

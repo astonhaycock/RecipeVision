@@ -4,7 +4,7 @@
   import { search_multiple as allrecipes } from "@/scripts/allrecipes";
   import type { RecipeCollection } from "@/scripts/allrecipes";
   import type { AiRecipeCollection } from "@/scripts/airecipes";
-  import { onMounted, reactive, ref } from "vue";
+  import { onMounted, reactive, ref, provide } from "vue";
 
   const recipes = reactive<RecipeCollection>({});
   const ai_recipes = reactive<AiRecipeCollection>([]);

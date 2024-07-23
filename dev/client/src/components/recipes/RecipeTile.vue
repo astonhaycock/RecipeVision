@@ -1,37 +1,17 @@
 <script setup lang="ts">
-import type { RecipeCard } from "@/scripts/allrecipes";
-import { inject, ref, type Ref } from "vue";
+  import type { RecipeCard } from "@/scripts/allrecipes";
+  import { inject, ref, type Ref } from "vue";
 
-const mobile = inject("mobile") as Ref<boolean>;
+  const mobile = inject("mobile") as Ref<boolean>;
 
-const props = defineProps<{
-  recipe: RecipeCard;
-}>();
-const isHovering = ref(false);
 
-const starColor = ref("yellow-darken-4");
+  const props = defineProps<{
+    recipe: RecipeCard;
+  }>();
+  const isHovering = ref(false);
+
+  const starColor = ref("yellow-darken-4");
 </script>
-
-<!-- <template>
-  <a :href="recipe.url" target="_blank" class="ma-4">
-    <div id="main" class="bg-grey-lighten-4">
-      <img :src="recipe.image as string" />
-      <div id="banner" class="bg-grey-lighten-2">
-        <h3>{{ recipe.title }}</h3>
-        <div class="d-flex">
-          <v-icon icon="mdi-star" :color="starColor" v-for="i in Math.floor(recipe.stars)" />
-          <v-icon icon="mdi-star-half-full" :color="starColor" v-if="recipe.stars % 1" />
-          <v-icon
-            icon="mdi-star-outline"
-            :color="starColor"
-            v-if="recipe.stars <= 4"
-            v-for="i in 5 - Math.floor(recipe.stars)" />
-          <p class="pl-4">Reviews: {{ recipe.reviews }}</p>
-        </div>
-      </div>
-    </div>
-  </a>
-</template> -->
 
 <template>
   <div>
@@ -49,11 +29,8 @@ const starColor = ref("yellow-darken-4");
             color="orange"
             dense
             hover
-            readonly
-          ></v-rating>
-          <span class="text-primary text-subtitle-2"
-            >{{ recipe.reviews }} Reviews</span
-          >
+            readonly></v-rating>
+          <span class="text-primary text-subtitle-2">{{ recipe.reviews }} Reviews</span>
         </v-card-title>
         <v-card-text class="d-flex flex-column align-center me-2">
           <h2 class="text-h6 text-primary text-center">{{ recipe.title }}</h2>
@@ -63,8 +40,7 @@ const starColor = ref("yellow-darken-4");
           :model-value="isHovering as boolean"
           class="align-center justify-center"
           scrim="#036358"
-          contained
-        >
+          contained>
           <a :href="recipe.url as string" target="_blank" class="ma-4"
             ><v-btn variant="flat">See more info</v-btn></a
           >
@@ -75,32 +51,32 @@ const starColor = ref("yellow-darken-4");
 </template>
 
 <style scoped>
-#main {
-  position: relative;
-  border-radius: 5px;
-  height: 300px;
-  max-width: 600px;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  justify-content: start;
-}
-img {
-  margin: 0px auto;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  height: 225px;
-  width: auto;
-}
+  #main {
+    position: relative;
+    border-radius: 5px;
+    height: 300px;
+    max-width: 600px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: start;
+  }
+  img {
+    margin: 0px auto;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    height: 225px;
+    width: auto;
+  }
 
-#banner {
-  margin: 0px;
-  width: 100%;
-  margin-top: 10px;
-  padding: 0px 10px;
-}
+  #banner {
+    margin: 0px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 0px 10px;
+  }
 
-a {
-  text-decoration: none;
-}
+  a {
+    text-decoration: none;
+  }
 </style>

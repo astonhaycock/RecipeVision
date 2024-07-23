@@ -9,12 +9,14 @@
   const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
 
   const starColor = ref("yellow-darken-4");
+  const recipe_overlay = ref(false);
+  const selectedRecipe = {};
 </script>
 
 <template>
   <div>
     <v-hover v-slot="{ isHovering, props }">
-      <v-card class="mx-auto" max-width="344" v-bind="props" height="500">
+      <v-card class="mx-auto pt-6" max-width="344" v-bind="props" height="500">
         <div class="d-flex justify-center align-center">
           <v-img
             :src="URL_image + recipe.image"
@@ -28,29 +30,29 @@
               </div> </template
           ></v-img>
         </div>
-        <p>{{ URL_image + recipe.image }}</p>
         <v-card-text class="d-flex flex-column align-center me-2">
           <h2 class="text-h6 text-primary text-center">{{ recipe.title }}</h2>
         </v-card-text>
         <v-card-text class="d-flex flex-column align-center me-2">
-          <h2 class="text-h6 text-primary text-center">{{ recipe.description }}</h2>
+          <p class="text-primary text-center">{{ recipe.description }}</p>
         </v-card-text>
 
-        <!-- <v-overlay
+        <v-overlay
           :model-value="isHovering"
           class="align-center justify-center"
           scrim="#036358"
           contained>
-          <a :href="recipe.image" target="_blank" class="ma-4"
-            ><v-btn variant="flat">See more info</v-btn></a
+          <a class="ma-4"
+            ><v-btn variant="flat" @click="$emit('openModal')">See more info</v-btn></a
           >
-        </v-overlay> -->
+        </v-overlay>
       </v-card>
     </v-hover>
   </div>
 </template>
 
 <style scoped>
+
   #main {
     position: relative;
     border-radius: 5px;

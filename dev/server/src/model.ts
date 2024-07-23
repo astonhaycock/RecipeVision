@@ -11,7 +11,7 @@ import {
   Types,
   type HydratedDocument,
 } from "mongoose";
-import { MONGODB_URL, RATE_LIMIT } from "./env";
+import { MONGODB_URL, DEMO_AUTH, RATE_LIMIT } from "./env";
 
 const email_regex =
   /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -272,44 +272,56 @@ UserSchema.static(
   }
 );
 
-UserSchema.static("newDemoUser", async function newDemoUser() {
-  const user = new Users();
-  const ingredients = new IngredientsLists({
-    list: [
-      //TODO: Add more
-      "chicken",
-      "beef",
-      "rice",
-      "basil",
-      "mixed vegetables",
-      "tomato",
-      "onion",
-      "garlic",
-      "olive oil",
-      "salt",
-      "pepper",
-    ],
+if (DEMO_AUTH) {
+  UserSchema.static("newDemoUser", async function newDemoUser() {
+    const user = new Users();
+    const ingredients = new IngredientsLists({
+      list: [
+        //TODO: Add more
+        "chicken",
+        "beef",
+        "rice",
+        "basil",
+        "mixed vegetables",
+        "tomato",
+        "onion",
+        "garlic",
+        "olive oil",
+        "salt",
+        "pepper",
+      ],
+    });
+    const recipe_exclusions = new RecipeExclusionsLists({ list: [] });
+    const ingredient_exclusions = new IngredientExclusionsLists({ list: [] });
+    const dietary_preferences = new DietaryPreferencesLists({ list: [] });
+    user.demo_account = true;
+    user.recipe_exclusions = recipe_exclusions._id;
+    user.ingredients = ingredients._id;
+    user.ingredient_exclusions = ingredient_exclusions._id;
+    user.dietary_preferences = dietary_preferences._id;
+    user.last_request = new Date(0);
+    user.email = `DEMO-${crypto.randomUUID()}@recipevision.com`;
+    // 100% secure!
+    user.password = "DEMO";
+    const val_err = await user.validateSync();
+    if (val_err) {
+      console.error(`Internal error: ${val_err}`);
+      return null;
+    }
+
+    await user.save();
+    await ingredients.save();
+    await recipe_exclusions.save();
+    await ingredient_exclusions.save();
+    await dietary_preferences.save();
+
+    return user.tryPopulateAll();
   });
-  const recipe_exclusions = new RecipeExclusionsLists({ list: [] });
-  const ingredient_exclusions = new IngredientExclusionsLists({ list: [] });
-  const dietary_preferences = new DietaryPreferencesLists({ list: [] });
-  user.email = `DEMO-${crypto.randomUUID()}`;
-  // 100% secure!
-  user.password = "DEMO";
-  const val_err = await user.validateSync();
-  if (val_err) {
-    console.error(`Internal error: ${val_err}`);
+} else {
+  UserSchema.static("newDemoUser", async function newDemoUser() {
     return null;
-  }
-
-  await user.save();
-  await ingredients.save();
-  await recipe_exclusions.save();
-  await ingredient_exclusions.save();
-  await dietary_preferences.save();
-
-  return user.tryPopulateAll();
-});
+  });
+}
 
 const Users = model<IUser, UserModel>("User", UserSchema);
 

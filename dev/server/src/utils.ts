@@ -1,5 +1,9 @@
 // This file defines utilities to be used elsewhere. What else did you expect?
 
+function purint(text: string) {
+  console.log(`\x1b[95m${text}\x1b[0m`);
+}
+
 /**
  *  Sort a list and deduplicate items
  *  Returns the list for convenience, but modifies the list in place
@@ -112,4 +116,4 @@ function parse_ai_response(input: string): string[] | null {
   }
 }
 
-export { dedup, string_valid, list_valid, parse_ai_response };
+export { dedup, string_valid, list_valid, parse_ai_response, purint };

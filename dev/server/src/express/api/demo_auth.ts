@@ -31,7 +31,10 @@ async function post_api_demo_auth(req: Request, res: Response) {
     return;
   }
   req.session.user_id = user._id;
+  req.user = user;
   console.log(`successfully logged in as ${user.email}`);
+
+  res.status(201).send("logged in");
 }
 
 function init(app: Express) {
@@ -39,3 +42,5 @@ function init(app: Express) {
     app.post("/api/demo_auth", post_api_demo_auth);
   }
 }
+
+export { init };

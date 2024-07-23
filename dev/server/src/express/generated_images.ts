@@ -4,12 +4,9 @@ import { watch } from "fs";
 import { GENERATED_IMAGES_PATH } from "../env";
 import { authenticate_mw } from "./middleware";
 import { $ } from "bun";
+import { purint } from "../utils";
 
 const queue: { [key: string]: () => void } = {};
-
-function purint(text: string) {
-  console.log(`\x1b[95m${text}\x1b[0m`);
-}
 
 // sendFile expects a fully qualified path, so we get the current working directory.
 // After two hours of debugging, I remembered this has a trailing newline.

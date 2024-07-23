@@ -83,7 +83,7 @@ const session_mw = session({
   store: MongoStore.create({ mongoUrl: MONGODB_URL }),
   cookie: { maxAge: COOKIE_EXPIRATION },
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
 });
 
 /**
@@ -140,7 +140,11 @@ async function authenticate_mw(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  if (!req.session || !req.session.user_id) {
+  if (!req.session) {
+    res.status(500).send("internal server error");
+    return;
+  }
+  if (!req.session.user_id) {
     res.status(401).send("unauthorized");
     return;
   }
@@ -181,9 +185,9 @@ function ratelimit_mw(millis: number) {
 }
 
 function init(app: Express) {
+  app.use(session_mw);
   app.use(cors_mw);
   app.use(body_parser_mw);
-  app.use(session_mw);
 }
 
 export { init, image_mw, authenticate_mw, list_mw, ratelimit_mw };

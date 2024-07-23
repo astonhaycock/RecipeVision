@@ -35,7 +35,7 @@ dev2: dependencies
 	export LOCAL_PORT=8880 && \
 	export VITE_PUBLIC_HOST="https://dont-pani.cc:8880" && \
 	( \
-		echo "cd dev/server && bun --hot run src/index.ts"; \
+		echo "cd dev/server && bun --hot --inspect=4400 run src/index.ts"; \
 		echo "cd dev/client && bun run dev" \
 	) | parallel --line-buffer
 

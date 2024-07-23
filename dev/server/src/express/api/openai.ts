@@ -4,6 +4,7 @@
 
 import { OpenAI } from "openai";
 import {
+  //TODO: This currently isn't used.
   GENERATE_RECIPE_IMAGE_PROMPT,
   GENERATE_RECIPE_PROMPT,
   GENERATED_IMAGES_PATH,
@@ -14,7 +15,7 @@ import {
   RECIPE_PROMPT,
 } from "../../env";
 import type { Express, Request, Response } from "express";
-import { RecipeExclusionsLists, Recipes, type User } from "../../model";
+import { RecipeExclusionsLists, AiRecipes, type User } from "../../model";
 import { unlink } from "fs-extra";
 import { parse_ai_response } from "../../utils";
 import { authenticate_mw, image_mw, ratelimit_mw } from "../middleware";
@@ -60,7 +61,9 @@ async function post_api_image(req: Request, res: Response): Promise<void> {
     ],
   });
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(response.choices[0].message.content as string);
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -94,11 +97,15 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `ingredient_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `recipe_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
         ],
       },
@@ -106,7 +113,9 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
   });
 
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(response.choices[0].message.content as string);
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -127,13 +136,18 @@ function downloadImage(url: string, filepath: string): Promise<string> {
       } else {
         // Consume response data to free up memory
         res.resume();
-        reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+        reject(
+          new Error(`Request Failed With a Status Code: ${res.statusCode}`)
+        );
       }
     }).on("error", reject);
   });
 }
 
-async function get_api_recipe_generate(req: Request, res: Response): Promise<void> {
+async function get_api_recipe_generate(
+  req: Request,
+  res: Response
+): Promise<void> {
   const user = req.user as User;
   const ingredients = user.ingredients.list;
 
@@ -158,11 +172,15 @@ async function get_api_recipe_generate(req: Request, res: Response): Promise<voi
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `ingredient_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `recipe_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
         ],
       },
@@ -221,7 +239,7 @@ async function get_api_recipe_generate(req: Request, res: Response): Promise<voi
     }
     image_name = `${crypto.randomUUID()}.png`;
     const tags: string[] = [];
-    recipe = new Recipes({
+    recipe = new AiRecipes({
       title: data.title,
       description: data.description,
       cook_time: data.cook_time,
@@ -234,6 +252,12 @@ async function get_api_recipe_generate(req: Request, res: Response): Promise<voi
     res.status(500).send("AI response failed to parse");
     return;
   }
+
+  if (await recipe.validateSync()) {
+    res.status(500).send("AI response failed to validate");
+    return;
+  }
+  await recipe.save();
 
   // Send response
   res.status(200).send(recipe);
@@ -310,7 +334,12 @@ function init(app: Express) {
     ratelimit_mw(RATE_LIMIT),
     post_api_image
   );
-  app.get("/api/recipes", authenticate_mw, ratelimit_mw(RATE_LIMIT), get_api_recipes);
+  app.get(
+    "/api/recipes",
+    authenticate_mw,
+    ratelimit_mw(RATE_LIMIT),
+    get_api_recipes
+  );
   app.get(
     "/api/recipe/generate",
     authenticate_mw,

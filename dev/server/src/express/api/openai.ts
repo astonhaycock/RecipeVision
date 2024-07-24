@@ -254,6 +254,8 @@ async function get_api_recipe_generate(
       instructions: data.instructions,
       tags: tags,
       image: image_name,
+      user: user._id,
+      date: new Date(),
     });
   } catch {
     res.status(500).send("AI response failed to parse");

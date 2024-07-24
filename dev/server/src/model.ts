@@ -54,7 +54,8 @@ interface IAiRecipe {
   instructions: Array<string>;
   tags: Array<string>;
   image: string;
-  user: Types.ObjectId;
+  creator: Types.ObjectId;
+  date: Date;
 }
 const AiRecipeSchema = new Schema<IAiRecipe>({
   title: { type: String, required: true },
@@ -64,6 +65,8 @@ const AiRecipeSchema = new Schema<IAiRecipe>({
   instructions: { type: [String], required: true },
   tags: { type: [String], required: true },
   image: { type: String, required: true },
+  creator: { type: Schema.Types.ObjectId, required: true },
+  date: { type: Date, required: true },
 });
 const AiRecipes = model<IAiRecipe>("AI_Recipe", AiRecipeSchema);
 

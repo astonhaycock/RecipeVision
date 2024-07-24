@@ -91,7 +91,7 @@
 
       <v-card
         ><div id="recipe_modal" v-if="modal">
-          <div id="paper" class="d-flex flex-column ga-2">
+          <div id="paper" class="d-flex flex-column ga-2 overflow-auto">
             <div class="d-flex justify-end">
               <v-icon
                 size="40"

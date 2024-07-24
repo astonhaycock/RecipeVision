@@ -31,6 +31,10 @@ async function demoLogin() {
     console.log("Successfully logged in");
     router.push("/");
     emit("login");
+  } else if (response.status == 409) {
+    console.log("User already exists");
+    router.push("/");
+    emit("login");
   } else {
     console.log("Failed to login");
   }

@@ -184,10 +184,38 @@ function ratelimit_mw(millis: number) {
   };
 }
 
+async function inspection_mw(req: Request, res: Response, next: NextFunction) {
+  console.log(`[${req.method}] ${req.path}`);
+  next();
+}
+
+/**
+ * Middleware to allow requests without authentication if the request path matches the given condition.
+ * This is to allow previews of certain content without requiring a login.
+ * @param check The function should return true if the request is allowed without authentication.
+ */
+function no_auth_if_mw(check: (req: Request) => boolean) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    if (check(req)) {
+      next();
+    } else {
+      authenticate_mw(req, res, next);
+    }
+  };
+}
+
 function init(app: Express) {
   app.use(session_mw);
   app.use(cors_mw);
   app.use(body_parser_mw);
+  // app.use(inspection_mw);
 }
 
-export { init, image_mw, authenticate_mw, list_mw, ratelimit_mw };
+export {
+  init,
+  image_mw,
+  authenticate_mw,
+  list_mw,
+  ratelimit_mw,
+  no_auth_if_mw,
+};

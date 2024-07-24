@@ -1,6 +1,8 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import type { Express } from "express";
+import type { Express, Request } from "express";
+import { no_auth_if_mw } from "../middleware";
+import { HOMEPAGE_QUERIES } from "../../env";
 
 /**
  * This interface represents the data of a recipe card.
@@ -97,18 +99,27 @@ function search_multiple(
 
 function init(app: Express) {
   const cached = new Map<string, RecipeListWithQuery>();
-  app.get("/api/allrecipes/:query", async (req, res) => {
-    if (cached.has(req.params.query)) {
-      console.log(`Serving cached recipes for query: ${req.params.query}`);
-      res.status(200).json(cached.get(req.params.query));
-      return;
+  app.get(
+    "/api/allrecipes/:query",
+    no_auth_if_mw((req: Request) => {
+      return (
+        req.params.query != null &&
+        HOMEPAGE_QUERIES.indexOf(req.params.query) >= 0
+      );
+    }),
+    async (req, res) => {
+      if (cached.has(req.params.query)) {
+        console.log(`Serving cached recipes for query: ${req.params.query}`);
+        res.status(200).json(cached.get(req.params.query));
+        return;
+      }
+      console.log(`Searching for recipes with query: ${req.params.query}`);
+      const query = req.params.query;
+      const result = await search(query);
+      cached.set(query, result);
+      res.status(200).json(result);
     }
-    console.log(`Searching for recipes with query: ${req.params.query}`);
-    const query = req.params.query;
-    const result = await search(query);
-    cached.set(query, result);
-    res.status(200).json(result);
-  });
+  );
 }
 
 export { init };

@@ -17,7 +17,7 @@ async function post_api_demo_auth(req: Request, res: Response) {
     return;
   }
   if (req.session.user_id !== undefined) {
-    res.status(400).send("already logged in");
+    res.status(409).send("already logged in");
     return;
   }
   const newboyo = await Users.newDemoUser();

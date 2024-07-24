@@ -3,7 +3,7 @@
   import { inject, ref, defineModel } from "vue";
   import type { ModelRef, Ref } from "vue";
   import companyLogo from "./icons/logo.vue";
-  const emit = defineEmits(["logout"]);
+  const emit = defineEmits(["logout", "contact"]);
 
   const mobile = inject("mobile") as Ref<boolean>;
 

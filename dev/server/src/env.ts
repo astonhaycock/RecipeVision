@@ -61,6 +61,18 @@ function envp<T>(name: string, or?: T): T {
   return parsed;
 }
 
+/// The AllRecipes queries allowed to be served by the homepage.
+//TODO: Homepage demos shouldn't depend on external services, but it just needs to last until tomorrow.
+// inb4 this makes it to prod
+const HOMEPAGE_QUERIES = envp<string[]>("HOMEPAGE_QUERIES", [
+  "breakfast",
+  "lunch",
+  "dinner",
+  "beef",
+  "chicken",
+  "seafood",
+  "quick and easy",
+]);
 /// The maximum upload size in bytes
 const FILE_LIMIT = envp<number>("FILE_LIMIT", 100 * 1024 * 1024);
 /// The port to listen on
@@ -141,6 +153,7 @@ if (url.endsWith("/")) {
 const PUBLIC_URL = url;
 
 export {
+  HOMEPAGE_QUERIES,
   DEMO_AUTH,
   FILE_LIMIT,
   PORT,

@@ -5,12 +5,12 @@
 
   const { handleSubmit, handleReset } = useForm({
     validationSchema: {
-      name(value: string | any[]) {
+      name(value: string) {
         if (value?.length >= 2) return true;
 
         return "Name needs to be at least 2 characters.";
       },
-      phone(value: string | any[]) {
+      phone(value: string) {
         if (value?.length > 9 && /[0-9-]+/.test(value)) return true;
 
         return "Phone number needs to be at least 9 digits.";
@@ -19,11 +19,6 @@
         if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true;
 
         return "Must be a valid e-mail.";
-      },
-      select(value: any) {
-        if (value) return true;
-
-        return "Select an item.";
       },
     },
   });
@@ -47,7 +42,7 @@
       min-width="300px"
       width="500px"
       max-width="1000px"
-      class="pa-16 d-flex flex-column justify-center align-center ga-4">
+      class="pa-8 d-flex flex-column justify-center align-center ga-4">
       <h1>Contact Us</h1>
       <form @submit.prevent="submit" class="w-100">
         <v-text-field

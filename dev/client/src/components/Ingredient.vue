@@ -8,7 +8,7 @@
   const items: Ref<Array<string>> = ref([]);
 
   const loading = ref(false);
-  const drawer = ref(false);
+  const drawer = ref(true);
   const search = ref("");
   const selected: Ref<Array<string>> = ref([]);
   const removedItems: Ref<Array<string>> = ref([]);

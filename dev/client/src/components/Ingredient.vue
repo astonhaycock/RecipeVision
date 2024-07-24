@@ -43,6 +43,9 @@ watch(drawer, () => {
 
 function toggleDrawer() {
   drawer.value = !drawer.value;
+  if (!drawer.value) {
+    emit("ingredient-change");
+  }
   getIngredients();
 }
 

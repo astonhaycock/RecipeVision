@@ -12,21 +12,9 @@ const loading_screen = ref(true);
 const reviewList: Ref<string[]> = ref([]);
 const emit = defineEmits(["login"]);
 
-let cooldown = false;
-let waiting = false;
-
 async function populateRecipes(data: string[]) {
-  ingredients.value = data;
-  if (cooldown) waiting = true;
-  else {
-    cooldown = true;
-    setTimeout(() => {
-      cooldown = false;
-      if (waiting) {
-        waiting = false;
-        populateRecipes(data);
-      }
-    }, 5_000);
+  if (data.length === 0) {
+    return;
   }
 }
 
@@ -43,8 +31,8 @@ onBeforeMount(async () => {
   <v-main>
     <RecipeList />
     <IngredientList
-      v-bind:ingredients="ingredients"
-      @update:ingredients="populateRecipes"
+      v-model:ingredients="ingredients"
+      @ingredient-change="populateRecipes"
     />
   </v-main>
 </template>

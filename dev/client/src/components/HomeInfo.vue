@@ -5,16 +5,13 @@
 </script>
 
 <template>
-  <v-sheet
-    id="container"
-    class="d-flex flex-column ga-2 align-center w-100 h-50 pt-8"
-    elevation="24">
+  <v-sheet id="container" class="d-flex flex-column ga-2 pt-5 align-center w-100" elevation="24">
     <h1>How it Works</h1>
     <p id="info-text">
       RecipeVision aims to simplify the cooking experience by providing a digital pantry that AI
       analyzes to generate recipes for the user based on what they have in their pantry.
     </p>
-    <div id="steps" class="d-flex justify-space-around w-75">
+    <div id="steps" class="d-flex w-75 justify-center">
       <div id="text-box" class="d-flex flex-column align-center">
         <h2>Add Ingredients</h2>
         <p>
@@ -29,7 +26,7 @@
           based on what you have in your pantry.
         </p>
       </div>
-      <div id="text-box" class="d-flex flex-column align-center pb-4">
+      <div id="text-box" class="d-flex flex-column align-center">
         <h2>Cook and Enjoy</h2>
         <p>
           Enjoy your new recipe and the process of cooking with RecipeVision. We are here to help
@@ -41,11 +38,14 @@
 </template>
 
 <style scoped>
+  h2,
+  h1 {
+    color: #0091ea;
+  }
   #steps {
     height: 200px;
     width: 90%;
     padding-bottom: 0;
-    text-align: center;
   }
   #info-text {
     font-size: 1.25em;
@@ -66,15 +66,23 @@
       font-size: 1.25em;
       line-height: 1.5;
       text-align: center;
-      height: 700px;
+      height: 600px;
       justify-content: center;
       align-items: center;
     }
     #text-box {
       padding-left: 0;
       padding-right: 0;
-      height: 220px;
+      height: 240px;
       width: 90%;
+    }
+  }
+  @media (max-width: 375px) {
+    #steps {
+      height: 700px;
+    }
+    #text-box {
+      height: 300px;
     }
   }
 </style>

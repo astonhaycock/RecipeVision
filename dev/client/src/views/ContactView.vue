@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { defineProps, onMounted, reactive, watch, ref, inject, type Ref } from "vue";
   import { useField, useForm } from "vee-validate";
+  const mobile = inject("mobile") as Ref<boolean>;
 
   const { handleSubmit, handleReset } = useForm({
     validationSchema: {
@@ -37,29 +38,32 @@
 </script>
 <template>
   <v-sheet
-    class="d-flex flex-column gap-2 justify-center align-center w-100 h-100 bg-grey-lighten-1 pa-16">
-    <v-card elevation-24 class="pa-16 d-flex flex-column align-center ga-4">
+    elevation-24
+    :class="mobile ? 'justify-start' : 'justify-center'"
+    class="d-flex flex-row gap-2 align-center w-100 h-100 bg-grey-lighten-1 pa-16">
+    <v-card
+      elevation-24
+      min-height="100"
+      min-width="300px"
+      width="500px"
+      max-width="1000px"
+      class="pa-16 d-flex flex-column justify-center align-center ga-4">
       <h1>Contact Us</h1>
-      <form @submit.prevent="submit">
+      <form @submit.prevent="submit" class="w-100">
         <v-text-field
-          max-width="600"
           class="text-center"
           v-model="name.value.value"
           :counter="10"
           :error-messages="name.errorMessage.value"
           label="Name"></v-text-field>
 
-        <v-text-field
-          v-model="phone.value.value"
-          :counter="7"
-          :error-messages="phone.errorMessage.value"
-          label="Phone Number"></v-text-field>
+        <v-text-field v-model="phone.value.value" :counter="7" label="Phone Number"></v-text-field>
 
         <v-text-field
           v-model="email.value.value"
           :error-messages="email.errorMessage.value"
           label="E-mail"></v-text-field>
-        <v-text-field v-model="message.value.value" label="Message"></v-text-field>
+        <v-textarea rows="5" v-model="message.value.value" label="Message"></v-textarea>
         <div class="d-flex align-center justify-center ga-8">
           <v-btn @click="handleReset"> clear </v-btn>
           <v-btn class="me-4" type="submit"> submit </v-btn>

@@ -4,7 +4,6 @@
 
   const mobile = inject("mobile") as Ref<boolean>;
 
-
   const props = defineProps<{
     recipe: RecipeCard;
   }>();
@@ -30,10 +29,10 @@
             dense
             hover
             readonly></v-rating>
-          <span class="text-primary text-subtitle-2">{{ recipe.reviews }} Reviews</span>
+          <span class="text-subtitle-2">{{ recipe.reviews }} Reviews</span>
         </v-card-title>
         <v-card-text class="d-flex flex-column align-center me-2">
-          <h2 class="text-h6 text-primary text-center">{{ recipe.title }}</h2>
+          <h2 class="text-h6 text-center">{{ recipe.title }}</h2>
         </v-card-text>
 
         <v-overlay
@@ -51,6 +50,10 @@
 </template>
 
 <style scoped>
+  h2,
+  span {
+    color: #0091ea;
+  }
   #main {
     position: relative;
     border-radius: 5px;

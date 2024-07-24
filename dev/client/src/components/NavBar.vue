@@ -101,17 +101,16 @@
         ></v-btn>
       </template>
       <v-list class="d-flex flex-column">
-        <!-- <v-list-item>
-          <v-btn
-            msg="Logout"
-            @click="$emit('logout')"
-            color="grey-lighten-4"
-            height="60"
-            variant="flat"
-            width="125">
-            Setting</v-btn
-          >
-        </v-list-item> -->
+        <v-list-item>
+            <v-btn
+              @click="$emit('contact')"
+              color="grey-lighten-4"
+              height="60"
+              variant="flat"
+              width="125">
+              Contact Us</v-btn
+            >
+        </v-list-item>
         <v-list-item>
           <v-btn
             msg="Logout"

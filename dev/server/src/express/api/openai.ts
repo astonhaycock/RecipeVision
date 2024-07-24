@@ -254,7 +254,7 @@ async function get_api_recipe_generate(
       instructions: data.instructions,
       tags: tags,
       image: image_name,
-      user: user._id,
+      creator: user._id,
       date: new Date(),
     });
   } catch {
@@ -262,8 +262,10 @@ async function get_api_recipe_generate(
     return;
   }
 
-  if (await recipe.validateSync()) {
+  const val_err = await recipe.validateSync();
+  if (val_err) {
     res.status(500).send("AI response failed to validate");
+    console.error("Validation Error:", val_err);
     return;
   }
   await recipe.save();

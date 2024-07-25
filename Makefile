@@ -44,6 +44,14 @@ dev2: dependencies
 
 # prog1 & prog2 && fg
 
+# This is literally the worst thing I've ever done.
+# I should have spent more time making networks configs DRY.
+kill:
+	fuser -k 8080/tcp
+	fuser -k 8443/tcp
+	fuser -k 9990/tcp
+	fuser -k 8880/tcp
+
 clean:
 	rm -rf ./dist
 	rm -rf ./dev/server/images

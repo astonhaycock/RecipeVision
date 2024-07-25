@@ -49,8 +49,8 @@ async function get_api_ai_image(req: Request, res: Response): Promise<void> {
   }, 15_000);
 }
 
-function init(app: Express) {
-  mkdir(GENERATED_IMAGES_PATH, { recursive: true }).catch(console.error);
+async function init(app: Express) {
+  await mkdir(GENERATED_IMAGES_PATH, { recursive: true }).catch(console.error);
   const watcher = watch(GENERATED_IMAGES_PATH, (_, filename) => {
     purint("Directory update");
     if (filename && queue[filename]) {

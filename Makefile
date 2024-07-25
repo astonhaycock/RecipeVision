@@ -31,9 +31,12 @@ dev: dependencies
 	) | parallel --line-buffer
 
 dev2: dependencies
-	export BACKEND_PORT=9990 && \
-	export LOCAL_PORT=8880 && \
-	export VITE_PUBLIC_HOST="https://dont-pani.cc:8880" && \
+	# export BACKEND_PORT=9990 && \
+	# export LOCAL_PORT=8880 && \
+	# export VITE_PUBLIC_HOST="https://dont-pani.cc:8880" && \
+	export BACKEND_PORT=8443 && \
+	export LOCAL_PORT=8080 && \
+	export VITE_PUBLIC_HOST="http://dogsmeow.asuscomm.com:8880" && \
 	( \
 		echo "cd dev/server && bun --hot --inspect=4400 run src/index.ts"; \
 		echo "cd dev/client && bun run dev" \

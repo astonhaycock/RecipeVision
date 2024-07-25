@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import RecipeRow from "@/components/recipes/RecipeRow.vue";
 import AiRecipeRow from "@/components/recipes/AiRecipeRow.vue";
-import { search_multiple as allrecipes } from "@/scripts/allrecipes";
 import type { RecipeCollection } from "@/scripts/allrecipes";
 import type { AiRecipeCollection } from "@/scripts/airecipes";
 import {
@@ -18,6 +17,7 @@ const mobile = inject("mobile") as Ref<boolean>;
 const recipes = defineModel<RecipeCollection>("recipes", { required: true });
 const ai_recipes = reactive<AiRecipeCollection>([]);
 const modal = inject("recipe_modal") as Ref<AiCard | null>;
+const fullRecipeRefresh = inject("fullRecipeRefresh") as () => void;
 const hover = ref(false);
 const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
 
@@ -64,9 +64,12 @@ onMounted(() => {
     <v-container class="mx-auto mb-16 bg-grey-lighten-4" fluid>
       <v-row class="mt-3 mb-8 d-flex justify-center align-center ga-5">
         <v-spacer></v-spacer>
-        <div class="text-h3" @click="generateRecipes">Recipes</div>
+        <div class="text-h3">Recipes</div>
         <v-btn class="text-h6 bg-green" @click="generateRecipes"
           >Generate ai recipe</v-btn
+        >
+        <v-btn class="text-h6 bg-green" @click="fullRecipeRefresh"
+          >Refresh Recipes</v-btn
         >
         <v-spacer></v-spacer>
       </v-row>

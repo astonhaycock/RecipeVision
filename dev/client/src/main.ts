@@ -36,11 +36,28 @@ app.provide("recipe_modal", ref(null));
 const ingredients: Ref<Array<string>> = ref([]);
 const recipes: Ref<RecipeCollection> = ref({});
 const recipe_ideas: Ref<Array<string>> = ref([]);
+const recipes_generated: Ref<boolean> = ref(false);
+let recipe_debounce = false;
+let recipe_queue = false;
+let refresh_queue = false;
 app.provide("ingredients", ingredients);
 app.provide("recipes", recipes);
 app.provide("recipe_ideas", recipe_ideas);
+app.provide("recipes_generated", recipes_generated);
 
-async function fetchRecipes(ideas: string[]) {
+async function fetchScraped(ideas: string[]) {
+  // try {
+  //   throw new Error();
+  // } catch (e) {
+  //   console.log(
+  //     "\n" +
+  //       "====== ====== ====== BEGIN STACK TRACE ====== ====== ======\n" +
+  //       (e as Error).stack +
+  //       "\n\n\n"
+  //   );
+  //   return;
+  // }
+
   // remove entries currently found as keys in `recipes`
   const filtered = ideas.filter((item) => !recipes.value[item]);
   search_multiple(filtered, (result) => {
@@ -49,13 +66,50 @@ async function fetchRecipes(ideas: string[]) {
   });
 }
 
+async function fetchIngredients() {
+  const result = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}/api/ingredients`,
+    {
+      credentials: "include",
+    }
+  );
+  if (result.status === 200) {
+    const arr: Array<string> = await result.json();
+    old_length = arr.length;
+    ingredients.value = arr;
+    return true;
+  }
+  return false;
+}
+
+async function fetchRecipes() {
+  fetchIngredients();
+  const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipes`, {
+    credentials: "include",
+  });
+  if (result.status === 200) {
+    const arr: Array<string> = await result.json();
+    fetchScraped(arr);
+    return true;
+  }
+  return false;
+}
+
 //TODO: Proper way to handle this is to receive an event to invalidate the cache.
 let old_length = ingredients.value.length;
-async function populateRecipes(force: boolean = false) {
-  console.log("Populating recipes...");
-  console.log(force, ingredients.value.length, old_length);
+async function populateRecipes(init: boolean = false) {
   const data = ingredients.value;
-  if (!force) {
+  if (init) {
+    // If this is called as part of the init process, we want to set a flag
+    // so it doesn't get called again before the results come back.
+    if (recipes_generated.value) {
+      console.log("Recipes already generated.");
+      return;
+    }
+    recipes_generated.value = true;
+  } else {
+    // We don't want to check this as part of the init process,
+    // because we don't want to wait synchronously for the ingredients.
     if (data.length < 5) {
       console.log("Not enough ingredients.");
       return;
@@ -64,20 +118,56 @@ async function populateRecipes(force: boolean = false) {
       console.log("No change in ingredients.");
       return;
     }
+    if (recipe_debounce) {
+      recipe_queue = true;
+      console.log("Recipe debounce.");
+      return;
+    }
+    recipe_debounce = true;
+    setTimeout(() => {
+      recipe_debounce = false;
+      if (refresh_queue) {
+        refresh_queue = false;
+        recipe_queue = false;
+        fullRecipeRefresh();
+        return;
+      }
+      if (recipe_queue) {
+        recipe_queue = false;
+        populateRecipes();
+      }
+    }, 7_500);
   }
+
   old_length = ingredients.value.length;
-  const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipes`, {
-    credentials: "include",
-  });
-  if (result.status === 200) {
-    const arr: Array<string> = await result.json();
-    fetchRecipes(arr);
+  if (await fetchRecipes()) {
+    return;
   }
 }
 
 async function fullRecipeRefresh() {
   if (ingredients.value.length < 5) {
     return;
+  }
+  if (recipe_debounce) {
+    recipe_queue = true;
+    console.log("Recipe debounce.");
+    return;
+  } else {
+    recipe_debounce = true;
+    setTimeout(() => {
+      recipe_debounce = false;
+      if (refresh_queue) {
+        refresh_queue = false;
+        recipe_queue = false;
+        fullRecipeRefresh();
+        return;
+      }
+      if (recipe_queue) {
+        recipe_queue = false;
+        populateRecipes();
+      }
+    }, 7_500);
   }
 
   //TODO: Loading screen or some other indicator.
@@ -87,20 +177,13 @@ async function fullRecipeRefresh() {
   recipes.value = {};
   recipe_ideas.value = [];
 
-  const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipes`, {
-    credentials: "include",
-  });
-  if (result.status === 200) {
-    const data: Array<string> = await result.json();
-    fetchRecipes(data);
+  if (await fetchRecipes()) {
     return;
   }
   //TODO: Some indicator of failure here.
   recipes.value = old_recipes;
   recipe_ideas.value = old_ideas;
 }
-
-populateRecipes(true);
 
 app.provide("populateRecipes", populateRecipes);
 app.provide("fullRecipeRefresh", fullRecipeRefresh);

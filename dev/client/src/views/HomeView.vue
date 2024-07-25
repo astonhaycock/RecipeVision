@@ -1,8 +1,13 @@
 <script setup lang="ts">
   import category_cards from "../components/HomeCategory.vue";
-  import { defineComponent, defineProps } from "vue";
+  import { defineComponent, defineProps, ref, inject, type Ref, reactive } from "vue";
   import home_info from "../components/HomeInfo.vue";
-
+  import HomvePlanes from "../components/HomePlans.vue";
+  import RecipeRow from "../components/recipes/RecipeRow.vue";
+  const mobile = inject("mobile") as Ref<boolean>;
+  import type { RecipeCollection } from "@/scripts/allrecipes";
+  const recipe = reactive<RecipeCollection>({});
+  const URL_recipe = `${import.meta.env.VITE_PUBLIC_URL}/ai/allrecipes/beef`;
   const items_row_one = [
     {
       title: "Breakfast",
@@ -20,6 +25,7 @@
         "https://images.pexels.com/photos/769289/pexels-photo-769289.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     },
   ];
+
   const items_row_two = [
     {
       title: "Beef",
@@ -54,6 +60,16 @@
         "https://images.pexels.com/photos/24182617/pexels-photo-24182617/free-photo-of-fried-chickens-served-on-wooden-tray.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     },
   ];
+  const modal = ref(true);
+  function closeModal() {
+    modal.value = false;
+  }
+  async function fetchRecipe() {
+    const response = await fetch(URL_recipe);
+    const data = await response.json();
+    console.log(data);
+    // recipe.push(data.recipes);
+  }
 </script>
 <template>
   <div id="hero-img" elevation-16>
@@ -68,12 +84,41 @@
       </RouterLink>
     </div>
   </div>
+  <v-btn @click="fetchRecipe">click me</v-btn>
   <home_info />
   <category_cards :row="items_row_one" />
   <category_cards :row="items_row_two" />
   <category_cards :row="items_row_three" />
+  <HomvePlanes />
+  <!-- <RecipeRow
+    v-for="(cards, query) in recipes"
+    :recipes="{ query: query as string, cards: cards }" /> -->
 </template>
 <style>
+  #recipe_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 4rem;
+  }
+  #paper {
+    background-color: white;
+    padding: 24px;
+    border-radius: 8px;
+    min-width: 300px;
+    width: 1600px;
+    /* max-width: 1600px; */
+    margin: 2rem;
+    height: 80%;
+    margin-bottom: 5rem;
+    display: flex;
+  }
   #hero-text {
     display: flex;
     gap: 1rem;
@@ -114,6 +159,10 @@
       height: 300px;
       padding-right: 1rem;
       font-size: medium;
+    }
+    #recipe_modal {
+      padding-top: 0rem;
+      padding-bottom: 2rem;
     }
   }
 </style>

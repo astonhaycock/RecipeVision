@@ -3,14 +3,7 @@
 // Mongoose and TypeScript were not meant to be together.
 // Oh, and this file also defines validation, hashing, and various convenience methods.
 
-import {
-  Schema,
-  model,
-  connect,
-  Model,
-  Types,
-  type HydratedDocument,
-} from "mongoose";
+import { Schema, model, connect, Model, Types, type HydratedDocument } from "mongoose";
 import { MONGODB_URL, DEMO_AUTH, RATE_LIMIT } from "./env";
 
 const email_regex =
@@ -28,18 +21,9 @@ const ListSchema = new Schema({
   list: { type: [String], required: true },
 });
 const IngredientsLists = model<IList>("Ingredients_List", ListSchema);
-const RecipeExclusionsLists = model<IList>(
-  "Recipe_Exclusions_List",
-  ListSchema
-);
-const IngredientExclusionsLists = model<IList>(
-  "Ingredient_Exclusions_List",
-  ListSchema
-);
-const DietaryPreferencesLists = model<IList>(
-  "Dietary_Preferences_List",
-  ListSchema
-);
+const RecipeExclusionsLists = model<IList>("Recipe_Exclusions_List", ListSchema);
+const IngredientExclusionsLists = model<IList>("Ingredient_Exclusions_List", ListSchema);
+const DietaryPreferencesLists = model<IList>("Dietary_Preferences_List", ListSchema);
 
 //================================================================================================//
 //==| AI GENERATED RECIPES & SCHEMAS |============================================================//
@@ -114,10 +98,7 @@ interface UserModel extends Model<IUser, {}, IUserMethods> {
   /// @param query The query to search for the user.
   findOneAndPopulate(query: any): Promise<User | null>;
   /// Create a new user and all sub-fields.
-  newUser(auth: {
-    email: string;
-    password: string;
-  }): Promise<User | string | null>;
+  newUser(auth: { email: string; password: string }): Promise<User | string | null>;
 
   /**
    * Create a new demo user with demo ingredients.
@@ -170,17 +151,9 @@ UserSchema.method("tryPopulateAll", async function () {
   const popped = await this.populate<
     Pick<
       IPopulatedUser,
-      | "ingredients"
-      | "recipe_exclusions"
-      | "ingredient_exclusions"
-      | "dietary_preferences"
+      "ingredients" | "recipe_exclusions" | "ingredient_exclusions" | "dietary_preferences"
     >
-  >([
-    "ingredients",
-    "recipe_exclusions",
-    "ingredient_exclusions",
-    "dietary_preferences",
-  ]);
+  >(["ingredients", "recipe_exclusions", "ingredient_exclusions", "dietary_preferences"]);
   if (
     !this.populated("ingredients") ||
     !this.populated("recipe_exclusions") ||
@@ -194,9 +167,7 @@ UserSchema.method("tryPopulateAll", async function () {
 
 UserSchema.static(
   "findByIdAndPopulate",
-  async function findByIdAndPopulate(
-    id: string | Types.ObjectId
-  ): Promise<User | null> {
+  async function findByIdAndPopulate(id: string | Types.ObjectId): Promise<User | null> {
     let user = await this.findById(id);
     if (!user) {
       return null;
@@ -226,10 +197,7 @@ UserSchema.static(
 
 UserSchema.static(
   "newUser",
-  async function newUser(auth: {
-    email: string;
-    password: string;
-  }): Promise<User | string | null> {
+  async function newUser(auth: { email: string; password: string }): Promise<User | string | null> {
     auth.email = auth.email.toLowerCase();
     let existing = await this.findOne({ email: auth.email });
     if (existing) {
@@ -280,7 +248,6 @@ if (DEMO_AUTH) {
     const user = new Users();
     const ingredients = new IngredientsLists({
       list: [
-        //TODO: Add more
         "chicken",
         "beef",
         "rice",
@@ -292,6 +259,56 @@ if (DEMO_AUTH) {
         "olive oil",
         "salt",
         "pepper",
+        "carrots",
+        "potatoes",
+        "spinach",
+        "mushrooms",
+        "zucchini",
+        "eggplant",
+        "broccoli",
+        "cauliflower",
+        "green beans",
+        "asparagus",
+        "corn",
+        "peas",
+        "cabbage",
+        "lettuce",
+        "kale",
+        "cilantro",
+        "parsley",
+        "dill",
+        "rosemary",
+        "thyme",
+        "oregano",
+        "sage",
+        "bay leaves",
+        "ginger",
+        "turmeric",
+        "paprika",
+        "cumin",
+        "coriander",
+        "chili powder",
+        "soy sauce",
+        "vinegar",
+        "lemon",
+        "lime",
+        "orange",
+        "honey",
+        "brown sugar",
+        "white sugar",
+        "flour",
+        "yeast",
+        "baking powder",
+        "baking soda",
+        "milk",
+        "cream",
+        "cheese",
+        "butter",
+        "eggs",
+        "fish",
+        "shrimp",
+        "tofu",
+        "lentils",
       ],
     });
     const recipe_exclusions = new RecipeExclusionsLists({ list: [] });

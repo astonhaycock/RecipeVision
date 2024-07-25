@@ -47,13 +47,9 @@ async function search(query: string): Promise<RecipeListWithQuery> {
     const id = el.attr("data-doc-id");
     const url = el.attr("href");
     const image = el.find("img").attr("data-src");
-    const stars =
-      el.find(".icon-star").length + el.find(".icon-star-half").length * 0.5;
+    const stars = el.find(".icon-star").length + el.find(".icon-star-half").length * 0.5;
     const reviews = parseInt(
-      el
-        .find(".mntl-recipe-card-meta__rating-count-number")
-        .text()
-        .replace(/,/g, "")
+      el.find(".mntl-recipe-card-meta__rating-count-number").text().replace(/,/g, "")
     );
 
     // this next bit tries to figure out if it's a blog post so we can exclude it
@@ -85,10 +81,7 @@ async function search(query: string): Promise<RecipeListWithQuery> {
  * This function assumes each query consists of only letters and spaces.
  * @param queries The search queries
  */
-function search_multiple(
-  queries: string[],
-  callback: (result: RecipeListWithQuery) => void
-) {
+function search_multiple(queries: string[], callback: (result: RecipeListWithQuery) => void) {
   for (const query of queries) {
     search(query).then(callback);
   }
@@ -102,10 +95,7 @@ function init(app: Express) {
   app.get(
     "/api/allrecipes/:query",
     no_auth_if_mw((req: Request) => {
-      return (
-        req.params.query != null &&
-        HOMEPAGE_QUERIES.indexOf(req.params.query) >= 0
-      );
+      return req.params.query != null && HOMEPAGE_QUERIES.indexOf(req.params.query) >= 0;
     }),
     async (req, res) => {
       if (cached.has(req.params.query)) {

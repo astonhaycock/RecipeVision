@@ -7,18 +7,17 @@
   import type { AiCard } from "@/scripts/airecipes";
   const mobile = inject("mobile") as Ref<boolean>;
   const recipes = defineModel<RecipeCollection>("recipes", { required: true });
-  const ai_recipes = reactive<AiRecipeCollection>([]);
+  const ai_recipes = ref<AiRecipeCollection>([]);
   const modal = inject("recipe_modal") as Ref<AiCard | null>;
   const fullRecipeRefresh = inject("fullRecipeRefresh") as () => void;
   const hover = ref(false);
   const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
   const ai_recipe_selected = ref(false);
   async function getGenerateRecipes() {
-    console.log("Generating recipes...");
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipes`);
     if (response.status === 200) {
       const data = await response.json();
-      ai_recipes.push(...data);
+      ai_recipes.value = data;
     }
   }
   async function generateRecipes() {

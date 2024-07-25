@@ -30,7 +30,9 @@ type RecipeCollection = { [key: string]: RecipeCard[] };
  */
 async function search(query: string): Promise<RecipeListWithQuery> {
   const response = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}/api/allrecipes/${encodeURIComponent(query)}`
+    `${import.meta.env.VITE_PUBLIC_URL}/api/allrecipes/${encodeURIComponent(
+      query
+    )}`
   );
   if (response.status === 200) {
     return response.json();
@@ -44,9 +46,23 @@ async function search(query: string): Promise<RecipeListWithQuery> {
  * This function assumes each query consists of only letters and spaces.
  * @param queries The search queries
  */
-function search_multiple(queries: string[], callback: (result: RecipeListWithQuery) => void) {
-  for (const query of queries) {
-    search(query).then(callback);
+function search_multiple(
+  queries: string[],
+  callback: (result: RecipeListWithQuery) => void
+) {
+  const workers = [];
+  for (let i = 0; i < 4; i++) {
+    workers.push(
+      (async () => {
+        while (queries.length > 0) {
+          const query = queries.pop();
+          if (query) {
+            const result = await search(query);
+            callback(result);
+          }
+        }
+      })()
+    );
   }
 }
 

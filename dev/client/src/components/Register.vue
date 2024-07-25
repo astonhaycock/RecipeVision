@@ -136,7 +136,6 @@ function passwordMatch(v: string) {
           :readonly="loading"
           :rules="[required, validPassword]"
           label="Password"
-          placeholder="Enter your password"
           width="300px"
           type="password"
           clearable

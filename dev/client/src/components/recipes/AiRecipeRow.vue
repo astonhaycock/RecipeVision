@@ -33,7 +33,7 @@
   <v-sheet tag="v-container" :class="style.container" color="grey-lighten-4">
     <v-row color="grey-lighten-4">
       <!-- <v-spacer></v-spacer> -->
-      <v-sheet color="grey-lighten-2" rounded="pill" :class="style.pill_label">
+      <v-sheet color="blue" rounded="pill" :class="style.pill_label">
         <div class="text-h6 text-capitalize">Ai Recipes</div>
       </v-sheet>
       <v-spacer></v-spacer>

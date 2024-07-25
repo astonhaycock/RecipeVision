@@ -46,13 +46,15 @@
 <template>
   <v-main class="position-absolute top-0 mx-0 px-0 w-100 fill-height bg-grey-lighten-4">
     <v-container class="mx-auto mb-16 bg-grey-lighten-4" fluid>
-      <v-row class="mt-3 mb-8 d-flex justify-center align-center ga-5">
-        <v-spacer></v-spacer>
-        <div class="text-h3">Recipes</div>
-        <v-btn class="text-h6 bg-green" @click="generateRecipes">Generate Ai Recipe</v-btn>
+      <v-row class="mt-3 d-flex justify-center align-center">
+        <v-card class="pa-12 mt-3 d-flex justify-center align-center ga-5" elevation-24>
+          <div class="text-h3">Recipes</div>
+          <div class="d-flex flex-column ga-4">
+            <v-btn class="text-h6 bg-green" @click="generateRecipes">Generate Ai Recipe</v-btn>
 
-        <v-btn class="text-h6 bg-green" @click="fullRecipeRefresh">Refresh Recipes</v-btn>
-        <v-spacer></v-spacer>
+            <v-btn class="text-h6 bg-green" @click="fullRecipeRefresh">Refresh Recipes</v-btn>
+          </div></v-card
+        >
       </v-row>
       <AiRecipeRow :recipes="ai_recipes" v-if="ai_recipes.length > 0" />
       <template v-for="(cards, query) in recipes as RecipeCollection">

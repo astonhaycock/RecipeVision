@@ -42,25 +42,31 @@ async function post_api_image(req: Request, res: Response): Promise<void> {
 
   console.log(`image uploaded: ${url}`);
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: IMAGE_PROMPT,
-          },
-          {
-            type: "image_url",
-            image_url: { url: url, detail: "high" },
-          },
-        ],
-      },
-    ],
-  });
-  console.log(response.choices[0].message.content);
+  let response;
+  try {
+    response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: IMAGE_PROMPT,
+            },
+            {
+              type: "image_url",
+              image_url: { url: url, detail: "high" },
+            },
+          ],
+        },
+      ],
+    });
+    console.log(response.choices[0].message.content);
+  } catch {
+    res.status(500).send("Error sending image to ChatGPT");
+    return;
+  }
   const result = parse_ai_response(
     response.choices[0].message.content as string
   );

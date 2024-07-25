@@ -6,7 +6,6 @@ const email_regex =
 
 const emit = defineEmits(["login", "registerPage", "demoLogin"]);
 
-const populateRecipes = inject("populateRecipes") as (force: boolean) => void;
 const demo_mode = import.meta.env.VITE_DEMO_AUTH === "true";
 const mobile = inject("mobile") as Ref<boolean>;
 
@@ -38,7 +37,6 @@ async function loginUser() {
   );
   if (response.status === 201) {
     console.log("Successfully logged in");
-    populateRecipes(true);
     router.push("/");
     user.value = { email: "", password: "" }; // Clear user form data
     emit("login");

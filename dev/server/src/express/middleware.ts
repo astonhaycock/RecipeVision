@@ -211,7 +211,7 @@ function init(app: Express) {
   app.use(session_mw);
   app.use(cors_mw);
   app.use(body_parser_mw);
-  // app.use(inspection_mw);
+  app.use(inspection_mw);
 }
 
 export {

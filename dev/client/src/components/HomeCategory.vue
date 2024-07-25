@@ -1,12 +1,11 @@
 <script setup lang="ts">
   import { defineEmits, defineProps, onMounted, reactive, watch, ref, inject, type Ref } from "vue";
-const selected = inject("selected") as Ref<string>;
+  const selected = inject("selected") as Ref<string>;
   const mobile = inject("mobile") as Ref<boolean>;
   defineProps<{
     row: Array<{ title: string; image: string }>;
   }>();
   defineEmits(["dialog"]);
-
 
   const style = reactive<{
     pill_label: string;
@@ -23,9 +22,8 @@ const selected = inject("selected") as Ref<string>;
       style.pill_label = "px-4 py-1 mt-4 ml-6 w-auto";
     }
   }
-  function selectedItem(picked:string){
+  function selectedItem(picked: string) {
     selected.value = picked;
-
   }
 
   watch(mobile, update);
@@ -47,14 +45,16 @@ const selected = inject("selected") as Ref<string>;
               <v-card-text>
                 <h2 class="text-h3 text-black text-center">{{ item.title }}</h2>
               </v-card-text>
-              <v-img :src="item.image" lazy-src="../assets/steak.jpeg"</v-img>
+              <v-img :src="item.image"></v-img>
 
               <v-overlay
                 :model-value="isHovering as boolean"
                 class="align-center justify-center"
                 scrim="#036358"
                 contained>
-                <v-btn variant="flat" @click="selectedItem(item.title), $emit('dialog')">Explore Recipes</v-btn>
+                <v-btn variant="flat" @click="selectedItem(item.title), $emit('dialog')"
+                  >Explore Recipes</v-btn
+                >
               </v-overlay>
             </v-card>
           </v-hover>

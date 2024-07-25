@@ -2,12 +2,15 @@
   import category_cards from "../components/HomeCategory.vue";
   import { defineComponent, defineProps, ref, inject, type Ref, reactive } from "vue";
   import home_info from "../components/HomeInfo.vue";
-  import HomvePlanes from "../components/HomePlans.vue";
+  import HomePlans from "../components/HomePlans.vue";
   import RecipeRow from "../components/recipes/RecipeRow.vue";
   const mobile = inject("mobile") as Ref<boolean>;
-  import type { RecipeCollection } from "@/scripts/allrecipes";
-  const recipe = reactive<RecipeCollection>({});
-  const URL_recipe = `${import.meta.env.VITE_PUBLIC_URL}/ai/allrecipes/beef`;
+  import type { RecipeListWithQuery } from "@/scripts/allrecipes";
+  const recipes = defineModel<RecipeListWithQuery>("recipes", { required: true });
+  const URL_recipe = `${import.meta.env.VITE_PUBLIC_URL}/api/allrecipes/`;
+  const dialog = ref(false);
+  const selected = inject("selected") as Ref<boolean>;
+
   const items_row_one = [
     {
       title: "Breakfast",
@@ -62,13 +65,16 @@
   ];
   const modal = ref(true);
   function closeModal() {
-    modal.value = false;
+    dialog.value = false;
   }
-  async function fetchRecipe() {
-    const response = await fetch(URL_recipe);
+  async function fetchCategoryRecipe() {
+    console.log(selected);
+    const response = await fetch(URL_recipe + selected.value);
+
     const data = await response.json();
     console.log(data);
-    // recipe.push(data.recipes);
+    recipes.value = data;
+    dialog.value = true;
   }
 </script>
 <template>
@@ -84,15 +90,32 @@
       </RouterLink>
     </div>
   </div>
-  <v-btn @click="fetchRecipe">click me</v-btn>
   <home_info />
-  <category_cards :row="items_row_one" />
-  <category_cards :row="items_row_two" />
-  <category_cards :row="items_row_three" />
-  <HomvePlanes />
-  <!-- <RecipeRow
-    v-for="(cards, query) in recipes"
-    :recipes="{ query: query as string, cards: cards }" /> -->
+  <category_cards :row="items_row_one" @dialog="fetchCategoryRecipe" />
+  <category_cards :row="items_row_two" @dialog="fetchCategoryRecipe" />
+  <category_cards :row="items_row_three" @dialog="fetchCategoryRecipe" />
+  <HomePlans />
+
+  <div class="text-xs-center">
+    <v-dialog v-model="dialog" max-width="1200">
+      <v-card>
+        <div class="d-flex justify-end align-center pa-4">
+          <v-icon
+            size="40"
+            color="white"
+            class="bg-red"
+            icon="mdi-close-thick"
+            id="icon_exit"
+            @click="closeModal"></v-icon>
+        </div>
+        <v-card-text>
+          <RecipeRow
+            v-if="recipes"
+            :recipes="{ query: recipes.query as string, cards: recipes.cards }" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 <style>
   #recipe_modal {
@@ -166,3 +189,5 @@
     }
   }
 </style>
+
+<!-- <RecipeRow v-if="recipes" :recipes="{ query: recipes.query as string, cards: recipes.cards }" /> -->

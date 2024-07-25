@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import { defineProps, onMounted, reactive, watch, ref, inject, type Ref } from "vue";
-
+  import { defineEmits, defineProps, onMounted, reactive, watch, ref, inject, type Ref } from "vue";
+const selected = inject("selected") as Ref<string>;
   const mobile = inject("mobile") as Ref<boolean>;
   defineProps<{
     row: Array<{ title: string; image: string }>;
   }>();
+  defineEmits(["dialog"]);
+
 
   const style = reactive<{
     pill_label: string;
@@ -20,6 +22,10 @@
       style.container = "mx-10 mt-16 mb-16";
       style.pill_label = "px-4 py-1 mt-4 ml-6 w-auto";
     }
+  }
+  function selectedItem(picked:string){
+    selected.value = picked;
+
   }
 
   watch(mobile, update);
@@ -48,7 +54,7 @@
                 class="align-center justify-center"
                 scrim="#036358"
                 contained>
-                <v-btn variant="flat">Explore Recipes</v-btn>
+                <v-btn variant="flat" @click="selectedItem(item.title), $emit('dialog')">Explore Recipes</v-btn>
               </v-overlay>
             </v-card>
           </v-hover>

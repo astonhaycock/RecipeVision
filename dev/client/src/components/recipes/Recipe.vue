@@ -71,7 +71,6 @@ onMounted(() => {
       </v-row>
       <AiRecipeRow :recipes="ai_recipes" v-if="ai_recipes.length > 0" />
 
-
       <v-card
         ><div id="recipe_modal" v-if="modal">
           <div id="paper" class="d-flex flex-column ga-2 overflow-auto">

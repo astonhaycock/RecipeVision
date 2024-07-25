@@ -80,14 +80,16 @@
   }
   async function fetchCategoryRecipe() {
     console.log(selected);
+    ai_selected.value = false;
     if (selected.value != "Ai Generated") {
-      const response = await fetch(URL_recipe + selected.value);
+      const response = await fetch(URL_recipe + selected.value.toLowerCase());
 
       const data = await response.json();
       console.log(data);
       recipes.value = data;
       dialog.value = true;
     } else {
+      ai_selected.value = true;
       const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipes`);
       if (response.status === 200) {
         const data = await response.json();
@@ -130,7 +132,7 @@
         </div>
         <v-card-text>
           <RecipeRow
-            v-if="recipes && !ai_selected"
+            v-if="!ai_selected"
             :recipes="{ query: recipes.query as string, cards: recipes.cards }" />
           <AiRecipeRow v-else :recipes="ai_recipes" v-if="ai_recipes.length > 0" />
         </v-card-text>

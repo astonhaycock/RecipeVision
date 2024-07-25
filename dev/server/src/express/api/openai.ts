@@ -60,9 +60,7 @@ async function post_api_image(req: Request, res: Response): Promise<void> {
     ],
   });
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(
-    response.choices[0].message.content as string
-  );
+  const result = parse_ai_response(response.choices[0].message.content as string);
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -96,15 +94,11 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(
-              user.recipe_exclusions.list
-            )}`,
+            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(
-              user.recipe_exclusions.list
-            )}`,
+            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
           },
         ],
       },
@@ -112,9 +106,7 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
   });
 
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(
-    response.choices[0].message.content as string
-  );
+  const result = parse_ai_response(response.choices[0].message.content as string);
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -135,18 +127,13 @@ function downloadImage(url: string, filepath: string): Promise<string> {
       } else {
         // Consume response data to free up memory
         res.resume();
-        reject(
-          new Error(`Request Failed With a Status Code: ${res.statusCode}`)
-        );
+        reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
       }
     }).on("error", reject);
   });
 }
 
-async function get_api_recipe_generate(
-  req: Request,
-  res: Response
-): Promise<void> {
+async function get_api_recipe_generate(req: Request, res: Response): Promise<void> {
   const user = req.user as User;
   const ingredients = user.ingredients.list;
 
@@ -171,15 +158,11 @@ async function get_api_recipe_generate(
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(
-              user.recipe_exclusions.list
-            )}`,
+            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(
-              user.recipe_exclusions.list
-            )}`,
+            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
           },
         ],
       },
@@ -274,11 +257,11 @@ async function get_api_recipe_generate(
 
   // Generate image
   const image = await openai.images.generate({
-    model: "dall-e-2",
+    model: "dall-e-3",
     prompt: `Generate an image for a recipe named "${recipe.title}" with the description "${recipe.description}"`,
     n: 1,
-    size: "512x512",
-    // size: "1024x1024",
+    // size: "512x512",
+    size: "1024x1024",
   });
   const image_url = image.data[0].url as string;
   await downloadImage(image_url, GENERATED_IMAGES_PATH + "/" + image_name)

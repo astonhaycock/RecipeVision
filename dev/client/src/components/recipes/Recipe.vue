@@ -17,7 +17,6 @@ const mobile = inject("mobile") as Ref<boolean>;
 const recipes = defineModel<RecipeCollection>("recipes", { required: true });
 const ai_recipes = reactive<AiRecipeCollection>([]);
 const modal = inject("recipe_modal") as Ref<AiCard | null>;
-const fullRecipeRefresh = inject("fullRecipeRefresh") as () => void;
 const hover = ref(false);
 const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
 
@@ -64,22 +63,14 @@ onMounted(() => {
     <v-container class="mx-auto mb-16 bg-grey-lighten-4" fluid>
       <v-row class="mt-3 mb-8 d-flex justify-center align-center ga-5">
         <v-spacer></v-spacer>
-        <div class="text-h3">Recipes</div>
+        <div class="text-h3" @click="generateRecipes">Recipes</div>
         <v-btn class="text-h6 bg-green" @click="generateRecipes"
           >Generate ai recipe</v-btn
-        >
-        <v-btn class="text-h6 bg-green" @click="fullRecipeRefresh"
-          >Refresh Recipes</v-btn
         >
         <v-spacer></v-spacer>
       </v-row>
       <AiRecipeRow :recipes="ai_recipes" v-if="ai_recipes.length > 0" />
-      <template v-for="(cards, query) in recipes as RecipeCollection">
-        <RecipeRow
-          v-if="cards.length > 0"
-          :recipes="{ query: query as string, cards: cards }"
-        />
-      </template>
+
 
       <v-card
         ><div id="recipe_modal" v-if="modal">

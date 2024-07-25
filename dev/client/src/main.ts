@@ -21,6 +21,7 @@ const vuetify = createVuetify({
 const mobile_width = useMediaQuery("(max-width: 800px)");
 const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");
 const mobile = ref(false);
+const selected: Ref<string> = ref("");
 function mobile_update() {
   mobile.value = mobile_width.value && mobile_aspect.value;
 }
@@ -44,6 +45,7 @@ app.provide("ingredients", ingredients);
 app.provide("recipes", recipes);
 app.provide("recipe_ideas", recipe_ideas);
 app.provide("recipes_generated", recipes_generated);
+app.provide("selected", selected);
 
 async function fetchScraped(ideas: string[]) {
   // try {

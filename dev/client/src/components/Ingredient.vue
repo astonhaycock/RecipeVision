@@ -115,11 +115,6 @@ async function addIngredient() {
     items.value.push(ingredient);
   }
 }
-
-onMounted(async () => {
-  await getIngredients();
-  emit("ingredient-change", true);
-});
 </script>
 
 <template>

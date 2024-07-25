@@ -10,13 +10,11 @@ const page = ref("login");
 const router = useRouter();
 
 const URL = import.meta.env.VITE_PUBLIC_URL;
-const populateRecipes = inject("populateRecipes") as (force: boolean) => void;
 
 function pageChange(pageSelected: string) {
   page.value = pageSelected;
 }
 function loginF() {
-  populateRecipes(true);
   emit("login");
 }
 function registerPage() {

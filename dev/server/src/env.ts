@@ -65,6 +65,7 @@ function envp<T>(name: string, or?: T): T {
 //TODO: Homepage demos shouldn't depend on external services, but it just needs to last until tomorrow.
 // inb4 this makes it to prod
 const HOMEPAGE_QUERIES = envp<string[]>("HOMEPAGE_QUERIES", [
+  "favorite",
   "breakfast",
   "lunch",
   "dinner",
@@ -92,7 +93,10 @@ const MONGODB_URL = env("MONGODB_URL");
 /// The session secret
 const SESSION_SECRET = env("SESSION_SECRET", "your-secret-key");
 /// The cookie expiration time in milliseconds
-const COOKIE_EXPIRATION = envp<number>("COOKIE_EXPIRATION", 1000 * 60 * 60 * 24 * 7);
+const COOKIE_EXPIRATION = envp<number>(
+  "COOKIE_EXPIRATION",
+  1000 * 60 * 60 * 24 * 7
+);
 const DEMO_AUTH: boolean = envp("DEMO_AUTH", false);
 
 /// The prompt to use for the OpenAI API when reading images

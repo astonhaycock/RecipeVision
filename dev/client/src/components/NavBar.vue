@@ -15,6 +15,7 @@
   // const login = ref(false);
   const message = ref("Hello, World!");
   const nav_open = ref(false);
+  
   // const current_user = ref(false);
 </script>
 

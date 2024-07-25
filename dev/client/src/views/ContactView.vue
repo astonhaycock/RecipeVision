@@ -36,6 +36,7 @@ const email = useField("email");
 const message = useField("message");
 
 const submit = handleSubmit(async (values) => {
+  console.log(values);
   const data = {
     name: name.value,
     phone: phone.value,
@@ -44,7 +45,7 @@ const submit = handleSubmit(async (values) => {
   };
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
-  const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}`, {
+  const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/email`, {
     method: "POST",
     headers,
     body: JSON.stringify(data),

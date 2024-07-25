@@ -4,34 +4,22 @@
   // import HelloWorld from "./components/HelloWorld.vue";
   import NavBar from "./components/NavBar.vue";
 
+  const mobile = inject("mobile") as Ref<boolean>;
   // `inject` is used for importing the global session data
   import { inject, ref } from "vue";
+  import type { RecipeCollection } from "./scripts/allrecipes";
   const login = ref(false);
   const nav_open = ref(false);
   const router = useRouter();
+  const ingredients = inject("ingredients") as Ref<string[]>;
+  const recipes = inject("recipes") as Ref<RecipeCollection>;
+  const recipe_ideas = inject("recipe_ideas") as Ref<string[]>;
+  const populateRecipes = inject("populateRecipes") as (force: boolean) => void;
+
   const current_user: { email: string; IngredientList: string } = inject("current_user") || {
     email: "error",
     IngredientList: "error",
   };
-  const mobile = inject("mobile") as Ref<boolean>;
-// `inject` is used for importing the global session data
-import { inject, ref } from "vue";
-import type { RecipeCollection } from "./scripts/allrecipes";
-const login = ref(false);
-const nav_open = ref(false);
-const router = useRouter();
-const ingredients = inject("ingredients") as Ref<string[]>;
-const recipes = inject("recipes") as Ref<RecipeCollection>;
-const recipe_ideas = inject("recipe_ideas") as Ref<string[]>;
-const populateRecipes = inject("populateRecipes") as (force: boolean) => void;
-
-const current_user: { email: string; IngredientList: string } = inject(
-  "current_user"
-) || {
-  email: "error",
-  IngredientList: "error",
-};
-const mobile = inject("mobile") as Ref<boolean>;
 
   function handleNavOpen() {
     nav_open.value = true;
@@ -40,19 +28,11 @@ const mobile = inject("mobile") as Ref<boolean>;
     console.log(user);
   }
   async function getSession() {
+    // check if recipes dictionary is empty
+    if (Object.keys(recipes.value).length === 0) {
+      populateRecipes(true);
+    }
     const myHeaders = new Headers();
-function handleNavOpen() {
-  nav_open.value = true;
-}
-function receiveUser(user: any) {
-  console.log(user);
-}
-async function getSession() {
-  // check if recipes dictionary is empty
-  if (Object.keys(recipes.value).length === 0) {
-    populateRecipes(true);
-  }
-  const myHeaders = new Headers();
 
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/session`, {
       credentials: "include",

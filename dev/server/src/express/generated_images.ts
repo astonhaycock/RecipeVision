@@ -46,7 +46,7 @@ async function get_api_ai_image(req: Request, res: Response): Promise<void> {
       res.status(408).send("Image not found");
       delete queue[image_name];
     }
-  }, 15_000);
+  }, 25_000);
 }
 
 async function init(app: Express) {

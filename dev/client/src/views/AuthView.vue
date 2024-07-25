@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, defineEmits, ref } from "vue";
+import { defineComponent, defineEmits, inject, ref } from "vue";
 import login from "../components/Login.vue";
 import register from "../components/Register.vue";
 import Recipe from "../components/recipes/Recipe.vue";
@@ -10,11 +10,13 @@ const page = ref("login");
 const router = useRouter();
 
 const URL = import.meta.env.VITE_PUBLIC_URL;
+const populateRecipes = inject("populateRecipes") as (force: boolean) => void;
 
 function pageChange(pageSelected: string) {
   page.value = pageSelected;
 }
 function loginF() {
+  populateRecipes(true);
   emit("login");
 }
 function registerPage() {
@@ -35,7 +37,6 @@ async function demoLogin() {
   } else if (response.status == 409) {
     console.log("User already exists");
     loginF();
-    router.push("/");
   } else {
     console.log("Failed to login");
   }

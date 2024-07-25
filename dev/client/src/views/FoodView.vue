@@ -42,7 +42,7 @@ async function populateRecipes(force: boolean = false) {
   }
   old_length = ingredients.value.length;
   const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipes`, {
-    credentials: "same-origin",
+    credentials: "include",
   });
   if (result.status === 200) {
     const arr: Array<string> = await result.json();
@@ -63,7 +63,7 @@ async function fullRefresh() {
   recipe_ideas.value = [];
 
   const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipes`, {
-    credentials: "same-origin",
+    credentials: "include",
   });
   if (result.status === 200) {
     const data: Array<string> = await result.json();

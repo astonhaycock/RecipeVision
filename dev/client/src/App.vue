@@ -29,7 +29,7 @@ async function getSession() {
   const response = await fetch(
     `${import.meta.env.VITE_PUBLIC_URL}/api/session`,
     {
-      credentials: "same-origin",
+      credentials: "include",
       method: "GET",
       headers: myHeaders,
     }

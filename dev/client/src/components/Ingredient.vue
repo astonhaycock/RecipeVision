@@ -108,7 +108,7 @@ async function addIngredient() {
     )}`,
     {
       method: "POST",
-      credentials: "same-origin",
+      credentials: "include",
     }
   );
   if (response.status === 201) {

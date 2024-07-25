@@ -25,7 +25,6 @@
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/recipe/generate`);
     if (response.status === 200) {
       const data = await response.json();
-      ai_recipes.push(data);
       getGenerateRecipes();
     }
   }

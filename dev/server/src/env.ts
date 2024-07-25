@@ -74,6 +74,7 @@ const HOMEPAGE_QUERIES = envp<string[]>("HOMEPAGE_QUERIES", [
   "seafood",
   "quick and easy",
 ]);
+const RESEND_KEY = env("RESEND_KEY");
 /// The maximum upload size in bytes
 const FILE_LIMIT = envp<number>("FILE_LIMIT", 100 * 1024 * 1024);
 /// The port to listen on
@@ -154,6 +155,7 @@ if (url.endsWith("/")) {
 const PUBLIC_URL = url;
 
 export {
+  RESEND_KEY,
   HOMEPAGE_QUERIES,
   DEMO_AUTH,
   FILE_LIMIT,

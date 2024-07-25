@@ -14,6 +14,7 @@ import { init as allrecipes } from "./api/allrecipes";
 import { init as generated_images } from "./generated_images";
 import { init as demo_auth } from "./api/demo_auth";
 import { init as ai } from "./api/ai";
+import { init as contact } from "./api/contact";
 
 await middleware(app);
 await auth(app);
@@ -24,5 +25,6 @@ await allrecipes(app);
 await generated_images(app);
 await demo_auth(app);
 await ai(app);
+await contact(app);
 
 export { app };

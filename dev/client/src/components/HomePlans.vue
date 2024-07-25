@@ -23,7 +23,9 @@
         <h4>Digital pantry</h4>
         <v-divider class="w-75"></v-divider>
         <h2>Free</h2>
-        <v-btn class="mt-5 w-75">Create New Account</v-btn>
+        <RouterLink id="btn" to="/auth">
+          <v-btn class="mt-5 w-100">Create New Account</v-btn>
+        </RouterLink>
       </div>
       <v-card id="text-box" class="d-flex align-center pa-4 flex-column ga-4 bg-blue" elevation-24>
         <h1 color="white">Premium</h1>

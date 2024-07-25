@@ -74,7 +74,7 @@
             for="actual-btn"
             class="ma-2 bg-blue rounded-circle pa-8"
             size="40"
-            color="black"
+            color="white"
             icon="mdi-file-image-plus-outline"></v-icon>
         </label>
       </form>

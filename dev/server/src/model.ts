@@ -77,7 +77,7 @@ const AiRecipes = model<IAiRecipe>("AI_Recipe", AiRecipeSchema);
 interface IUser {
   email: string;
   password: string;
-  last_request: Date;
+  timers: { [key: string]: Date };
   ingredients?: Types.ObjectId;
   recipe_exclusions?: Types.ObjectId;
   ingredient_exclusions?: Types.ObjectId;
@@ -88,7 +88,7 @@ interface IUser {
 interface IPopulatedUser {
   email: string;
   password: string;
-  last_request: Date;
+  timers: { [key: string]: Date };
   ingredients: IngredientsList;
   recipe_exclusions: RecipeExclusionsList;
   ingredient_exclusions: IngredientExclusionsList;
@@ -128,7 +128,7 @@ interface UserModel extends Model<IUser, {}, IUserMethods> {
 const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
   email: { type: String, required: true, match: email_regex },
   password: { type: String, required: true },
-  last_request: { type: Date, required: true },
+  timers: { type: Map, of: Date, required: true },
   ingredients: {
     type: Schema.Types.ObjectId,
     ref: "Ingredients_List",
@@ -254,7 +254,7 @@ UserSchema.static(
     const dietary_preferences = new DietaryPreferencesLists({ list: [] });
     user.email = auth.email;
     await user.setPassword(auth.password);
-    user.last_request = new Date(Date.now() - RATE_LIMIT);
+    user.timers = {};
     user.ingredients = ingredients._id;
     user.recipe_exclusions = recipe_exclusions._id;
     user.ingredient_exclusions = ingredient_exclusions._id;
@@ -302,7 +302,7 @@ if (DEMO_AUTH) {
     user.ingredients = ingredients._id;
     user.ingredient_exclusions = ingredient_exclusions._id;
     user.dietary_preferences = dietary_preferences._id;
-    user.last_request = new Date(0);
+    user.timers = {};
     user.email = `DEMO-${crypto.randomUUID()}@recipevision.com`;
     // 100% secure!
     user.password = "DEMO";

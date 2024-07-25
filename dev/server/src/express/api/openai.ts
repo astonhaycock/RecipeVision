@@ -29,7 +29,6 @@ const openai = new OpenAI({ apiKey: OPENAI_KEY });
 
 async function post_api_image(req: Request, res: Response): Promise<void> {
   const user = req.user as User;
-  user.last_request = new Date(Date.now());
 
   if (req.file === undefined) {
     res.status(400).send("no image uploaded");
@@ -342,19 +341,19 @@ function init(app: Express) {
     "/api/image",
     authenticate_mw,
     image_mw.single("image"),
-    ratelimit_mw(RATE_LIMIT),
+    ratelimit_mw("post_image", RATE_LIMIT),
     post_api_image
   );
   app.get(
     "/api/recipes",
     authenticate_mw,
-    ratelimit_mw(RATE_LIMIT),
+    ratelimit_mw("get_recipes", RATE_LIMIT),
     get_api_recipes
   );
   app.get(
     "/api/recipe/generate",
     authenticate_mw,
-    ratelimit_mw(RATE_LIMIT),
+    ratelimit_mw("generate_recipe", RATE_LIMIT),
     get_api_recipe_generate
   );
 }

@@ -169,16 +169,19 @@ async function authenticate_mw(
   next();
 }
 
-function ratelimit_mw(millis: number) {
+function ratelimit_mw(timer_name: string, millis: number) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user as User;
-    const time = user.last_request.getTime();
+    if (user.timers[timer_name] === undefined) {
+      user.timers[timer_name] = new Date(0);
+    }
+    const time = user.timers[timer_name].getTime();
     const current = new Date().getTime();
     if (current - time < millis) {
       res.status(429).send("too many requests");
       return;
     }
-    user.last_request = new Date();
+    user.timers[timer_name] = new Date();
     user.save();
     next();
   };

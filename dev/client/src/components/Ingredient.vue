@@ -45,8 +45,10 @@ function toggleDrawer() {
   drawer.value = !drawer.value;
   if (!drawer.value) {
     emit("ingredient-change");
+  } else {
+    search.value = "";
+    getIngredients();
   }
-  getIngredients();
 }
 
 watch(selected, () => {
@@ -76,7 +78,6 @@ async function deleteList() {
       );
       selected.value = [];
       loading.value = false;
-      emit("ingredient-change");
     }, 2000);
     console.log("List deleted Successfully");
   } else {
@@ -94,20 +95,30 @@ async function getIngredients() {
   if (response.status === 200) {
     items.value = data;
     console.log("Ingredient got Successfully");
-    emit("ingredient-change");
   } else {
     console.log("Ingredients not received");
   }
 }
 
-function toggleIngredients() {
-  loading.value = !loading.value;
+async function addIngredient() {
+  const ingredient = search.value;
+  const response = await fetch(
+    `${import.meta.env.VITE_PUBLIC_URL}/api/ingredient/${encodeURIComponent(
+      ingredient
+    )}`,
+    {
+      method: "POST",
+      credentials: "same-origin",
+    }
+  );
+  if (response.status === 201) {
+    items.value.push(ingredient);
+  }
 }
 
-onMounted(() => {
-  if (!mobile) {
-    getIngredients();
-  }
+onMounted(async () => {
+  await getIngredients();
+  emit("ingredient-change", true);
 });
 </script>
 
@@ -120,7 +131,6 @@ onMounted(() => {
       location="left"
       :mobile="mobile"
       :class="mobile ? 'elevation-0' : 'elevation-2 '"
-      temporary
       disable-route-watcher
     >
       <!-- <v-fade-transition v-show="!drawer" mode="in-out" appear> -->
@@ -165,7 +175,11 @@ onMounted(() => {
                 label="Search or Add"
                 hide-details
                 single-line
+                @click="if (!mobile) search = '';"
               ></v-text-field>
+              <v-btn v-show="categories.length === 0" @click="addIngredient">
+                Add it!
+              </v-btn>
             </v-col>
           </v-row>
         </v-container>

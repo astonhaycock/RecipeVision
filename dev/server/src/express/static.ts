@@ -5,7 +5,7 @@ import type { Express, NextFunction, Request, Response } from "express";
 import { mkdir } from "fs/promises";
 import { IMAGES_PATH, WEBSITE_PATH } from "../env";
 
-const SITE_ROUTES = ["/", "/auth", "/home", "/food", "/recipe"];
+const SITE_ROUTES = ["/", "/auth", "/home", "/food", "/recipe", "/contact"];
 
 async function init(app: Express) {
   mkdir(IMAGES_PATH, { recursive: true }).catch(console.error);

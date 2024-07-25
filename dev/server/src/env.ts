@@ -92,10 +92,7 @@ const MONGODB_URL = env("MONGODB_URL");
 /// The session secret
 const SESSION_SECRET = env("SESSION_SECRET", "your-secret-key");
 /// The cookie expiration time in milliseconds
-const COOKIE_EXPIRATION = envp<number>(
-  "COOKIE_EXPIRATION",
-  1000 * 60 * 60 * 24 * 7
-);
+const COOKIE_EXPIRATION = envp<number>("COOKIE_EXPIRATION", 1000 * 60 * 60 * 24 * 7);
 const DEMO_AUTH: boolean = envp("DEMO_AUTH", false);
 
 /// The prompt to use for the OpenAI API when reading images
@@ -110,7 +107,7 @@ const IMAGE_PROMPT = env(
 /// The prompt to use for recipe generation
 const RECIPE_PROMPT = env(
   "RECIPE_PROMPT",
-  "Give me a list of recipe ideas that can be made using a subset of the provided list " +
+  "Give me a list of 5 recipe ideas that can be made using a subset of the provided list " +
     "of ingredients labelled 'ingredients'. Avoid recipes that are certain to use any ingredients " +
     "listed in the 'ingredient_exclusions' list. Additionally, avoid recipes listed in the " +
     "'recipe_exclusions' list." +

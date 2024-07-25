@@ -9,7 +9,18 @@
   const recipes = defineModel<RecipeListWithQuery>("recipes", { required: true });
   const URL_recipe = `${import.meta.env.VITE_PUBLIC_URL}/api/allrecipes/`;
   const dialog = ref(false);
-  const selected = inject("selected") as Ref<boolean>;
+  const selected = inject("selected") as Ref<string>;
+  const ai_selected = ref(false);
+  import AiRecipeRow from "@/components/recipes/AiRecipeRow.vue";
+  import type { AiRecipeCollection } from "@/scripts/airecipes";
+  import { onMounted, provide, onBeforeMount } from "vue";
+  import type { AiCard } from "@/scripts/airecipes";
+
+  const ai_recipes = reactive<AiRecipeCollection>([]);
+  const fullRecipeRefresh = inject("fullRecipeRefresh") as () => void;
+  const hover = ref(false);
+  const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
+  const ai_recipe_selected = ref(false);
 
   const items_row_one = [
     {
@@ -69,12 +80,21 @@
   }
   async function fetchCategoryRecipe() {
     console.log(selected);
-    const response = await fetch(URL_recipe + selected.value);
+    if (selected.value != "Ai Generated") {
+      const response = await fetch(URL_recipe + selected.value);
 
-    const data = await response.json();
-    console.log(data);
-    recipes.value = data;
-    dialog.value = true;
+      const data = await response.json();
+      console.log(data);
+      recipes.value = data;
+      dialog.value = true;
+    } else {
+      const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipes`);
+      if (response.status === 200) {
+        const data = await response.json();
+        ai_recipes.push(...data);
+        dialog.value = true;
+      }
+    }
   }
 </script>
 <template>
@@ -110,8 +130,9 @@
         </div>
         <v-card-text>
           <RecipeRow
-            v-if="recipes"
+            v-if="recipes && !ai_selected"
             :recipes="{ query: recipes.query as string, cards: recipes.cards }" />
+          <AiRecipeRow v-else :recipes="ai_recipes" v-if="ai_recipes.length > 0" />
         </v-card-text>
       </v-card>
     </v-dialog>

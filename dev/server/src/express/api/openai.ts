@@ -39,6 +39,7 @@ async function post_api_image(req: Request, res: Response): Promise<void> {
   setTimeout(() => unlink(file.path).catch(console.error), 15_000);
   // Create the URL that OpenAI will download the image from.
   let url = `${PUBLIC_URL}/images/${file.filename}`;
+
   console.log(`image uploaded: ${url}`);
 
   const response = await openai.chat.completions.create({
@@ -60,7 +61,9 @@ async function post_api_image(req: Request, res: Response): Promise<void> {
     ],
   });
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(response.choices[0].message.content as string);
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -94,11 +97,15 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `ingredient_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `recipe_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
         ],
       },
@@ -106,7 +113,9 @@ async function get_api_recipes(req: Request, res: Response): Promise<void> {
   });
 
   console.log(response.choices[0].message.content);
-  const result = parse_ai_response(response.choices[0].message.content as string);
+  const result = parse_ai_response(
+    response.choices[0].message.content as string
+  );
   if (!result) {
     res.status(500).send("AI response failed to parse");
     return;
@@ -127,13 +136,18 @@ function downloadImage(url: string, filepath: string): Promise<string> {
       } else {
         // Consume response data to free up memory
         res.resume();
-        reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+        reject(
+          new Error(`Request Failed With a Status Code: ${res.statusCode}`)
+        );
       }
     }).on("error", reject);
   });
 }
 
-async function get_api_recipe_generate(req: Request, res: Response): Promise<void> {
+async function get_api_recipe_generate(
+  req: Request,
+  res: Response
+): Promise<void> {
   const user = req.user as User;
   const ingredients = user.ingredients.list;
 
@@ -158,11 +172,15 @@ async function get_api_recipe_generate(req: Request, res: Response): Promise<voi
           },
           {
             type: "text",
-            text: `ingredient_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `ingredient_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
           {
             type: "text",
-            text: `recipe_exclusions: ${JSON.stringify(user.recipe_exclusions.list)}`,
+            text: `recipe_exclusions: ${JSON.stringify(
+              user.recipe_exclusions.list
+            )}`,
           },
         ],
       },

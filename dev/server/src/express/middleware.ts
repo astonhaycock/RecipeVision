@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
     // Split the MIME type and get the file extension
     let file_ext = file.mimetype.split("/")[1];
     // Combine the hash and the file extension as the image name
-    cb(null, `${hash}.${file_ext}`);
+    cb(null, `${hash}.${file_ext.toLowerCase().replace("jpeg", "jpg")}`);
   },
 });
 
@@ -211,7 +211,7 @@ function init(app: Express) {
   app.use(session_mw);
   app.use(cors_mw);
   app.use(body_parser_mw);
-  app.use(inspection_mw);
+  // app.use(inspection_mw);
 }
 
 export {

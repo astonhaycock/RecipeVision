@@ -11,7 +11,7 @@
 
   const starColor = ref("yellow-darken-4");
   function openModal() {
-    if (!isHovering.value) {
+    if (!isHovering.value && !mobile.value) {
       isHovering.value = true;
     } else {
       isHovering.value = false;

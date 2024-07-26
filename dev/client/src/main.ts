@@ -23,7 +23,7 @@ const mobile_aspect = useMediaQuery("(max-aspect-ratio: 5/8)");
 const mobile = ref(false);
 const selected: Ref<string> = ref("");
 function mobile_update() {
-  mobile.value = mobile_width.value && mobile_aspect.value;
+  mobile.value = mobile_width.value;
 }
 watch([mobile_width, mobile_aspect], mobile_update);
 mobile_update();
@@ -69,12 +69,9 @@ async function fetchScraped(ideas: string[]) {
 }
 
 async function fetchIngredients() {
-  const result = await fetch(
-    `${import.meta.env.VITE_PUBLIC_URL}/api/ingredients`,
-    {
-      credentials: "include",
-    }
-  );
+  const result = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ingredients`, {
+    credentials: "include",
+  });
   if (result.status === 200) {
     const arr: Array<string> = await result.json();
     old_length = arr.length;

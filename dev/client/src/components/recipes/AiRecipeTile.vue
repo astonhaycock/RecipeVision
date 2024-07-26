@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AiCard } from "@/scripts/airecipes";
 import { ref, inject, type Ref } from "vue";
+const mobile = inject("mobile") as Ref<boolean>;
 
 const props = defineProps<{
   recipe: AiCard;
@@ -18,7 +19,7 @@ function selectedRecipe() {
   console.log(props.recipe);
 }
   function openModal() {
-    if (!isHovering.value) {
+    if (!isHovering.value && !mobile.value ) {
       isHovering.value = true;
     } else {
       isHovering.value = false;

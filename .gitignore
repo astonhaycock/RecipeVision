@@ -118,6 +118,7 @@ out
 
 .nuxt
 dist
+docker-files
 
 # Gatsby files
 

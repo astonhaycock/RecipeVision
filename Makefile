@@ -1,3 +1,5 @@
+SRC_FILES := $(shell find dev -type f -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' | grep -v node_modules | grep -v dist)
+
 dependencies-server:
 	cd dev/server && bun install
 
@@ -42,6 +44,19 @@ dev2: dependencies
 		echo "cd dev/client && bun run dev" \
 	) | parallel --line-buffer
 
+docker-files: $(SRC_FILES)
+	rm -rf ./docker-files
+	mkdir -p docker-files/server
+	mkdir -p docker-files/client
+	cd dev/server && bun install && bun build --target=bun --outdir ./dist src/index.ts
+	cd dev/client && bun install && bun run build
+	cp -r dev/server/dist/* docker-files/server/
+	cp -r dev/server/.env* docker-files/server/
+	cp -r dev/client/dist/* docker-files/client/
+
+docker: docker-files
+	docker compose up --build
+
 # prog1 & prog2 && fg
 
 # This is literally the worst thing I've ever done.
@@ -53,6 +68,7 @@ kill:
 	fuser -k 8880/tcp
 
 clean:
+	rm -rf ./docker-files
 	rm -rf ./dist
 	rm -rf ./dev/server/images
 	rm -rf ./dev/server/generated_images

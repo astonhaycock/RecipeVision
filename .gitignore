@@ -119,6 +119,7 @@ out
 .nuxt
 dist
 docker-files
+docker_generated_images
 
 # Gatsby files
 

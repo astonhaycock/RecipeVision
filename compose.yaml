@@ -1,5 +1,32 @@
 services:
+
+  mongo:
+    image: mongo
+    restart: always
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8880:8081"
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
+    env_file:
+      - path: .env.local
+        required: false
+
   recipevision:
     build: .
+    restart: always
     ports:
       - "8080:8080"
+    volumes:
+      - type: bind
+        source: docker_generated_images
+        target: /app/generated_images
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_URL: mongodb://mongo:27017/

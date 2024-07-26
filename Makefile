@@ -46,6 +46,7 @@ dev2: dependencies
 
 docker-files: $(SRC_FILES)
 	rm -rf ./docker-files
+	mkdir -p docker_generated_images
 	mkdir -p docker-files/server
 	mkdir -p docker-files/client
 	cd dev/server && bun install && bun build --target=bun --outdir ./dist src/index.ts

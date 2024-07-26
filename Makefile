@@ -56,7 +56,7 @@ docker-files: $(SRC_FILES)
 	cp -r dev/client/dist/* docker-files/client/
 
 docker: docker-files
-	docker compose up --build
+	docker compose up --build -d
 
 # prog1 & prog2 && fg
 

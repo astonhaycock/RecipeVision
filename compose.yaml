@@ -23,10 +23,15 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - type: bind
-        source: docker_generated_images
+      - type: volume
+        source: generated_images
         target: /app/generated_images
+      - type: tmpfs
+        target: /app/images
     depends_on:
       - mongo
     environment:
       MONGODB_URL: mongodb://mongo:27017/
+
+volumes:
+  generated_images:

@@ -25,9 +25,9 @@ services:
     volumes:
       - type: volume
         source: generated_images
-        target: /app/generated_images
+        target: /app/server/generated_images
       - type: tmpfs
-        target: /app/images
+        target: /app/server/images
     depends_on:
       - mongo
     environment:

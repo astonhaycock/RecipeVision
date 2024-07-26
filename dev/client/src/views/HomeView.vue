@@ -22,6 +22,8 @@
   const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
   const ai_recipe_selected = ref(false);
 
+  const logged_in = inject("logged-in") as Ref<boolean>;
+
   const items_row_one = [
     {
       title: "Breakfast",
@@ -107,7 +109,11 @@
         <h2>favorite recipe</h2>
       </div>
 
-      <RouterLink id="btn" to="/food">
+      <RouterLink id="btn" v-if="logged_in" to="/food">
+        <v-btn>Try now</v-btn>
+      </RouterLink>
+
+      <RouterLink id="btn" v-else to="/auth">
         <v-btn>Try now</v-btn>
       </RouterLink>
     </div>

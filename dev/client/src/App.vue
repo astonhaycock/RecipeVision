@@ -3,6 +3,7 @@ import { RouterView, useRouter } from "vue-router";
 import { onBeforeMount, type Ref } from "vue";
 // import HelloWorld from "./components/HelloWorld.vue";
 import NavBar from "./components/NavBar.vue";
+import {provide} from "vue";
 
 const mobile = inject("mobile") as Ref<boolean>;
 // `inject` is used for importing the global session data
@@ -16,6 +17,7 @@ const recipes = inject("recipes") as Ref<RecipeCollection>;
 const recipe_ideas = inject("recipe_ideas") as Ref<string[]>;
 const recipes_generated = inject("recipes_generated") as Ref<boolean>;
 const populateRecipes = inject("populateRecipes") as (force: boolean) => void;
+provide("logged-in", login);
 
 const current_user: { email: string; IngredientList: string } = inject(
   "current_user"

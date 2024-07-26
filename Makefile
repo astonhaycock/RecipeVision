@@ -1,4 +1,4 @@
-SRC_FILES := $(shell find dev -type f -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' | grep -v node_modules | grep -v dist)
+SRC_FILES := $(shell find dev -type f -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' -o -name '*.env*' | grep -v node_modules | grep -v dist)
 
 dependencies-server:
 	cd dev/server && bun install

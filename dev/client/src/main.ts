@@ -145,6 +145,10 @@ async function populateRecipes(init: boolean = false) {
   if (await fetchRecipes()) {
     return;
   }
+  if (init && recipe_ideas.value.length === 0) {
+    recipes_generated.value = false;
+    return;
+  }
 }
 
 async function fullRecipeRefresh() {

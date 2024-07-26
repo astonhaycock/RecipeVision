@@ -10,10 +10,17 @@
   const isHovering = ref(false);
 
   const starColor = ref("yellow-darken-4");
+  function openModal() {
+    if (!isHovering.value) {
+      isHovering.value = true;
+    } else {
+      isHovering.value = false;
+    }
+  }
 </script>
 
 <template>
-  <div>
+  <div @click="openModal">
     <v-hover v-slot="{ isHovering, props }">
       <v-card class="mx-auto" max-width="344" v-bind="props" height="500">
         <div class="d-flex justify-center align-center">

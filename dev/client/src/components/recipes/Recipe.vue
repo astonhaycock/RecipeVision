@@ -13,6 +13,7 @@
   const hover = ref(false);
   const URL_image = `${import.meta.env.VITE_PUBLIC_URL}/api/ai/image/`;
   const ai_recipe_selected = ref(false);
+  
   async function getGenerateRecipes() {
     const response = await fetch(`${import.meta.env.VITE_PUBLIC_URL}/api/ai/recipes`);
     if (response.status === 200) {

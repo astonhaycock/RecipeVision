@@ -25,6 +25,13 @@
   function selectedItem(picked: string) {
     selected.value = picked;
   }
+  function openModal() {
+    if (!isHovering.value) {
+      isHovering.value = true;
+    } else {
+      isHovering.value = false;
+    }
+  }
 
   watch(mobile, update);
 
@@ -32,7 +39,7 @@
 </script>
 
 <template>
-  <div class="d-flex align-center justify-center">
+  <div class="d-flex align-center justify-center" @click="openModal">
     <v-slide-group
       class="mt-2 px-2 d-flex align-center justify-center"
       :mobile="mobile"

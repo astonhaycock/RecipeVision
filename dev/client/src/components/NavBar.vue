@@ -52,6 +52,16 @@
           <!-- setting page needing to be made -->
           <v-list-item>
             <v-btn
+              @click="$emit('setting')"
+              color="grey-lighten-4"
+              height="60"
+              variant="flat"
+              width="125">
+              Setting</v-btn
+            >
+          </v-list-item>
+          <v-list-item>
+            <v-btn
               @click="$emit('contact')"
               color="grey-lighten-4"
               height="60"

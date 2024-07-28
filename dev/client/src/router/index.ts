@@ -23,6 +23,11 @@ const router = createRouter({
       name: "contact",
       component: () => import("../views/ContactView.vue"),
     },
+    {
+      path: "/setting",
+      name: "setting",
+      component: () => import("../views/settingView.vue"),
+    },
   ],
 });
 
